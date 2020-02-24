@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vivedu.ckd.dao.InfoInfoMapper">
+
+    <select id="findNewsList" resultType="com.vivedu.ckd.model.InfoInfo">
+        SELECT * FROM info_info ORDER BY info_info.insertDate DESC  limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findNewsDetail" resultType="com.vivedu.ckd.model.InfoInfo">
+        SELECT * FROM info_info ORDER BY info_info.insertDate DESC
+    </select>
+</mapper>

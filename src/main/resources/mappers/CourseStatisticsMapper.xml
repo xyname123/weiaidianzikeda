@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vivedu.ckd.dao.CourseStatisticsMapper">
+
+    <select id="teachingData" resultType="com.vivedu.ckd.model.CourseStatistics">
+        SELECT * FROM CourseStatistics
+        <where>
+            <if test="courseId != null and title != '' ">
+                CourseStatistics.courseId = #{courseId}
+            </if>
+            <if test="departmentId != null and departmentId != ''">
+                AND CourseStatistics.departmentId = #{departmentId}
+            </if>
+            <if test="subjecteId != null">
+                AND CourseStatistics.subjecteId = #{subjecteId}
+            </if>
+            <if test="term != null">
+                AND CourseStatistics.term = #{term}
+            </if>
+            <if test="userId != null">
+                AND CourseStatistics.userId = #{userId}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="sort == 'asc'">
+                CourseStatistics.AverageInteractionNum
+            </when>
+            <when test="sort == 'des'">
+                CourseStatistics.AverageInteractionNum DESC
+            </when>
+            <otherwise>
+                CourseStatistics.AverageInteractionNum DESC
+            </otherwise>
+        </choose>
+        limit #{pageNum},#{pageSize}
+    </select>
+
+</mapper>

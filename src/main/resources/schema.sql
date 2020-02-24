@@ -1,0 +1,15 @@
+CREATE TABLE `users` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ACTIVE_CODE` varchar(255) NOT NULL,
+  `ACTIVE_STATUS` int(11) NOT NULL,
+  `ACTIVE_TIME` mediumtext,
+  `PRODUCT_ID` varchar(255) NOT NULL,
+  `SERIAL_NO` varchar(255) DEFAULT NULL,
+  `TERM` int(11) DEFAULT NULL,
+  `POINTS` int(11) DEFAULT NULL,
+  `OVER_TIME` mediumtext,
+  `VERSION` varchar(36) DEFAULT NULL,
+  `NAME` varchar(36) DEFAULT NULL,
+  `COMMENT` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=135 DEFAULT CHARSET=utf8 COMMENT='ACTIVE_STATUS为0表示未激活，1表示已激活；PRODUCT_ID为0表示威爱通4.1，为0表示group；SERIAL_NO，为""表示可用，非“”表示不可用';

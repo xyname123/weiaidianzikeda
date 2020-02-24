@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vivedu.ckd.dao.ClassroomMapper">
+
+    <select id="findClassroom" resultType="com.vivedu.ckd.model.Classroom">
+        SELECT * FROM classroom
+        <where>
+            <if test="shooolArea != null and shooolArea !='' ">
+                AND shooolArea = #{shooolArea}
+            </if>
+            <if test='max != null and max !=""and max !="1"'>
+                AND maxXin = #{max}
+            </if>
+            <if test='dianNaoXin =="1"'>
+                AND dianNaoXin IS NOT NULL
+            </if>
+            <if test='keTangHuXin =="1"'>
+                AND keTangHuXin IS NOT NULL
+            </if>
+            <if test='luBoXin =="1" '>
+                AND luBoXin IS NOT NULL
+            </if>
+
+        </where>
+        limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findClassroomTotal" resultType="com.vivedu.ckd.model.Classroom">
+        SELECT * FROM classroom
+        <where>
+            <if test="shooolArea != null and shooolArea != '' ">
+                AND shooolArea = #{shooolArea}
+            </if>
+            <if test='dianNaoXin == "1"'>
+                AND dianNaoXin IS NOT NULL
+            </if>
+            <if test='keTangHuXin == "1"'>
+                AND keTangHuXin IS NOT NULL
+            </if>
+            <if test='luBoXin == "1" '>
+                AND luBoXin IS NOT NULL
+            </if>
+            <if test="max != null and max != ''">
+                AND maxXin = #{max}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="findClassroomE" resultType="com.vivedu.ckd.model.Classroom">
+        SELECT * FROM classroom  limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findClassroomK" resultType="int">
+        SELECT count(*) FROM classroom
+        <where>
+            <if test="shooolArea != null and shooolArea != '' ">
+                AND shooolArea = #{shooolArea}
+            </if>
+            <if test='dianNaoXin == "1"'>
+                AND dianNaoXin IS NOT NULL
+            </if>
+            <if test='keTangHuXin == "1"'>
+                AND keTangHuXin IS NOT NULL
+            </if>
+            <if test='luBoXin == "1" '>
+                AND luBoXin IS NOT NULL
+            </if>
+            <if test="max != null and max != ''">
+                AND maxXin = #{max}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="findClassroomJ" resultType="java.lang.Integer">
+        SELECT count(*) FROM classroom
+    </select>
+
+</mapper>

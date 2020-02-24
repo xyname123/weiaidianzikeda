@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vivedu.ckd.dao.JxServiceMapper">
+
+    <select id="findJxByName" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_JBXX WHERE T_SHARE_CDXT_BKS_JBXX.XM = #{name}
+    </select>
+
+    <select id="findJxByGrade" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_JBXX WHERE T_SHARE_CDXT_BKS_JBXX.SZNJ = #{pkey}
+    </select>
+
+    <select id="findJxByClazz" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_JBXX WHERE T_SHARE_CDXT_BKS_JBXX.BJDM = #{pkey}
+    </select>
+
+    <select id="findJxByNo" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JSPK">
+        SELECT * FROM T_SHARE_CDXT_BKS_JSPK WHERE T_SHARE_CDXT_BKS_JSPK.ZGH = #{no}
+    </select>
+
+    <delete id="findJxByDor" parameterType="int">
+        delete * FROM T_SHARE_CDXT_YJS_JBXX WHERE T_SHARE_CDXT_YJS_JBXX.XQDM = #{school}
+    </delete>
+
+    <delete id="findJxByDNo" parameterType="int">
+        delete  FROM T_SHARE_CDXT_YJS_JBXX WHERE T_SHARE_CDXT_YJS_JBXX.XH = #{no}
+    </delete>
+
+    <select id="findJxBySchool" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX WHERE T_SHARE_CDXT_BKS_JSPK.XQDM = #{identity}
+    </select>
+
+    <select id="findJxBySch" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX
+    </select>
+
+    <select id="findByGrdAll" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX
+    </select>
+
+    <select id="findByGrd" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX
+        <where>
+            <if test="identity != null' ">
+                T_SHARE_CDXT_YJS_JBXX.XQDM=#{identity}
+            </if>
+            <if test="no != null and no != ''">
+               1 = 1
+            </if>
+            <if test="identity != null'and no != null ">
+                1 = 1
+            </if>
+        </where>
+    </select>
+
+    <select id="findByCrdAll" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_JBXX
+    </select>
+
+    <select id="findByCrd" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_JBXX where  T_SHARE_CDXT_BKS_JBXX.BJDM=#{no}
+    </select>
+
+    <select id="findByJsAll" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_KCPK
+    </select>
+
+    <select id="findByJsCrid" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_KCPK where T_SHARE_CDXT_BKS_KCPK.JSDM=#{crid}
+    </select>
+
+    <select id="findByJsIdentity" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_KCPK where T_SHARE_CDXT_BKS_KCPK.XQDM=#{identity}
+    </select>
+
+    <select id="findByCC" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_BKS_KCPK where T_SHARE_CDXT_BKS_KCPK.XQDM=#{identity} and T_SHARE_CDXT_BKS_KCPK.JSDM=#{crid}
+    </select>
+
+    <select id="findByTeacher" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JSPK">
+        SELECT * FROM T_SHARE_CDXT_BKS_JSPK
+    </select>
+
+    <select id="findByTc" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_JSPK">
+        SELECT * FROM T_SHARE_CDXT_BKS_JSPK where T_SHARE_CDXT_BKS_JSPK.ZGH=#{no}
+    </select>
+
+    <select id="findByStudent" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX where T_SHARE_CDXT_YJS_JBXX
+    </select>
+
+    <select id="findByIf" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX where 1=1
+            <if test="identity != null' ">
+               and T_SHARE_CDXT_YJS_JBXX.XQDM=#{identity}
+            </if>
+            <if test="cid != null and cid != ''">
+
+            </if>
+            <if test="gid != null'and gid != null ">
+
+            </if>
+        <if test="no != null'and no != null ">
+            and T_SHARE_CDXT_YJS_JBXX.XH=#{no}
+        </if>
+    </select>
+
+    <select id="findJxByDorX" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX where T_SHARE_CDXT_YJS_JBXX.XQDM=#{school}
+    </select>
+
+    <select id="findJxByDDNo" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX where T_SHARE_CDXT_YJS_JBXX.XH=#{no}
+    </select>
+
+</mapper>

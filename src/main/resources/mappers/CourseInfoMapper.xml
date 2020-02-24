@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vivedu.ckd.dao.CourseInfoMapper">
+    <select id="findCourseByUserId" parameterType="String" resultType="com.vivedu.ckd.model.CourseInfo">
+       SELECT * FROM course_info WHERE course_info.userId = #{userId} ORDER BY course_info.insertDate DESC  limit 10
+       <!-- SELECT cl.name,cl.chapterId,cl.chapterId FROM course_info ci  LEFT join chapter_list cl on ci.courseId = cl.courseId-->
+    </select>
+
+    <select id="findCourseByUserIdPage" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info WHERE course_info.userId = #{userId} ORDER BY course_info.insertDate DESC  limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findCourseByUserIdNum" resultType="int">
+        SELECT count(*) FROM course_info WHERE course_info.userId = #{userId}
+    </select>
+
+    <select id="findAllCourseNum" resultType="int">
+        SELECT count(*) FROM course_info
+    </select>
+    <select id="findCourseByKeyNum" resultType="int">
+        SELECT count(*) FROM course_info WHERE course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !=""
+    </select>
+    <select id="findCourseByUserIdIf" resultType="com.vivedu.ckd.model.CourseInfo">
+       SELECT * FROM course_info WHERE course_info.userId = #{userId}
+        ORDER BY
+        <choose>
+            <when test="sort == 'asc'">
+                course_info.clickNum
+            </when>
+            <when test="sort == 'des'">
+                course_info.clickNum DESC
+            </when>
+            <otherwise>
+                course_info.insertDate DESC
+            </otherwise>
+        </choose>
+        limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findCourseByKey" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info WHERE course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !="" order by course_info.id  desc limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findAllCourse"  resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info WHERE course_info.source!= "film" limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findCourse"  resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info where course_info.id = #{id}
+    </select>
+
+    <select id="findCourseDatal"  resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info where course_info.id = #{id}
+    </select>
+
+    <select id="findMarked" parameterType="String"  resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info where course_info.courseId = #{courseId}
+    </select>
+
+    <select id="findT" parameterType="String"  resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
+        SELECT * FROM T_SHARE_CDXT_YJS_JBXX
+    </select>
+
+    <select id="findCourseByfilmTop" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info where course_info.source = #{film} limit #{page},#{size}
+    </select>
+
+    <select id="findRec" resultType="com.vivedu.ckd.model.CourseInfo">
+        select * from course_info where source != "film" and isRec = 1 order by course_info.id desc  LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <select id="recIndex" resultType="com.vivedu.ckd.model.CourseInfo">
+        select * from course_info where source != "film" and isRec = 1 order by course_info.studentNum desc  LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findrquick" resultType="com.vivedu.ckd.model.CourseInfo">
+        select * from course_info where course_info.cover IS NOT NULL and course_info.cover !="" and course_info.source != "film" order by course_info.id  desc  LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findquickRec" resultType="com.vivedu.ckd.model.CourseInfo">
+        select * from course_info where source != "film" order by course_info.id, course_info.studentNum desc  LIMIT #{pageNum},#{pageSize}
+    </select>
+
+
+    <select id="findquickZiyuan" resultType="com.vivedu.ckd.model.CourseInfo">
+        select * from course_info where source = 'film' order by course_info.id  desc   LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <insert id="updateCourse">
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,clickNum,courseFrom,url,source)
+        VALUES
+        <foreach collection="ids" item="course" separator=",">
+            (#{course.courseid},#{course.coursename},#{course.courseType},#{course.courseKeywords},#{course.studentnum},#{course.start},#{course.end},#{course.classhour},#{course.cover},#{course.profile},#{course.state},#{course.clicknum},#{course.courseFrom},#{course.url},"film")
+        </foreach>
+    </insert>
+
+    <insert id="InsertCourse">
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url)
+        VALUES
+        <foreach collection="courseInfoAilist" item="item" separator=",">
+            (#{item.courseid},#{item.coursename},#{item.courseType},#{item.courseKeywords},#{item.studentnum},#{item.start},#{item.end},#{item.classhour},#{item.cover},#{item.profile},#{item.state},#{item.source},#{item.clicknum},#{item.courseFrom},#{item.courseUrl})
+        </foreach>
+    </insert>
+
+    <insert id="InsertCourseMetel">
+        INSERT INTO course_info(courseName,url,courseType,cover,profile,source,courseFrom)
+        VALUES
+        <foreach collection="courseInfoMetelList" item="item" separator=",">
+            (#{item.coursename},#{item.url},#{item.courseType},#{item.cover},#{item.profile},"MeTel",#{item.courseFrom})
+        </foreach>
+    </insert>
+
+    
+    <select id="query" resultType="com.vivedu.ckd.model.TimesStatistics">
+        select * from times_statistics where typeTag = #{type}
+    </select>
+
+    <update id="update" parameterType="com.vivedu.ckd.model.TimesStatistics">
+        update
+        times_statistics
+        <set>
+            totalNumber = #{totalNumber},
+            dayNumber = #{dayNumber},
+            typeTag = #{typeTag},
+            statisticalDate = #{statisticalDate}
+        </set>
+        where typeTag = #{typeTag}
+    </update>
+
+    <insert id="addTimesStatistics" parameterType="com.vivedu.ckd.model.TimesStatistics">
+        INSERT INTO times_statistics(
+        totalNumber,
+        dayNumber,
+        typeTag,
+        statisticalDate)
+        VALUES(
+        #{totalNumber},
+        #{dayNumber},
+        #{typeTag},
+        #{statisticalDate})
+    </insert>
+
+    <select id="getCountList" resultType="com.vivedu.ckd.model.StatisticsModel">
+        SELECT
+        ts.dayNumber,
+        ts.totalNumber,
+        (
+        SELECT
+        ts1.totalNumber
+        FROM
+        times_statistics ts1 where ts1.typeTag =1) studyNumber,
+        ( SELECT
+        count(*)
+        FROM
+        course_info) classNumber
+        FROM
+        times_statistics ts
+        WHERE
+        ts.typeTag = 0
+    </select>
+
+    <update id="updateStatisticsCount">
+        update
+        times_statistics
+        <set>
+            dayNumber=0
+        </set>
+        where typeTag = 0
+    </update>
+
+    <select id="findFilm" resultType="com.vivedu.ckd.model.CourseInfoFilm">
+        select * from course_info  where  course_info.courseid  in
+        <foreach collection="ghs" item="item" open="(" close=")" separator=",">
+            #{item.courseid}
+        </foreach>
+    </select>
+
+   <update id="updateFilm">
+        <foreach collection="courseInfoFilmlistBen" item="course">
+            update course_info
+            <set>
+             courseName=#{course.coursename},courseType=#{course.courseType},courseKeywords=#{course.courseKeywords},studentNum=#{course.studentnum},start=#{course.start},end=#{course.end},classHour=#{course.classhour},cover=#{course.cover},profile=#{course.profile},state=#{course.state},clickNum=#{course.clicknum},courseFrom=#{course.courseFrom},url=#{course.url},source="film"
+            </set>
+            where courseId=#{course.courseid};
+        </foreach>
+</update>
+
+    <select id="findAi" resultType="com.vivedu.ckd.model.CourseInfoAi">
+        select * from course_info  where  course_info.courseid  in
+        <foreach collection="findAiSql" item="item" open="(" close=")" separator=",">
+            #{item.courseid}
+        </foreach>
+    </select>
+
+    <update id="updateAi">
+        <foreach collection="updateAiSql" item="course">
+            update course_info
+            <set>
+                courseName=#{course.coursename},courseType=#{course.courseType},courseKeywords=#{course.courseKeywords},studentNum=#{course.studentnum},start=#{course.start},end=#{course.end},classHour=#{course.classhour},cover=#{course.cover},profile=#{course.profile},state=#{course.state},clickNum=#{course.clicknum},courseFrom=#{course.courseFrom},url=#{course.courseUrl}
+            </set>
+            where courseId=#{course.courseid};
+        </foreach>
+    </update>
+
+    <select id="findMete" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from course_info  where  course_info.courseName=#{courseInfoMetel}
+    </select>
+
+    <select id="findAiVo" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from course_info  where  course_info.courseId=#{id}
+    </select>
+
+    <select id="findFilmT" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from course_info  where  course_info.courseId=#{id}
+    </select>
+
+    <update id="updateMete">
+        <foreach collection="updateMeteSql" item="course">
+            update course_info
+            <set>
+                courseType=#{course.courseType},cover=#{course.cover},profile=#{course.profile},courseFrom=#{course.courseFrom},url=#{course.url}
+            </set>
+            where courseId=#{course.coursename};
+        </foreach>
+    </update>
+
+
+    <select id="getRecommendCourseList" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info
+        <where>
+            source != 'file'
+
+            <if test='courseName != null and courseName !=""'>
+                 and course_info.courseName like concat('%',#{courseName},'%')
+            </if>
+
+            <if test="source != null and source !=''">
+                and source =#{source}
+            </if>
+
+            <if test='isRec == 1'>
+                and isRec = 1
+            </if>
+    </where>
+        limit #{firstIndex},#{pageSize}
+    </select>
+
+    <select id="getRecommendCourseListK" resultType="int">
+        SELECT count(*) FROM course_info where  course_info.source != "film"
+    </select>
+    <select id="getRecommendCourseListSize" resultType="int">
+        SELECT count(*) FROM course_info
+        <where>
+
+            source != 'file'
+
+            <if test='courseName != null and courseName !=""'>
+                and course_info.courseName like concat('%',#{courseName},'%')
+            </if>
+
+            <if test="source != null and source !=''">
+                and source =#{source}
+            </if>
+
+            <if test='isRec == 1'>
+                and isRec = 1
+            </if>
+
+        </where>
+    </select>
+
+    <update id="updateRecommendCourse" parameterType="int">
+        update course_info
+        <set>
+            isRec =#{isRec}
+        </set>
+        where
+        id =#{id}
+    </update>
+    <select id="getRecommendCourseListL"  resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info WHERE course_info.source!= "film" limit #{firstIndex},#{pageSize}
+    </select>
+</mapper>
