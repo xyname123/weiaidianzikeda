@@ -7,12 +7,17 @@ import com.vivedu.ckd.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -368,4 +373,133 @@ public class CourseInfoService {
     public int findAllCourseNum() {
         return mapper.findAllCourseNum();
     }
+
+    public List<CourseInfo> findCoursetopState(Integer state, Integer page, Integer size) {
+        /*state  1:正常 3:已完结 */
+
+
+        return mapper.findCoursetopState(state,page,size);
+
+    }
+
+    public int findCoursetopStateT(Integer state) {
+        return mapper.findCoursetopStateT(state);
+    }
+
+
+
+
+    public DemonstrationResponse addStudyDuration(String studentID, Integer time) {
+        StudyDuration studyDuration = mapper.queryStudyDuration(studentID);
+        int row = 0;
+        if (studyDuration != null || studyDuration.getId() > 0) {
+            studyDuration.setLearnTime(studyDuration.getLearnTime() + time);
+            row = mapper.updateStudyDuration(studyDuration);
+        } else {
+            StudyDuration studyDuration1 = new StudyDuration();
+            studyDuration1.setLearnTime(time);
+            studyDuration1.setStudentID(studentID);
+            Date date = new Date();
+            studyDuration1.setCreateDate(date);
+            row = mapper.addStudyDuration(studyDuration1);
+        }
+        if (row > 0) {
+            return new DemonstrationResponse(200, "成功！", null);
+        } else {
+            return new DemonstrationResponse(500, "异常！", null);
+        }
+    }
+
+    public DemonstrationResponse addLessonsLearned(String studentID, Integer courseId) {
+        Date date = new Date();
+        LessonsLearned lessonsLearned1 = mapper.queryLessonsLearned(studentID, courseId);
+        if (lessonsLearned1 != null || lessonsLearned1.getCourseId() > 0) {
+            lessonsLearned1.setCreateDate(date);
+            mapper.updateLessonsLearned(lessonsLearned1);
+            return new DemonstrationResponse(200, "成功！", null);
+        }
+        LessonsLearned lessonsLearned = new LessonsLearned();
+        lessonsLearned.setStudentID(studentID);
+        lessonsLearned.setCourseId(courseId);
+        lessonsLearned.setCreateDate(date);
+        int row = mapper.addLessonsLearned(lessonsLearned);
+        if (row > 0) {
+            return new DemonstrationResponse(200, "成功！", null);
+        } else {
+            return new DemonstrationResponse(500, "异常！", null);
+        }
+    }
+
+
+    public DemonstrationResponse getPersonalCenterInfo(String userId) throws Exception {
+        if (StringUtils.isEmpty(userId) || userId.length() < 7) {
+            return new DemonstrationResponse(500, "请传入正确的用户ID！", null);
+        }
+        String startDate = "2020-2-24 00:00:00";
+        String endDate = "2020-7-15 23:59:59";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = df.parse(startDate);
+        long days = new Date().getTime() / 1000 / 3600 / 24 - date.getTime() / 1000 / 3600 / 24;
+        long week = (days % 7 == 0 ? days / 7 : days / 7 + 1);
+        List<T_SHARE_CDXT_BKS_KCPK> t_share_cdxt_bks_kcpks = new ArrayList<>();
+        StudentPersonalCenterInfo studentPersonalCenterInfo = new StudentPersonalCenterInfo();
+        if (userId.length() == 7) {
+            //查出老师课程userid塞入实体类
+            t_share_cdxt_bks_kcpks = mapper.queryJSPK(userId, week + 1);
+            List<ClassSchedule> classScheduleList = new ArrayList<>();
+            for (T_SHARE_CDXT_BKS_KCPK t : t_share_cdxt_bks_kcpks) {
+                ClassSchedule classSchedule;
+                int difference = (Integer.parseInt(t.getJSJC()) - 1) - (Integer.parseInt(t.getKSJC()) - 1);
+                if (difference > 1) {
+                    for (int i = 1; i <= difference; i++) {
+                        classSchedule = new ClassSchedule((Integer.parseInt(t.getJSJC()) - i), (Integer.parseInt(t.getXQJ())), t.getKCMC());
+                        classScheduleList.add(classSchedule);
+                    }
+                } else {
+                    classSchedule = new ClassSchedule((Integer.parseInt(t.getJSJC()) - 1), (Integer.parseInt(t.getXQJ())), t.getKCMC());
+                    classScheduleList.add(classSchedule);
+                }
+            }
+            studentPersonalCenterInfo.setClassScheduleList(classScheduleList);
+            return new DemonstrationResponse(200, "查询成功！", studentPersonalCenterInfo);
+        } else if (userId.length() >= 12) {
+            int courseCount = mapper.queryCourseCount(userId, startDate, endDate);
+            int courseEnd = mapper.queryCourseEnd(userId, startDate, endDate);
+            int rank = mapper.queryRank(userId, startDate, endDate);
+            int allCount = mapper.queryAllCount(userId, startDate, endDate);
+            int denominator = (allCount == 0 ? 1 : allCount);
+            NumberFormat numberFormat = NumberFormat.getInstance();
+            // 设置精确到小数点后2位
+            numberFormat.setMaximumFractionDigits(2);
+            String result = numberFormat.format((float) (denominator - rank) / (float) denominator * 100) + "%";
+            List<StudyDuration> studyDurationList = mapper.queryStudyDurationList(userId);
+            List<CourseInfo> courseInfoList = mapper.queryCourseInfoList(userId, startDate, endDate);
+            t_share_cdxt_bks_kcpks = mapper.queryKCPK(userId, week + 1);
+            List<ClassSchedule> classScheduleList = new ArrayList<>();
+            for (T_SHARE_CDXT_BKS_KCPK t : t_share_cdxt_bks_kcpks) {
+                ClassSchedule classSchedule;
+                int difference = (Integer.parseInt(t.getJSJC()) - 1) - (Integer.parseInt(t.getKSJC()) - 1);
+                if (difference > 1) {
+                    for (int i = 1; i <= difference; i++) {
+                        classSchedule = new ClassSchedule((Integer.parseInt(t.getJSJC()) - i), (Integer.parseInt(t.getXQJ())), t.getKCMC());
+                        classScheduleList.add(classSchedule);
+                    }
+                } else {
+                    classSchedule = new ClassSchedule((Integer.parseInt(t.getJSJC()) - 1), (Integer.parseInt(t.getXQJ())), t.getKCMC());
+                    classScheduleList.add(classSchedule);
+                }
+            }
+
+            studentPersonalCenterInfo.setCourseCount(courseCount);
+            studentPersonalCenterInfo.setCourseEnd(courseEnd);
+            studentPersonalCenterInfo.setPercentage(result);
+            studentPersonalCenterInfo.setStudyDurationList(studyDurationList);
+            studentPersonalCenterInfo.setCourseInfoList(courseInfoList);
+            studentPersonalCenterInfo.setClassScheduleList(classScheduleList);
+            return new DemonstrationResponse(200, "查询成功！", studentPersonalCenterInfo);
+        } else {
+            return new DemonstrationResponse(500, "没有用户ID数据！", null);
+        }
+    }
+
 }

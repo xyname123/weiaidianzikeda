@@ -96,22 +96,21 @@
     </insert>
 
     <insert id="InsertCourse">
-        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url)
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url,teacher)
         VALUES
         <foreach collection="courseInfoAilist" item="item" separator=",">
-            (#{item.courseid},#{item.coursename},#{item.courseType},#{item.courseKeywords},#{item.studentnum},#{item.start},#{item.end},#{item.classhour},#{item.cover},#{item.profile},#{item.state},#{item.source},#{item.clicknum},#{item.courseFrom},#{item.courseUrl})
+            (#{item.courseid},#{item.coursename},#{item.courseType},#{item.courseKeywords},#{item.studentnum},#{item.start},#{item.end},#{item.classhour},#{item.cover},#{item.profile},#{item.state},#{item.source},#{item.clicknum},#{item.courseFrom},#{item.courseUrl},#{teacher})
         </foreach>
     </insert>
 
     <insert id="InsertCourseMetel">
-        INSERT INTO course_info(courseName,url,courseType,cover,profile,source,courseFrom)
+        INSERT INTO course_info(courseId,courseName,url,courseType,cover,profile,source,courseFrom)
         VALUES
         <foreach collection="courseInfoMetelList" item="item" separator=",">
-            (#{item.coursename},#{item.url},#{item.courseType},#{item.cover},#{item.profile},"MeTel",#{item.courseFrom})
+            (#{item.courseid}#{item.coursename},#{item.url},#{item.courseType},#{item.cover},#{item.profile},"MeTel",#{item.courseFrom})
         </foreach>
     </insert>
 
-    
     <select id="query" resultType="com.vivedu.ckd.model.TimesStatistics">
         select * from times_statistics where typeTag = #{type}
     </select>
@@ -229,7 +228,7 @@
     <select id="getRecommendCourseList" resultType="com.vivedu.ckd.model.CourseInfo">
         SELECT * FROM course_info
         <where>
-            source != 'file'
+            source != "film"
 
             <if test='courseName != null and courseName !=""'>
                  and course_info.courseName like concat('%',#{courseName},'%')
@@ -253,7 +252,7 @@
         SELECT count(*) FROM course_info
         <where>
 
-            source != 'file'
+            source != "film"
 
             <if test='courseName != null and courseName !=""'>
                 and course_info.courseName like concat('%',#{courseName},'%')
@@ -280,5 +279,184 @@
     </update>
     <select id="getRecommendCourseListL"  resultType="com.vivedu.ckd.model.CourseInfo">
         SELECT * FROM course_info WHERE course_info.source!= "film" limit #{firstIndex},#{pageSize}
+    </select>
+
+
+    <select id="findCoursetopState"  resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info
+        <where>
+            course_info.source != "film"
+            <if test='state == 1 '>
+                and course_info.state !=3
+            </if>
+            <if test='state == 3 '>
+                and course_info.state =#{state}
+            </if>
+        </where>
+        limit #{page},#{size}
+    </select>
+    <select id="findCoursetopStateT"  resultType="int">
+        SELECT count(*) FROM course_info
+        <where>
+            course_info.source != "film"
+            <if test='state == 1 '>
+                and course_info.state !=3
+            </if>
+            <if test='state == 3 '>
+                and course_info.state =#{state}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryLessonsLearned" resultType="com.vivedu.ckd.model.LessonsLearned">
+        select
+        *
+        from
+        lessons_learned
+        where
+        studentID =#{studentID} and courseId =#{courseId}
+    </select>
+
+    <update id="updateLessonsLearned" parameterType="com.vivedu.ckd.model.LessonsLearned">
+        update
+        lessons_learned
+        <set>
+            createDate =#{createDate}
+        </set>
+        where
+        studentID =#{studentID} and courseId =#{courseId}
+    </update>
+
+    <insert id="addLessonsLearned" parameterType="com.vivedu.ckd.model.LessonsLearned">
+        insert
+        into
+        lessons_learned(
+        studentID,
+        courseId,
+        createDate)
+        VALUES(
+        #{studentID},
+        #{courseId},
+        #{createDate})
+    </insert>
+
+    <select id="queryStudyDuration" resultType="com.vivedu.ckd.model.StudyDuration">
+        select
+        *
+        from
+        study_duration
+        where to_days(createDate) = to_days(now()) and studentID = #{studentID}
+    </select>
+
+    <update id="updateStudyDuration" parameterType="com.vivedu.ckd.model.StudyDuration">
+        update
+        study_duration
+        <set>
+            learnTime =#{learnTime}
+        </set>
+        where
+        studentID =#{studentID}
+    </update>
+
+    <insert id="addStudyDuration" parameterType="com.vivedu.ckd.model.StudyDuration">
+        insert
+        into
+        study_duration(
+        studentID,
+        learnTime,
+        createDate)
+        VALUES(
+        #{studentID},
+        #{learnTime},
+        #{createDate})
+    </insert>
+
+    <select id="queryCourseCount" resultType="int">
+        select
+        count(courseId)
+        from
+        lessons_learned
+        where studentID =#{userId} and createDate between #{startDate} and #{endDate}
+    </select>
+
+    <select id="queryCourseEnd" resultType="int">
+        select
+        count(ll.courseId)
+        from
+        lessons_learned ll LEFT join course_info ci on ll.courseId = ci.courseId
+        where ll.studentID =#{userId} and ci.state = 3 and ll.createDate between #{startDate} and #{endDate}
+    </select>
+
+    <select id="queryStudyDurationList" resultType="com.vivedu.ckd.model.StudyDuration">
+        SELECT *,DAYOFWEEK(createDate) dayWeek FROM study_duration WHERE YEARWEEK(date_format(createDate,'%Y-%m-%d'),1) = YEARWEEK(now(),1) order by
+        createDate ASC
+    </select>
+
+    <select id="queryCourseInfoList" resultType="com.vivedu.ckd.model.CourseInfo">
+        select
+        ci.*
+        from
+        lessons_learned ll LEFT join course_info ci on ll.courseId = ci.courseId
+        where ll.studentID =#{userId} and ll.createDate between #{startDate} and #{endDate}
+    </select>
+
+    <select id="queryRank" resultType="int">
+        SELECT
+        CASE
+        WHEN @prevRank = vs.size THEN  @curRank
+        WHEN @prevRank := vs.size THEN  @curRank := @curRank + 1
+        END AS rank
+        FROM
+        (SELECT ll.studentID,COUNT(ll.studentID) size FROM lessons_learned ll  where ll.createDate between #{startDate} and #{endDate} GROUP BY ll.studentID ) vs,
+        (SELECT @curRank :=0 ,@prevRank :=NULL) r
+        where vs.studentID =#{userId}
+        ORDER BY vs.size
+    </select>
+
+    <select id="queryAllCount" resultType="int">
+        SELECT MAX(tt.rank) FROM (SELECT
+        CASE
+        WHEN @prevRank = vs.size THEN  @curRank
+        WHEN @prevRank := vs.size THEN  @curRank := @curRank + 1
+        END AS rank
+        FROM
+        (SELECT ll.studentID,COUNT(ll.studentID) size FROM lessons_learned ll  where ll.createDate between #{startDate} and #{endDate} GROUP BY ll.studentID ) vs,
+        (SELECT @curRank :=0 ,@prevRank :=NULL) r
+        where vs.studentID =#{userId}
+        ORDER BY vs.size) tt
+    </select>
+
+    <select id="queryKCPK" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_KCPK">
+        SELECT
+        *
+        FROM
+        t_share_cdxt_bks_kcpk
+        WHERE
+        XKKH IN (
+        SELECT
+        XKKH
+        FROM
+        t_share_cdxt_bks_xsxk
+        WHERE
+        XH = #{userId} AND CZLX &lt;&gt; "D"
+        )
+        AND IFNULL(SUBSTRING(SKZC, #{week}, 1), 0) = 1 AND CZLX &lt;&gt; "D"
+    </select>
+
+    <select id="queryJSPK" resultType="com.vivedu.ckd.model.T_SHARE_CDXT_BKS_KCPK">
+        SELECT
+        *
+        FROM
+        t_share_cdxt_bks_kcpk
+        WHERE
+        XKKH IN (
+        SELECT
+        XKKH
+        FROM
+        t_share_cdxt_bks_jspk
+        WHERE
+        ZGH = #{userId} AND CZLX &lt;&gt; "D"
+        )
+        AND IFNULL(SUBSTRING(SKZC, #{week}, 1), 0) = 1 AND CZLX &lt;&gt; "D"
     </select>
 </mapper>

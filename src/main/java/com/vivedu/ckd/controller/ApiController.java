@@ -385,7 +385,6 @@ public class ApiController {
             return JSON.toJSONString(hashMapMap);
         }
         // List<Classroom> classroomtol = classroomService.findClassroomTotal(shooolArea,dianNaoXin, keTangHuXin,luBoXin,maxXin);
-
     }
 
 
@@ -415,4 +414,48 @@ public class ApiController {
             @RequestParam(value = "id") @ApiParam(value = "id") Integer id) {
         return courseInfoService.updateRecommendCourse(isRec, id);
     }
+/***
+ *  首页推荐选择
+ * */
+    @GetMapping(path = "/topState", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "topState")
+    public String courseInfotopState(
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer page,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer size,
+            @RequestParam(required = false, value = "state") @ApiParam(value = "页大小") Integer state
+    ) {
+        log.info("进入/topState");
+        List<CourseInfo> courseInfo = courseInfoService.findCoursetopState(state, page, size);
+        int courseInfoT = courseInfoService.findCoursetopStateT(state);
+        HashMap<String, Object> hashMapMap = new HashMap<>();
+        hashMapMap.put("total", courseInfoT);
+        hashMapMap.put("data", courseInfo);
+        return JSON.toJSONString(hashMapMap);
+    }
+/**
+ * 2020/2/26
+ * */
+    @GetMapping(path = "/addStudyDuration", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "添加学习时长")
+    public DemonstrationResponse addStudyDuration(
+            @RequestParam(required = true, value = "studentID") String studentID,
+            @RequestParam(required = true, value = "time") @ApiParam(value = "时长") Integer time) {
+        return courseInfoService.addStudyDuration(studentID, time);
+    }
+
+    @GetMapping(path = "/addLessonsLearned", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "添加学习课程")
+    public DemonstrationResponse addLessonsLearned(
+            @RequestParam(required = true, value = "studentID") String studentID,
+            @RequestParam(required = true, value = "courseId") @ApiParam(value = "课程号") Integer courseId) {
+        return courseInfoService.addLessonsLearned(studentID, courseId);
+    }
+
+    @GetMapping(path = "/getPersonalCenterInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取个人中心信息")
+    public DemonstrationResponse getPersonalCenterInfo (
+            @RequestParam(required = true, value = "userId") String userId) throws Exception {
+        return courseInfoService.getPersonalCenterInfo(userId);
+    }
+
 }

@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseInfoMetel {
-
+        //课程编号
+        private String courseid;
         //课程名称
         private String coursename;
         //课程级别

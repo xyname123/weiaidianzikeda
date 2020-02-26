@@ -90,4 +90,39 @@ public interface CourseInfoMapper {
     int findCourseByKeyNum(String courseName);
 
     int findAllCourseNum();
+
+    List<CourseInfo> findCoursetopState(@Param("state")Integer state, @Param("page")Integer page, @Param("size")Integer size);
+
+
+    int findCoursetopStateT(@Param("state")Integer state);
+
+    LessonsLearned queryLessonsLearned(@Param("studentID") String studentID, @Param("courseId") Integer courseId);
+
+    int updateLessonsLearned(LessonsLearned lessonsLearned);
+
+    int addLessonsLearned(LessonsLearned lessonsLearned);
+
+    StudyDuration queryStudyDuration(@Param("studentID") String studentID);
+
+    int updateStudyDuration(StudyDuration studyDuration);
+
+    int addStudyDuration(StudyDuration studyDuration);
+
+    int queryCourseCount(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
+
+    int queryCourseEnd(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
+
+    List<StudyDuration> queryStudyDurationList(@Param("userId") String userId);
+
+    List<CourseInfo> queryCourseInfoList(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
+
+    int queryRank(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
+
+    int queryAllCount(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
+
+    List<T_SHARE_CDXT_BKS_KCPK> queryKCPK(@Param("userId") String userId,@Param("week")long week);
+
+    List<T_SHARE_CDXT_BKS_KCPK> queryJSPK(@Param("userId") String userId,@Param("week")long week);
+
+
 }
