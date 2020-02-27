@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -12,7 +13,7 @@ import java.util.Date;
 public class LessonsLearned {
     private Integer Id;
     //学号
-    private String studentID;
+    private BigInteger studentID;
     private Integer courseId;
     private Date createDate;
 }

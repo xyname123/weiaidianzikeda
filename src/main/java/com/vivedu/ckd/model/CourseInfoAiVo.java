@@ -17,7 +17,7 @@ public class CourseInfoAiVo {
         private String coursename;
         //课程级别
 
-        private Integer courseType;
+        private String courseType;
         //课程关键字
 
         private String courseKeywords;

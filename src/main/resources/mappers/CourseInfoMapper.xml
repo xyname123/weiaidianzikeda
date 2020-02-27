@@ -51,7 +51,7 @@
     </select>
 
     <select id="findCourseDatal"  resultType="com.vivedu.ckd.model.CourseInfo">
-        SELECT * FROM course_info where course_info.id = #{id}
+        SELECT * FROM course_info where course_info.courseId = #{courseId}
     </select>
 
     <select id="findMarked" parameterType="String"  resultType="com.vivedu.ckd.model.CourseInfo">
@@ -314,7 +314,7 @@
         from
         lessons_learned
         where
-        studentID =#{studentID} and courseId =#{courseId}
+        studentID =#{studentID} and id =#{courseId}
     </select>
 
     <update id="updateLessonsLearned" parameterType="com.vivedu.ckd.model.LessonsLearned">
@@ -405,7 +405,7 @@
         CASE
         WHEN @prevRank = vs.size THEN  @curRank
         WHEN @prevRank := vs.size THEN  @curRank := @curRank + 1
-        END AS rank
+        END AS rankok
         FROM
         (SELECT ll.studentID,COUNT(ll.studentID) size FROM lessons_learned ll  where ll.createDate between #{startDate} and #{endDate} GROUP BY ll.studentID ) vs,
         (SELECT @curRank :=0 ,@prevRank :=NULL) r
@@ -414,11 +414,11 @@
     </select>
 
     <select id="queryAllCount" resultType="int">
-        SELECT MAX(tt.rank) FROM (SELECT
+        SELECT MAX(tt.rankok) FROM (SELECT
         CASE
         WHEN @prevRank = vs.size THEN  @curRank
         WHEN @prevRank := vs.size THEN  @curRank := @curRank + 1
-        END AS rank
+        END AS rankok
         FROM
         (SELECT ll.studentID,COUNT(ll.studentID) size FROM lessons_learned ll  where ll.createDate between #{startDate} and #{endDate} GROUP BY ll.studentID ) vs,
         (SELECT @curRank :=0 ,@prevRank :=NULL) r

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 
@@ -194,13 +195,13 @@ public class ApiController {
     @ApiOperation(value = "课件详情）")
     public String newsDetail(
             // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
-            @RequestParam(required = true, value = "id") @ApiParam(value = "课程Id") Integer id,
+            @RequestParam(required = true, value = "id") @ApiParam(value = "课程Id") Integer courseId,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
 
     ) {
         log.info("进入/course/detail方法");
-        List<CourseInfo> courseInfo = courseInfoService.findCourseDatal(id, pageNum, pageSize);
+        List<CourseInfo> courseInfo = courseInfoService.findCourseDatal(courseId, pageNum, pageSize);
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
@@ -440,15 +441,15 @@ public class ApiController {
     public DemonstrationResponse addStudyDuration(
             @RequestParam(required = true, value = "studentID") String studentID,
             @RequestParam(required = true, value = "time") @ApiParam(value = "时长") Integer time) {
-        return courseInfoService.addStudyDuration(studentID, time);
+        return courseInfoService.addStudyDuration(studentID,time);
     }
 
     @GetMapping(path = "/addLessonsLearned", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "添加学习课程")
     public DemonstrationResponse addLessonsLearned(
-            @RequestParam(required = true, value = "studentID") String studentID,
-            @RequestParam(required = true, value = "courseId") @ApiParam(value = "课程号") Integer courseId) {
-        return courseInfoService.addLessonsLearned(studentID, courseId);
+            @RequestParam(required = true, value = "studentID") BigInteger studentID,
+            @RequestParam(required = true, value = "id") @ApiParam(value = "课程号") Integer id) {
+        return courseInfoService.addLessonsLearned(studentID,id);
     }
 
     @GetMapping(path = "/getPersonalCenterInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

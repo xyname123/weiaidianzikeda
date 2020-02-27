@@ -4,6 +4,7 @@ import com.vivedu.ckd.model.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Mapper
@@ -55,7 +56,7 @@ public interface CourseInfoMapper {
 
     List<CourseInfo> findquickZiyuan(@Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize") Integer pageSize);
 
-    List<CourseInfo> findCourseDatal(@Param(value = "id")Integer id,  @Param(value = "pageNum")Integer pageNum, @Param(value = "pageSize")Integer pageSize);
+    List<CourseInfo> findCourseDatal(@Param(value = "courseId")Integer courseId,  @Param(value = "pageNum")Integer pageNum, @Param(value = "pageSize")Integer pageSize);
 
     List<CourseInfoFilm> findFilm(@Param("ghs")List<CourseInfoFilm> courseInfoFilmlist);
 
@@ -96,7 +97,7 @@ public interface CourseInfoMapper {
 
     int findCoursetopStateT(@Param("state")Integer state);
 
-    LessonsLearned queryLessonsLearned(@Param("studentID") String studentID, @Param("courseId") Integer courseId);
+    LessonsLearned queryLessonsLearned(@Param("studentID") BigInteger studentID, @Param("courseId") Integer courseId);
 
     int updateLessonsLearned(LessonsLearned lessonsLearned);
 

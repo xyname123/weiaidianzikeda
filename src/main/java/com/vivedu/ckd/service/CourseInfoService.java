@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -271,9 +272,9 @@ public class CourseInfoService {
         return  mapper.findquickZiyuan(pageNum,pageSize);
     }
 
-    public List<CourseInfo> findCourseDatal(Integer id, Integer pageNum, Integer pageSize) {
+    public List<CourseInfo> findCourseDatal(Integer courseId, Integer pageNum, Integer pageSize) {
 
-        return mapper.findCourseDatal(id,pageNum ,pageSize );
+        return mapper.findCourseDatal(courseId,pageNum ,pageSize );
     }
 
     public List<CourseInfoFilm> findFilm(List<CourseInfoFilm> courseInfoFilmlist) {
@@ -410,9 +411,10 @@ public class CourseInfoService {
         }
     }
 
-    public DemonstrationResponse addLessonsLearned(String studentID, Integer courseId) {
+    public DemonstrationResponse addLessonsLearned(BigInteger studentID, Integer courseId) {
         Date date = new Date();
-        LessonsLearned lessonsLearned1 = mapper.queryLessonsLearned(studentID, courseId);
+        LessonsLearned lessonsLearned1 = mapper.queryLessonsLearned(studentID,courseId);
+        log.info("lessonsLearned1"+lessonsLearned1);
         if (lessonsLearned1 != null || lessonsLearned1.getCourseId() > 0) {
             lessonsLearned1.setCreateDate(date);
             mapper.updateLessonsLearned(lessonsLearned1);
