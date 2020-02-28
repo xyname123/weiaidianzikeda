@@ -82,4 +82,10 @@ public class CourseInfo {
     private String  profileEn;
     @Column
     private String coursenameEn;
+    @Column
+    private String  termType;
+    //平台课程总数
+/*    @Column
+    private String  course;*/
+
 }

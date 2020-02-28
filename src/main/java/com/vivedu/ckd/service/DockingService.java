@@ -27,6 +27,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class DockingService {
     // @Scheduled(cron = "0 0/30 * * * ?")
     public void findAllCourse(Integer page, Integer size, String sort) {
         //爱课堂
-     /*   if (page == null || size == null) page = 1;
+        if (page == null || size == null) page = 1;
         size = 500;
         if (StringUtils.isEmpty(sort)) sort = "date";
 
@@ -70,19 +71,28 @@ public class DockingService {
         log.info("count---" + count);
         String dataai = map.get("data").toString().trim();
         //  log.info("dataai数据" + dataai);
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i <= 1; i++) {
             try {
                 Thread.sleep(1000);
                 sign = MD5Utils.MD5Encode("page=" + i + "&size=" + size + "&sort=" + sort + "&key=" + keyi, "utf8").toUpperCase();
                 s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + i + "&size=" + size + "&sort=" + sort, String.class);
                 String s1 = s.replace("members", "teacher");
                 String s2 = s1.replace("chapters", "chapterList");
+                log.info("s2----------"+s2);
                 Map mapai = (Map) JSON.parse(s2);
+                log.info("mapai----------"+mapai);
                 String dataA = mapai.get("data").toString().trim();
-                log.info("dataA----------------" + dataA);
-                List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
-                courseInfoService.InsertCourse(CourseInfoAilist);
 
+                //todo
+              List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
+
+                for (CourseInfoAiVo courseInfoAiVo : CourseInfoAilist) {
+                    String[] teacher = courseInfoAiVo.getTeacher();
+                   String teacherData = Arrays.toString(teacher);
+log.info("teacherData----"+teacherData);
+                    //courseInfoService.InsertCourseDan(courseInfoAiVo);
+                  //  courseInfoService.InsertCourseDanTeacher(courseInfoAiVo.getCoursename(),teacher);
+                    }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -93,32 +103,29 @@ public class DockingService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-*/
+
 
             //todo--------------------------metel                     uestc.connect.metel.cn
-       String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + 1 + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
-        Map mapmetel = (Map) JSON.parse(metel);
-        Integer datametel = (Integer) mapmetel.get("totalnum");
-        int countmetel = datametel / 100 + 1;
-        String datametelx = mapmetel.get("data").toString().trim();
-        log.info("metel--" + datametelx);
+         /*   for (int j = 1; j <= 3; j++) {
 
-        for (int j = 1; j <= 1; j++) {
+                String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + j + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
+                log.info("metel" + metel);
+                String metel1 = metel.replace("coursename_en", "coursenameEn");
+                String s2 = metel1.replace("profile_en", "profileEn");
+                Map mapmete2 = (Map) JSON.parse(s2);
+                log.info("mapmete2" + mapmete2);
+                String datametes = mapmete2.get("data").toString().trim();
+                log.info("datametes" + datametes);
+                Map mapmete3 = (Map) JSON.parse(datametes);
+                log.info("mapmete3" + mapmete3);
 
-            metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + j + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
-            String metel1 = metel.replace("coursename_en", "coursenameEn");
-            String s2 = metel1.replace("profile_en", "profileEn");
-            Map mapmete2 = (Map) JSON.parse(s2);
-            log.info("mapmete2" + mapmete2);
-            String datametes = mapmete2.get("data").toString().trim();
-            log.info("metel-------------"+datametes);
-            List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
+                List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
 
-               courseInfoService.InsertCourseMetel(CourseInfoMetelList);
+                // courseInfoService.InsertCourseMetel(CourseInfoMetelList);
 
 
+            }*/
         }
-    }
 
 
    /*         //film  没有进行大写转换
@@ -148,5 +155,6 @@ public class DockingService {
         }
         }
     }*/
+    }
 }
 

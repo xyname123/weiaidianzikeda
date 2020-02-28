@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
 @EnableAsync
-@MapperScan("com.vivedu.ckd.dao")
+@MapperScan(basePackages ="com.vivedu.ckd.dao")
 @ServletComponentScan
 @EnableCaching
 @SpringBootApplication

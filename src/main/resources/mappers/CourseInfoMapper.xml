@@ -112,6 +112,21 @@
         </foreach>
     </insert>
 
+
+    <insert id="InsertCourseDan"  parameterType="com.vivedu.ckd.model.CourseInfoAiVo">
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url)
+        VALUES
+            (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{source},#{clicknum},#{courseFrom},#{courseUrl})
+    </insert>
+
+    <update id="InsertCourseDanTeacher">
+        update
+        course_info
+        <set>
+            teacher = #{teacher}
+        </set>
+        where courseName = #{coursename}
+    </update>
     <insert id="InsertCourseMetel">
         INSERT INTO course_info(courseId,courseName,url,courseType,cover,profile,source,courseFrom,subjectcategory1,subjectcategory2,subjectcategory3,profileEn,coursenameEn,teacher)
         VALUES

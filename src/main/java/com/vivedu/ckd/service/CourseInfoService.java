@@ -514,4 +514,12 @@ public class CourseInfoService {
     public void updateStudyCount(Integer id, int i) {
          mapper.updateStudyCount(id,i);
     }
+
+    public void InsertCourseDan(CourseInfoAiVo courseInfoAiVo) {
+        mapper.InsertCourseDan(courseInfoAiVo);
+    }
+
+    public void InsertCourseDanTeacher(String coursename, String teacher) {
+        mapper.InsertCourseDanTeacher(coursename,teacher);
+    }
 }

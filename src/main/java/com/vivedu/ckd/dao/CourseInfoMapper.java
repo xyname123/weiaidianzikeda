@@ -129,4 +129,8 @@ public interface CourseInfoMapper {
     int findCourseDatalCoutnt(Integer id);
 
     void updateStudyCount(@Param("id") Integer id, @Param("i") int i);
+
+    void InsertCourseDan(CourseInfoAiVo courseInfoAiVo);
+
+    void InsertCourseDanTeacher(@Param("coursename")String coursename,@Param("teacher")String teacher);
 }
