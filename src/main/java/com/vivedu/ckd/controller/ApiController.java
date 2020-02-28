@@ -17,6 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -88,7 +92,6 @@ public class ApiController {
             List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum, pageSize);
             int allnum = courseInfoService.findAllCourseNum();
             HashMap<String, Object> hashMapMap = new HashMap<>();
-            log.info("allnum----"+allnum);
             hashMapMap.put("total", allnum);
             hashMapMap.put("data", courseInfo);
             return JSON.toJSONString(hashMapMap);
@@ -192,18 +195,37 @@ public class ApiController {
     }
 
     @GetMapping(path = "/course/detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "课件详情）")
+    @ApiOperation(value = "课件详情")
     public String newsDetail(
             // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
-            @RequestParam(required = true, value = "id") @ApiParam(value = "课程Id") Integer courseId,
+            @RequestParam(required = true, value = "id") @ApiParam(value = "课程Id") Integer id,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
 
     ) {
         log.info("进入/course/detail方法");
-        List<CourseInfo> courseInfo = courseInfoService.findCourseDatal(courseId, pageNum, pageSize);
+        CourseInfo courseInfo = courseInfoService.findCourseDatal(id);
+        //对时间的处理
+        String format = "yyyy-MM-dd HH:mm:ss";
+       if (courseInfo.getStart() !=null&&courseInfo.getStart() !="" ) {
+            Long start = Long.valueOf(Long.parseLong(courseInfo.getStart()));
+            Date date = new Date(start);
+            log.info("date--------"+date);
+            if (start !=null) {
+                SimpleDateFormat sdf = new SimpleDateFormat(format);
+                String format1 = sdf.format(date);
+                courseInfo.setStart(format1);
+            }
+        }
+        //添加学习次数
+       if (courseInfo.getStudyCount() == null) {
+            courseInfoService.updateStudyCount(id,1);
+        }else {
+           Integer studyCount = courseInfo.getStudyCount();
+           courseInfoService.updateStudyCount(id,studyCount+1);
+       }
+
         HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
         return JSON.toJSONString(hashMapMap);
     }
@@ -299,19 +321,6 @@ public class ApiController {
         return JSON.toJSONString(hashMapMap);
     }
 
-
-    //测试用
-    @PostMapping(path = "/ceshi", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "课件详情")
-    public response newsDetail() {
-
-        List<T_SHARE_CDXT_YJS_JBXX> courseInfo = courseInfoService.findT();
-        HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("total", courseInfo.size());
-        hashMapMap.put("data", courseInfo);
-
-        return response.success(CodeMsg.CODE_EXCEPTION.getCode(), CodeMsg.CODE_EXCEPTION.getMessage(), JSON.toJSON(courseInfo));
-    }
 
     /**
      * 增加次数

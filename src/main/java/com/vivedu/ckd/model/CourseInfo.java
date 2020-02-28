@@ -3,11 +3,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -73,6 +70,8 @@ public class CourseInfo {
     private String teacher;
     //章节列表
     private String chapterList;
+    @Column
+    private Integer StudyCount;
 
 
 }

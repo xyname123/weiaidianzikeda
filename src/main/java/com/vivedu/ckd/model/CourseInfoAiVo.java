@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 
 @Data
 @AllArgsConstructor
@@ -26,7 +28,7 @@ public class CourseInfoAiVo {
         private Integer studentnum;
         //开课时间
 
-        private String start;
+        private Timestamp start;
         //结课时间
 
         private String end;

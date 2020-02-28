@@ -272,9 +272,9 @@ public class CourseInfoService {
         return  mapper.findquickZiyuan(pageNum,pageSize);
     }
 
-    public List<CourseInfo> findCourseDatal(Integer courseId, Integer pageNum, Integer pageSize) {
+    public CourseInfo findCourseDatal(Integer courseId) {
 
-        return mapper.findCourseDatal(courseId,pageNum ,pageSize );
+        return mapper.findCourseDatal(courseId);
     }
 
     public List<CourseInfoFilm> findFilm(List<CourseInfoFilm> courseInfoFilmlist) {
@@ -504,4 +504,12 @@ public class CourseInfoService {
         }
     }
 
+    public int findCourseDatalCoutnt(Integer id) {
+
+       return mapper.findCourseDatalCoutnt(id);
+    }
+
+    public void updateStudyCount(Integer id, int i) {
+         mapper.updateStudyCount(id,i);
+    }
 }

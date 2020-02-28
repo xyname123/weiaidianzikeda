@@ -56,7 +56,7 @@ public interface CourseInfoMapper {
 
     List<CourseInfo> findquickZiyuan(@Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize") Integer pageSize);
 
-    List<CourseInfo> findCourseDatal(@Param(value = "courseId")Integer courseId,  @Param(value = "pageNum")Integer pageNum, @Param(value = "pageSize")Integer pageSize);
+    CourseInfo findCourseDatal(@Param(value = "id")Integer id);
 
     List<CourseInfoFilm> findFilm(@Param("ghs")List<CourseInfoFilm> courseInfoFilmlist);
 
@@ -126,4 +126,7 @@ public interface CourseInfoMapper {
     List<T_SHARE_CDXT_BKS_KCPK> queryJSPK(@Param("userId") String userId,@Param("week")long week);
 
 
+    int findCourseDatalCoutnt(Integer id);
+
+    void updateStudyCount(@Param("id") Integer id, @Param("i") int i);
 }

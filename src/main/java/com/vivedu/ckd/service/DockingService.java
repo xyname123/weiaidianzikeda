@@ -81,8 +81,7 @@ public class DockingService {
                 String dataA = mapai.get("data").toString().trim();
                 log.info("dataA----------------" + dataA);
                 List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
-              //log.info("CourseInfoAilist-"+CourseInfoAilist);
-            //    courseInfoService.InsertCourse(CourseInfoAilist);
+                courseInfoService.InsertCourse(CourseInfoAilist);
 
 
             } catch (InterruptedException e) {

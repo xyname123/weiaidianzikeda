@@ -51,8 +51,17 @@
     </select>
 
     <select id="findCourseDatal"  resultType="com.vivedu.ckd.model.CourseInfo">
-        SELECT * FROM course_info where course_info.courseId = #{courseId}
+        SELECT * FROM course_info where course_info.id = #{id}
     </select>
+
+    <update id="updateStudyCount">
+        update
+        course_info
+        <set>
+            studyCount = #{i}
+        </set>
+        where id = #{id}
+    </update>
 
     <select id="findMarked" parameterType="String"  resultType="com.vivedu.ckd.model.CourseInfo">
         SELECT * FROM course_info where course_info.courseId = #{courseId}
@@ -96,10 +105,10 @@
     </insert>
 
     <insert id="InsertCourse">
-        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url,teacher)
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url)
         VALUES
         <foreach collection="courseInfoAilist" item="item" separator=",">
-            (#{item.courseid},#{item.coursename},#{item.courseType},#{item.courseKeywords},#{item.studentnum},#{item.start},#{item.end},#{item.classhour},#{item.cover},#{item.profile},#{item.state},#{item.source},#{item.clicknum},#{item.courseFrom},#{item.courseUrl},#{teacher})
+            (#{item.courseid},#{item.coursename},#{item.courseType},#{item.courseKeywords},#{item.studentnum},#{item.start},#{item.end},#{item.classhour},#{item.cover},#{item.profile},#{item.state},#{item.source},#{item.clicknum},#{item.courseFrom},#{item.courseUrl})
         </foreach>
     </insert>
 
@@ -459,4 +468,6 @@
         )
         AND IFNULL(SUBSTRING(SKZC, #{week}, 1), 0) = 1 AND CZLX &lt;&gt; "D"
     </select>
+
+
 </mapper>
