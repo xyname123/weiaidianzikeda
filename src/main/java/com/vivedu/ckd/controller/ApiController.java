@@ -204,19 +204,38 @@ public class ApiController {
 
     ) {
         log.info("进入/course/detail方法");
+        HashMap<String, Object> hashMapMap = new HashMap<>();
         CourseInfo courseInfo = courseInfoService.findCourseDatal(id);
         //对时间的处理
-        String format = "yyyy-MM-dd HH:mm:ss";
-       if (courseInfo.getStart() !=null&&courseInfo.getStart() !="" ) {
-            Long start = Long.valueOf(Long.parseLong(courseInfo.getStart()));
-            Date date = new Date(start);
-            log.info("date--------"+date);
-            if (start !=null) {
-                SimpleDateFormat sdf = new SimpleDateFormat(format);
-                String format1 = sdf.format(date);
-                courseInfo.setStart(format1);
+        String format = "yyyy-MM-dd";
+        String format1;
+        String format2;
+        if (!courseInfo.getSource().equals("中国大学MOOC")) {
+            if (courseInfo.getStart() != null && courseInfo.getStart() != "") {
+                Long start = Long.valueOf(Long.parseLong(courseInfo.getStart()));
+                Date date = new Date(start);
+                if (start != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(format);
+                    format1 = sdf.format(date);
+                    courseInfo.setStart(format1);
+                }
             }
+            if (courseInfo.getEnd() != null && courseInfo.getEnd() != "") {
+                Long end = Long.valueOf(Long.parseLong(courseInfo.getEnd()));
+                Date date2 = new Date(end);
+                if (end != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(format);
+                    format2 = sdf.format(date2);
+                    courseInfo.setEnd(format2);
+                }
+            }
+            String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
+            hashMapMap.put("timeData", timeData);
+        } else {
+            String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
+            hashMapMap.put("timeData", timeData);
         }
+
         //添加学习次数
        if (courseInfo.getStudyCount() == null) {
             courseInfoService.updateStudyCount(id,1);
@@ -225,7 +244,7 @@ public class ApiController {
            courseInfoService.updateStudyCount(id,studyCount+1);
        }
 
-        HashMap<String, Object> hashMapMap = new HashMap<>();
+
         hashMapMap.put("data", courseInfo);
         return JSON.toJSONString(hashMapMap);
     }
@@ -425,7 +444,7 @@ public class ApiController {
         return courseInfoService.updateRecommendCourse(isRec, id);
     }
 /***
- *  首页推荐选择
+ *  首页推荐选择(1和3)
  * */
     @GetMapping(path = "/topState", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "topState")

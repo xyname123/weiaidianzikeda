@@ -55,7 +55,7 @@ public class DockingService {
     // @Scheduled(cron = "0 0/30 * * * ?")
     public void findAllCourse(Integer page, Integer size, String sort) {
         //爱课堂
-        if (page == null || size == null) page = 1;
+     /*   if (page == null || size == null) page = 1;
         size = 500;
         if (StringUtils.isEmpty(sort)) sort = "date";
 
@@ -70,7 +70,7 @@ public class DockingService {
         log.info("count---" + count);
         String dataai = map.get("data").toString().trim();
         //  log.info("dataai数据" + dataai);
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= 2; i++) {
             try {
                 Thread.sleep(1000);
                 sign = MD5Utils.MD5Encode("page=" + i + "&size=" + size + "&sort=" + sort + "&key=" + keyi, "utf8").toUpperCase();
@@ -93,10 +93,10 @@ public class DockingService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+*/
 
-
-        //todo--------------------------metel                     uestc.connect.metel.cn
-        String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + 1 + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
+            //todo--------------------------metel                     uestc.connect.metel.cn
+       String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + 1 + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
         Map mapmetel = (Map) JSON.parse(metel);
         Integer datametel = (Integer) mapmetel.get("totalnum");
         int countmetel = datametel / 100 + 1;
@@ -106,20 +106,22 @@ public class DockingService {
         for (int j = 1; j <= 1; j++) {
 
             metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + j + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
-            Map mapmete2 = (Map) JSON.parse(metel);
+            String metel1 = metel.replace("coursename_en", "coursenameEn");
+            String s2 = metel1.replace("profile_en", "profileEn");
+            Map mapmete2 = (Map) JSON.parse(s2);
             log.info("mapmete2" + mapmete2);
             String datametes = mapmete2.get("data").toString().trim();
             log.info("metel-------------"+datametes);
             List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
 
-                 //   courseInfoService.InsertCourseMetel(CourseInfoMetelList);
+               courseInfoService.InsertCourseMetel(CourseInfoMetelList);
 
 
         }
     }
 
 
-            //film  没有进行大写转换
+   /*         //film  没有进行大写转换
        String signKey = MD5Utils.MD5Encode("page=" + page + "size=" + 500 + "sort=" + sort + keyo, "utf8");
         String ss = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + page + "&size=" + 500 + "&sort=" + sort + "&enc=" + signKey, String.class);
         Map mapF = (Map) JSON.parse(ss);
@@ -144,5 +146,7 @@ public class DockingService {
 
 
         }
-    }
+        }
+    }*/
+}
 

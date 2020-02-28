@@ -99,7 +99,7 @@
     <insert id="updateCourse">
         INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,clickNum,courseFrom,url,source)
         VALUES
-        <foreach collection="ids" item="course" separator=",">
+        <foreach collection="courseInfoFilmlist" item="course" separator=",">
             (#{course.courseid},#{course.coursename},#{course.courseType},#{course.courseKeywords},#{course.studentnum},#{course.start},#{course.end},#{course.classhour},#{course.cover},#{course.profile},#{course.state},#{course.clicknum},#{course.courseFrom},#{course.url},"film")
         </foreach>
     </insert>
@@ -113,10 +113,10 @@
     </insert>
 
     <insert id="InsertCourseMetel">
-        INSERT INTO course_info(courseId,courseName,url,courseType,cover,profile,source,courseFrom)
+        INSERT INTO course_info(courseId,courseName,url,courseType,cover,profile,source,courseFrom,subjectcategory1,subjectcategory2,subjectcategory3,profileEn,coursenameEn,teacher)
         VALUES
         <foreach collection="courseInfoMetelList" item="item" separator=",">
-            (#{item.courseid}#{item.coursename},#{item.url},#{item.courseType},#{item.cover},#{item.profile},"MeTel",#{item.courseFrom})
+            (#{item.courseid},#{item.coursename},#{item.url},#{item.courseType},#{item.cover},#{item.profile},"MeTel",#{item.courseFrom},#{item.subjectcategory1},#{item.subjectcategory2},#{item.subjectcategory3},#{item.profileEn},#{item.coursenameEn},#{item.teacher,javaType=[Ljava.lang.String,jdbcType=VARCHAR})
         </foreach>
     </insert>
 
@@ -227,9 +227,9 @@
         <foreach collection="updateMeteSql" item="course">
             update course_info
             <set>
-                courseType=#{course.courseType},cover=#{course.cover},profile=#{course.profile},courseFrom=#{course.courseFrom},url=#{course.url}
+                courseType=#{course.courseType},cover=#{course.cover},profile=#{course.profile},courseFrom=#{course.courseFrom},url=#{course.url},subjectcategory1={course.subjectcategory1},subjectcategory2={course.subjectcategory2},subjectcategory3={course.subjectcategory3},profileEn={course.profileEn},coursenameEn={course.coursenameEn}
             </set>
-            where courseId=#{course.coursename};
+            where course_info.courseName=#{course.coursename};
         </foreach>
     </update>
 

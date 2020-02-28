@@ -72,6 +72,14 @@ public class CourseInfo {
     private String chapterList;
     @Column
     private Integer StudyCount;
-
-
+    @Column
+    private String subjectcategory1;
+    @Column
+    private String subjectcategory2;
+    @Column
+    private String subjectcategory3;
+    @Column
+    private String  profileEn;
+    @Column
+    private String coursenameEn;
 }

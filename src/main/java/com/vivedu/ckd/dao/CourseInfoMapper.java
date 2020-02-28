@@ -28,7 +28,7 @@ public interface CourseInfoMapper {
 
     List<T_SHARE_CDXT_YJS_JBXX> findT();
 
-    void updateCourse(@Param("ids") List<CourseInfoFilm>  courseInfoFilmlist);
+    void updateCourse(@Param("courseInfoFilmlist") List<CourseInfoFilm>  courseInfoFilmlist);
 
     void InsertCourse(@Param("courseInfoAilist")List<CourseInfoAiVo> courseInfoAilist);
 

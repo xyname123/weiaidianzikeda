@@ -198,7 +198,9 @@ public class CourseInfoService {
         for (int j = 1; j <= countmetel; j++) {
 
             metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + j + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
-            Map mapmete2 = (Map) JSON.parse(metel);
+            String metel1 = metel.replace("coursename_en", "coursenameEn");
+            String s2 = metel1.replace("profile_en", "profileEn");
+            Map mapmete2 = (Map) JSON.parse(s2);
             log.info("mapmete2" + mapmete2);
             String datametes = mapmete2.get("data").toString().trim();
             List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());

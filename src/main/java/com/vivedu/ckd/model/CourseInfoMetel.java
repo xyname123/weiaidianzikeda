@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+
 
 @Data
 @AllArgsConstructor
@@ -34,7 +36,16 @@ public class CourseInfoMetel {
         //章节列表
         private String[] chapterlist;
 
+        private String subjectcategory1;
 
+        private String subjectcategory2;
+
+        private String subjectcategory3;
+
+        private String coursenameEn;
+
+        private String  profileEn;
 }
+
 
 
