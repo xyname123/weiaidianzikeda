@@ -11,7 +11,6 @@ public class ThirdController {
     @RequestMapping(value = "/caslogin")
     public void newsDetail()  {
 
-
         }
 }
 

@@ -29,7 +29,7 @@ public class DockingContoller {
             @RequestParam(required = false, value = "page", defaultValue = "1") @ApiParam(value = "页数") Integer page,
             @RequestParam(required = false, value = "size", defaultValue = "10") @ApiParam(value = "页大小") Integer size,
             @RequestParam(required = false, value = "sort", defaultValue = "date") @ApiParam(value = "排序") String sort,
-            @RequestParam(required = false, value = "userId") @ApiParam(value = "学工编号") String userId) {
+            @RequestParam(required = false, value = "userId") @ApiParam(value = "学工编号") String userId) throws InterruptedException {
         log.info("进入/courseList方法");
           dockingService.findAllCourse(page, size, sort);
             return JSON.toJSONString(null);

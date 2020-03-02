@@ -119,6 +119,11 @@
             (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{source},#{clicknum},#{courseFrom},#{courseUrl})
     </insert>
 
+    <insert id="InsertCourseOne"  parameterType="com.vivedu.ckd.model.CourseInfoAiVo">
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
+        VALUES
+        (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{source},#{clicknum},#{courseFrom},#{courseUrl},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
+    </insert>
     <update id="InsertCourseDanTeacher">
         update
         course_info
@@ -128,10 +133,10 @@
         where courseName = #{coursename}
     </update>
     <insert id="InsertCourseMetel">
-        INSERT INTO course_info(courseId,courseName,url,courseType,cover,profile,source,courseFrom,subjectcategory1,subjectcategory2,subjectcategory3,profileEn,coursenameEn,teacher)
+        INSERT INTO course_info(courseId,courseName,url,courseType,cover,profile,source,courseFrom,subjectcategory1,subjectcategory2,subjectcategory3,profileEn,coursenameEn)
         VALUES
         <foreach collection="courseInfoMetelList" item="item" separator=",">
-            (#{item.courseid},#{item.coursename},#{item.url},#{item.courseType},#{item.cover},#{item.profile},"MeTel",#{item.courseFrom},#{item.subjectcategory1},#{item.subjectcategory2},#{item.subjectcategory3},#{item.profileEn},#{item.coursenameEn},#{item.teacher,javaType=[Ljava.lang.String,jdbcType=VARCHAR})
+            (#{item.courseid},#{item.coursename},#{item.url},#{item.courseType},#{item.cover},#{item.profile},"MeTel",#{item.courseFrom},#{item.subjectcategory1},#{item.subjectcategory2},#{item.subjectcategory3},#{item.profileEn},#{item.coursenameEn})
         </foreach>
     </insert>
 
@@ -248,7 +253,13 @@
         </foreach>
     </update>
 
-
+    <update id="updateMeteOne"  parameterType="com.vivedu.ckd.model.CourseInfoMetel">
+            update course_info
+            <set>
+                courseType=#{courseType},cover=#{cover},profile=#{profile},courseFrom=#{courseFrom},url=#{url},subjectcategory1=#{subjectcategory1},subjectcategory2=#{subjectcategory2},subjectcategory3=#{subjectcategory3},profileEn=#{profileEn},coursenameEn=#{coursenameEn}
+            </set>
+            where course_info.courseName=#{coursename};
+    </update>
     <select id="getRecommendCourseList" resultType="com.vivedu.ckd.model.CourseInfo">
         SELECT * FROM course_info
         <where>
@@ -485,4 +496,39 @@
     </select>
 
 
+    <update id="updateAiCourseOneTeacherAndChapList">
+            update course_info
+            <set>
+                teacher=#{teacherData},chapterList=#{chapterListData}
+            </set>
+            where courseName=#{coursename};
+    </update>
+
+    <update id="updateAiCourse">
+        update course_info
+        <set>
+            courseName=#{coursename},courseType=#{courseType},courseKeywords=#{courseKeywords},studentNum=#{studentnum},start=#{start},end=#{end},classHour=#{classhour},cover=#{cover},profile=#{profile},state=#{state},clickNum=#{clicknum},courseFrom=#{courseFrom},url=#{courseUrl},subjectcategory1=#{subjectcategory1},subjectcategory2=#{subjectcategory2},subjectcategory3=#{subjectcategory3}
+        </set>
+        where courseId=#{courseid};
+    </update>
+
+    <insert id="InsertCourseOneMe"  parameterType="com.vivedu.ckd.model.CourseInfoMetel">
+        INSERT INTO course_info(courseId,courseName,courseType,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
+        VALUES
+        (#{courseid},#{coursename},#{courseType},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},"MeTel",#{clicknum},#{courseFrom},#{url},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
+    </insert>
+
+    <insert id="updateCourseFilm"  parameterType="com.vivedu.ckd.model.CourseInfoFilm">
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,clickNum,courseFrom,url,source)
+        VALUES
+            (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{clicknum},#{courseFrom},#{url},"film")
+    </insert>
+
+    <update id="updateFilmeOne">
+            update course_info
+            <set>
+                courseName=#{coursename},courseType=#{courseType},courseKeywords=#{courseKeywords},studentNum=#{studentnum},start=#{start},end=#{end},classHour=#{classhour},cover=#{cover},profile=#{profile},state=#{state},clickNum=#{clicknum},courseFrom=#{courseFrom},url=#{url},source="film"
+            </set>
+            where courseId=#{courseid};
+    </update>
 </mapper>

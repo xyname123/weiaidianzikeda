@@ -18,10 +18,7 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @EnableScheduling
@@ -160,15 +157,27 @@ public class CourseInfoService {
                 Map mapai = (Map) JSON.parse(s2);
                 String dataA = mapai.get("data").toString().trim();
                 List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
-                //todo
-
                 for (CourseInfoAiVo courseInfoAiVo : CourseInfoAilist) {
-
+                    String courseid = courseInfoAiVo.getCourseid();
                     int met = courseInfoService.findAiVo(courseInfoAiVo.getCourseid());
                     if (met <= 0) {
-                        courseInfoService.InsertCourse(CourseInfoAilist);
+                       // courseInfoService.InsertCourse(CourseInfoAilist);
+                        //todo
+                       String[] teacher = courseInfoAiVo.getTeacher();
+                        String teacherData = Arrays.toString(teacher);
+                        String[] chapterList = courseInfoAiVo.getChapterList();
+                        String chapterListData = Arrays.toString(chapterList);
+                        courseInfoService.InsertCourseOne(courseInfoAiVo);
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
                     } else {
-                        courseInfoService.updateAi(CourseInfoAilist);
+                       // courseInfoService.updateAi(CourseInfoAilist);
+                        courseInfoService.updateAiCourse(courseInfoAiVo);
+                        String[] teacher = courseInfoAiVo.getTeacher();
+                        String teacherData = Arrays.toString(teacher);
+                        String[] chapterList = courseInfoAiVo.getChapterList();
+                        String chapterListData = Arrays.toString(chapterList);
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+
                     }
                 }
 
@@ -184,6 +193,18 @@ public class CourseInfoService {
 
         }
 
+    }
+
+    private void updateAiCourse(CourseInfoAiVo courseInfoAiV) {
+        mapper.updateAiCourse(courseInfoAiV);
+    }
+
+    private void updateAiCourseOneTeacherAndChapList(String teacherData,String chapterListData,String coursename) {
+        mapper.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,coursename);
+    }
+
+    private void InsertCourseOne(CourseInfoAiVo courseInfoAiVo) {
+        mapper.InsertCourseOne(courseInfoAiVo);
     }
 
     @Scheduled(cron = "0 0 23 * * ?")
@@ -208,14 +229,29 @@ public class CourseInfoService {
                 courseInfoMetel.setSoure("MeTel");
                 int met = courseInfoService.findMete(courseInfoMetel.getCoursename());
                 if (met <= 0) {
-                    courseInfoService.InsertCourseMetel(CourseInfoMetelList);
+                    //courseInfoService.InsertCourseMetel(CourseInfoMetelList);
+                    String[] teacher = courseInfoMetel.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoMetel.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                   courseInfoService.InsertCourseOneMe(courseInfoMetel);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename());
                 } else {
-                    courseInfoService.updateMete(CourseInfoMetelList);
+                    courseInfoService.updateMeteOne(courseInfoMetel);
+                    String[] teacher = courseInfoMetel.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoMetel.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename());
                 }
 
             }
 
         }
+    }
+
+    private void InsertCourseOneMe(CourseInfoMetel courseInfoMetel) {
+        mapper.InsertCourseOneMe(courseInfoMetel);
     }
 
 
@@ -227,7 +263,6 @@ public class CourseInfoService {
         String datameF = (String) mapF.get("totalnum");
         int is = Integer.parseInt(datameF);
         int countmetelF = is / 100 + 1;
-        //todo--------------------------film
         for (int j = 1; j <= countmetelF; j++) {
             String ssD = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&enc=" + signKey, String.class);
             Map mapFssD = (Map) JSON.parse(ssD);
@@ -236,15 +271,35 @@ public class CourseInfoService {
             for (CourseInfoFilm courseInfoFilm : CourseInfoFilmlist) {
                 int met = courseInfoService.findFilmT(courseInfoFilm.getCourseid());
                 if (met <= 0) {
-                    courseInfoService.updateCourse(CourseInfoFilmlist);
+                    //courseInfoService.updateCourse(CourseInfoFilmlist);
+                    courseInfoService.updateCourseFilm(courseInfoFilm);
+                    //courseInfoService.InsertCourseMetel(CourseInfoMetelList);
+                    String[] teacher = courseInfoFilm.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoFilm.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
                 } else {
-                    courseInfoService.updateFilm(CourseInfoFilmlist);
+                   // courseInfoService.updateFilm(CourseInfoFilmlist);
+                    courseInfoService.updateFilmeOne(courseInfoFilm);
+                    String[] teacher = courseInfoFilm.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoFilm.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
                 }
             }
 
-
         }
 
+    }
+
+    private void updateFilmeOne(CourseInfoFilm courseInfoFilm) {
+        mapper.updateFilmeOne(courseInfoFilm);
+    }
+
+    private void updateCourseFilm(CourseInfoFilm courseInfoFilm) {
+        mapper.updateCourseFilm(courseInfoFilm);
     }
 
 
@@ -521,5 +576,9 @@ public class CourseInfoService {
 
     public void InsertCourseDanTeacher(String coursename, String teacher) {
         mapper.InsertCourseDanTeacher(coursename,teacher);
+    }
+
+    public void updateMeteOne(CourseInfoMetel courseInfoMetel) {
+        mapper.updateMeteOne(courseInfoMetel);
     }
 }

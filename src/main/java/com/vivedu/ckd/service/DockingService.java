@@ -54,9 +54,9 @@ public class DockingService {
      * allcourse
      */
     // @Scheduled(cron = "0 0/30 * * * ?")
-    public void findAllCourse(Integer page, Integer size, String sort) {
+    public void findAllCourse(Integer page, Integer size, String sort) throws InterruptedException {
         //爱课堂
-        if (page == null || size == null) page = 1;
+       if (page == null || size == null) page = 1;
         size = 500;
         if (StringUtils.isEmpty(sort)) sort = "date";
 
@@ -71,62 +71,42 @@ public class DockingService {
         log.info("count---" + count);
         String dataai = map.get("data").toString().trim();
         //  log.info("dataai数据" + dataai);
-        for (int i = 1; i <= 1; i++) {
-            try {
-                Thread.sleep(1000);
+        for (int i = 1; i <= 10; i++) {
+                Thread.sleep(2000);
                 sign = MD5Utils.MD5Encode("page=" + i + "&size=" + size + "&sort=" + sort + "&key=" + keyi, "utf8").toUpperCase();
                 s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + i + "&size=" + size + "&sort=" + sort, String.class);
                 String s1 = s.replace("members", "teacher");
                 String s2 = s1.replace("chapters", "chapterList");
-                log.info("s2----------"+s2);
+                log.info("s2----------" + s2);
                 Map mapai = (Map) JSON.parse(s2);
-                log.info("mapai----------"+mapai);
+                log.info("mapai----------" + mapai);
                 String dataA = mapai.get("data").toString().trim();
-
+                 log.info("dataA---------"+dataA);
                 //todo
-              List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
+                List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
 
-                for (CourseInfoAiVo courseInfoAiVo : CourseInfoAilist) {
-                    String[] teacher = courseInfoAiVo.getTeacher();
-                   String teacherData = Arrays.toString(teacher);
-log.info("teacherData----"+teacherData);
-                    //courseInfoService.InsertCourseDan(courseInfoAiVo);
-                  //  courseInfoService.InsertCourseDanTeacher(courseInfoAiVo.getCoursename(),teacher);
-                    }
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+                //todo--------------------------metel                     uestc.connect.metel.cn
+      /*  for (int j = 1; j <= 20; j++) {
+
+            String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + j + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
+            log.info("metel" + metel);
+            String metel1 = metel.replace("coursename_en", "coursenameEn");
+            String s2 = metel1.replace("profile_en", "profileEn");
+            Map mapmete2 = (Map) JSON.parse(s2);
+            log.info("mapmete2" + mapmete2);
+            String datametes = mapmete2.get("data").toString().trim();
+
+            List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
+
+            for (CourseInfoMetel courseInfoMetel : CourseInfoMetelList) {
+log.info("courseInfoMetel----------"+courseInfoMetel);
+                  //  courseInfoService.updateMeteOne(courseInfoMetel);
+                }
             }
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
-            //todo--------------------------metel                     uestc.connect.metel.cn
-         /*   for (int j = 1; j <= 3; j++) {
-
-                String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + j + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
-                log.info("metel" + metel);
-                String metel1 = metel.replace("coursename_en", "coursenameEn");
-                String s2 = metel1.replace("profile_en", "profileEn");
-                Map mapmete2 = (Map) JSON.parse(s2);
-                log.info("mapmete2" + mapmete2);
-                String datametes = mapmete2.get("data").toString().trim();
-                log.info("datametes" + datametes);
-                Map mapmete3 = (Map) JSON.parse(datametes);
-                log.info("mapmete3" + mapmete3);
-
-                List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
-
-                // courseInfoService.InsertCourseMetel(CourseInfoMetelList);
-
-
-            }*/
         }
-
+*/
 
    /*         //film  没有进行大写转换
        String signKey = MD5Utils.MD5Encode("page=" + page + "size=" + 500 + "sort=" + sort + keyo, "utf8");
@@ -143,18 +123,13 @@ log.info("teacherData----"+teacherData);
             String datametes = mapFssD.get("data").toString().trim();
             log.info("film--------------"+datametes);
             List<CourseInfoFilm> CourseInfoFilmlist = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoFilm(), new JsonConfig());
-
                     //courseInfoService.updateCourse(CourseInfoFilmlist);
-
-
-
-
         }
 
 
         }
         }
     }*/
-    }
-}
+            }}}
+
 

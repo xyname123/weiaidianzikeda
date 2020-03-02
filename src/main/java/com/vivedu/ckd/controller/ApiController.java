@@ -12,6 +12,7 @@ import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -206,11 +207,14 @@ public class ApiController {
         log.info("进入/course/detail方法");
         HashMap<String, Object> hashMapMap = new HashMap<>();
         CourseInfo courseInfo = courseInfoService.findCourseDatal(id);
+        CourseInfoPojo courseInfoPojo = new CourseInfoPojo();
+        BeanUtils.copyProperties(courseInfo, courseInfoPojo);
+
         //对时间的处理
         String format = "yyyy-MM-dd";
         String format1;
         String format2;
-        if (!courseInfo.getSource().equals("中国大学MOOC")) {
+        if (!courseInfo.getSource().equals("中国大学MOOC")&&courseInfo.getStart()!=null&&StringUtils.isNotEmpty(courseInfo.getStart())) {
             if (courseInfo.getStart() != null && courseInfo.getStart() != "") {
                 Long start = Long.valueOf(Long.parseLong(courseInfo.getStart()));
                 Date date = new Date(start);
@@ -218,9 +222,10 @@ public class ApiController {
                     SimpleDateFormat sdf = new SimpleDateFormat(format);
                     format1 = sdf.format(date);
                     courseInfo.setStart(format1);
+
                 }
             }
-            if (courseInfo.getEnd() != null && courseInfo.getEnd() != "") {
+            if (courseInfo.getEnd() != null && courseInfo.getEnd() != "" && !courseInfo.getEnd().equals("0")) {
                 Long end = Long.valueOf(Long.parseLong(courseInfo.getEnd()));
                 Date date2 = new Date(end);
                 if (end != null) {
@@ -229,23 +234,41 @@ public class ApiController {
                     courseInfo.setEnd(format2);
                 }
             }
-            String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
-            hashMapMap.put("timeData", timeData);
-        } else {
-            String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
-            hashMapMap.put("timeData", timeData);
+            if (courseInfo.getEnd().equals(0)) {
+                String f ="";
+                courseInfo.setEnd(f);
+            }
+         /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
+           courseInfoPojo.setTimeData(timeData);*/
+            //hashMapMap.put("timeData", timeData);
+
+        }
+        if (!courseInfo.getSource().equals("中国大学MOOC")&&courseInfo.getStart()==null||StringUtils.isEmpty(courseInfo.getStart())) {
+            String timeData="等待安排";
+            courseInfoPojo.setTimeData(timeData);
+
+        }
+
+         else {
+            String timeData = courseInfo.getStart() + " 至 " + courseInfo.getEnd();
+            if (courseInfo.getEnd().equals("0")) {
+                timeData= "起于"+courseInfo.getStart();
+            }
+            courseInfoPojo.setTimeData(timeData);
         }
 
         //添加学习次数
        if (courseInfo.getStudyCount() == null) {
-            courseInfoService.updateStudyCount(id,1);
+            courseInfoService.updateStudyCount(id,0);
         }else {
            Integer studyCount = courseInfo.getStudyCount();
            courseInfoService.updateStudyCount(id,studyCount+1);
        }
-
-
-        hashMapMap.put("data", courseInfo);
+        //中国大学慕课
+        if (courseInfoPojo.getTermType()!=null) {
+            courseInfoPojo.setSubjectcategory1(courseInfoPojo.getTermType());
+        }
+       hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }
 

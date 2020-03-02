@@ -133,4 +133,18 @@ public interface CourseInfoMapper {
     void InsertCourseDan(CourseInfoAiVo courseInfoAiVo);
 
     void InsertCourseDanTeacher(@Param("coursename")String coursename,@Param("teacher")String teacher);
+
+    void InsertCourseOne(CourseInfoAiVo courseInfoAiVo);
+
+    void updateMeteOne(CourseInfoMetel courseInfoMetel);
+
+    void updateAiCourseOneTeacherAndChapList(@Param("teacherData")String teacherData, @Param("chapterListData")String chapterListData, @Param("coursename")String coursename);
+
+    void updateAiCourse(CourseInfoAiVo courseInfoAiVo);
+
+    void InsertCourseOneMe(CourseInfoMetel courseInfoMetel);
+
+    void updateCourseFilm(CourseInfoFilm courseInfoFilm);
+
+    void updateFilmeOne(CourseInfoFilm courseInfoFilm);
 }
