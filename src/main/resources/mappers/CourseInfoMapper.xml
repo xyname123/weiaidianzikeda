@@ -513,9 +513,9 @@
     </update>
 
     <insert id="InsertCourseOneMe"  parameterType="com.vivedu.ckd.model.CourseInfoMetel">
-        INSERT INTO course_info(courseId,courseName,courseType,classHour,cover,profile,source,clickNum,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
+        INSERT INTO course_info(courseId,courseName,courseType,cover,profile,source,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
         VALUES
-        (#{courseid},#{coursename},#{courseType},#{classhour},#{cover},#{profile},"MeTel",#{clicknum},#{courseFrom},#{url},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
+        (#{courseid},#{coursename},#{courseType},#{cover},#{profile},"MeTel",#{courseFrom},#{url},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
     </insert>
 
     <insert id="updateCourseFilm"  parameterType="com.vivedu.ckd.model.CourseInfoFilm">

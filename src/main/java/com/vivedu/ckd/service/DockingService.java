@@ -3,6 +3,7 @@ package com.vivedu.ckd.service;
 import com.alibaba.fastjson.JSON;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -11,7 +12,7 @@ import com.vivedu.ckd.model.*;
 import com.vivedu.ckd.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+
 import net.sf.json.JsonConfig;
 import net.sf.json.util.JSONUtils;
 
@@ -55,58 +56,43 @@ public class DockingService {
      */
     // @Scheduled(cron = "0 0/30 * * * ?")
     public void findAllCourse(Integer page, Integer size, String sort) throws InterruptedException {
-        String sign = MD5Utils.MD5Encode("page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&key=" + keyi, "utf8").toUpperCase();
+        String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + 1 + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
+        Map mapmetel = (Map) JSON.parse(metel);
+        Integer datametel = (Integer) mapmetel.get("totalnum");
+        int countmetel = datametel / 100 + 1;
+        String datametelx = mapmetel.get("data").toString().trim();
+        log.info("metel--" + datametelx);
 
-        String s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + 1 + "&size=" + 500 + "&sort=" + "date", String.class);
+        for (int j = 1; j <= countmetel; j++) {
 
-        Map map = (Map) JSON.parse(s);
-        Integer data = (Integer) map.get("totalnum");
-        int count = data / 500 + 1;
-        log.info("count---" + count);
-        String dataai = map.get("data").toString().trim();
-        log.info("dataai数据" + dataai);
-        for (int i = 1; i <= 1; i++) {
-            try {
-                Thread.sleep(1000);
-                sign = MD5Utils.MD5Encode("page=" + i + "&size=" + 500 + "&sort=" + "date" + "&key=" + keyi, "utf8").toUpperCase();
-                s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + i + "&size=" + 500 + "&sort=" + "date", String.class);
-                String s1 = s.replace("members", "teacher");
-                String s2 = s1.replace("chapters", "chapterList");
-                Map mapai = (Map) JSON.parse(s2);
-                String dataA = mapai.get("data").toString().trim();
-             List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
-                // log.info("CourseInfoAilist-----------"+CourseInfoAilist);
-           /*  for (CourseInfoAiVo courseInfoAiVo : CourseInfoAilist) {
-                    int met = courseInfoService.findAiVo(courseInfoAiVo.getCourseid());
-                    if (met <= 0) {
-                        String[] teacher = courseInfoAiVo.getTeacher();
-                        String teacherData = Arrays.toString(teacher);
-                        String[] chapterList = courseInfoAiVo.getChapterList();
-                        String chapterListData = Arrays.toString(chapterList);
-                        log.info("teacherData----"+teacherData+"chapterListData"+chapterListData);
-                       //courseInfoService.InsertCourseOne(courseInfoAiVo);
-                      //  courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
-                    } else {
-                        // courseInfoService.updateAi(CourseInfoAilist);
-                      // courseInfoService.updateAiCourse(courseInfoAiVo);
-                        String[] teacher = courseInfoAiVo.getTeacher();
-                        String teacherData = Arrays.toString(teacher);
-                        String[] chapterList = courseInfoAiVo.getChapterList();
-                        String chapterListData = Arrays.toString(chapterList);
-                        log.info("teacherData----"+teacherData+"chapterListData"+chapterListData);
-                     // courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+            metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + j + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
+            String metel1 = metel.replace("coursename_en", "coursenameEn");
+            String s2 = metel1.replace("profile_en", "profileEn");
+            Map mapmete2 = (Map) JSON.parse(s2);
+            log.info("mapmete2" + mapmete2);
+            String datametes = mapmete2.get("data").toString().trim();
+            List<CourseInfoMetel> CourseInfoMetelList = JSONObject.parseArray(datametes, CourseInfoMetel.class);
+            // List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
+            for (CourseInfoMetel courseInfoMetel : CourseInfoMetelList) {
+                courseInfoMetel.setSoure("MeTel");
+                int met = courseInfoService.findMete(courseInfoMetel.getCoursename());
+                if (met <= 0) {
+                    //courseInfoService.InsertCourseMetel(CourseInfoMetelList);
+                    String[] teacher = courseInfoMetel.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoMetel.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                    courseInfoService.InsertCourseOneMe(courseInfoMetel);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename());
+                } else {
+                    courseInfoService.updateMeteOne(courseInfoMetel);
+                    String[] teacher = courseInfoMetel.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoMetel.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename());
+                }
 
-                    }
-                }*/
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
 
         }

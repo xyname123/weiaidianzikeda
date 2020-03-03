@@ -20,7 +20,7 @@ public class CourseInfoAiVo {
     private String coursename;
     //课程级别
 
-    private Integer courseType;
+    private String courseType;
     //课程关键字
 
     private String courseKeywords;
@@ -53,10 +53,10 @@ public class CourseInfoAiVo {
 
     private String clicknum;
     //教师团队
-    private String[] teacher;
+    private Object[] teacher;
     // "members":[{"profile":"","name":"李颉","userId":"5162106"}]
     //章节列表
-    private String[] chapterList;
+    private Object[] chapterList;
     //chapters":[{"name":"未命名","id":48962,"parentid":0,"url":""
     private String subjectcategory1;
 

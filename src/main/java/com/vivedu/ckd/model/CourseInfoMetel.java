@@ -16,7 +16,7 @@ public class CourseInfoMetel {
         //课程名称
         private String coursename;
         //课程级别
-        private Integer courseType;
+        private String courseType;
          //link
          private String link;
         //课程封面

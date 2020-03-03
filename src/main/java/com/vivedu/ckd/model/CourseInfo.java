@@ -20,7 +20,7 @@ public class CourseInfo {
     private String courseName;
     //课程级别
     @Column
-    private Integer courseType;
+    private String courseType;
     //课程关键字
     @Column
     private String courseKeywords;

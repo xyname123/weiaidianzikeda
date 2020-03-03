@@ -1,6 +1,7 @@
 package com.vivedu.ckd.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.vivedu.ckd.model.*;
 import com.vivedu.ckd.dao.CourseInfoMapper;
 import com.vivedu.ckd.utils.MD5Utils;
@@ -157,25 +158,26 @@ public class CourseInfoService {
                 String s2 = s1.replace("chapters", "chapterList");
                 Map mapai = (Map) JSON.parse(s2);
                 String dataA = mapai.get("data").toString().trim();
-                List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
+                List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
+              //  List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
                 for (CourseInfoAiVo courseInfoAiVo : CourseInfoAilist) {
                     String courseid = courseInfoAiVo.getCourseid();
                     int met = courseInfoService.findAiVo(courseInfoAiVo.getCourseid());
                     if (met <= 0) {
                        // courseInfoService.InsertCourse(CourseInfoAilist);
                         //todo
-                       String[] teacher = courseInfoAiVo.getTeacher();
+                       Object[] teacher = courseInfoAiVo.getTeacher();
                         String teacherData = Arrays.toString(teacher);
-                        String[] chapterList = courseInfoAiVo.getChapterList();
+                        Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
                         courseInfoService.InsertCourseOne(courseInfoAiVo);
                         courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
                     } else {
                        // courseInfoService.updateAi(CourseInfoAilist);
                         courseInfoService.updateAiCourse(courseInfoAiVo);
-                        String[] teacher = courseInfoAiVo.getTeacher();
+                        Object[] teacher = courseInfoAiVo.getTeacher();
                         String teacherData = Arrays.toString(teacher);
-                        String[] chapterList = courseInfoAiVo.getChapterList();
+                        Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
                         courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
 
@@ -225,7 +227,8 @@ public class CourseInfoService {
             Map mapmete2 = (Map) JSON.parse(s2);
             log.info("mapmete2" + mapmete2);
             String datametes = mapmete2.get("data").toString().trim();
-            List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
+            List<CourseInfoMetel> CourseInfoMetelList = JSONObject.parseArray(datametes, CourseInfoMetel.class);
+           // List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
             for (CourseInfoMetel courseInfoMetel : CourseInfoMetelList) {
                 courseInfoMetel.setSoure("MeTel");
                 int met = courseInfoService.findMete(courseInfoMetel.getCoursename());
@@ -251,7 +254,7 @@ public class CourseInfoService {
         }
     }
 
-    private void InsertCourseOneMe(CourseInfoMetel courseInfoMetel) {
+    public void InsertCourseOneMe(CourseInfoMetel courseInfoMetel) {
         mapper.InsertCourseOneMe(courseInfoMetel);
     }
 
@@ -268,7 +271,8 @@ public class CourseInfoService {
             String ssD = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&enc=" + signKey, String.class);
             Map mapFssD = (Map) JSON.parse(ssD);
             String datametes = mapFssD.get("data").toString().trim();
-            List<CourseInfoFilm> CourseInfoFilmlist = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoFilm(), new JsonConfig());
+            List<CourseInfoFilm> CourseInfoFilmlist = JSONObject.parseArray(datametes, CourseInfoFilm.class);
+           // List<CourseInfoFilm> CourseInfoFilmlist = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoFilm(), new JsonConfig());
             for (CourseInfoFilm courseInfoFilm : CourseInfoFilmlist) {
                 int met = courseInfoService.findFilmT(courseInfoFilm.getCourseid());
                 if (met <= 0) {
