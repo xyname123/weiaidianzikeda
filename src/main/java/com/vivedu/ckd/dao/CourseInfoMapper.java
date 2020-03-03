@@ -66,7 +66,7 @@ public interface CourseInfoMapper {
 
     void updateAi(@Param("updateAiSql")List<CourseInfoAiVo> courseInfoAilistBen);
 
-    int findMete(@Param("courseInfoMetel")String courseInfoMetel);
+    int findMete(@Param("name")String name);
 
     void updateMete(@Param("updateMeteSql")List<CourseInfoMetel> courseInfoMetelListBean);
 

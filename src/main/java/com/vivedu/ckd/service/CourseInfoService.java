@@ -38,6 +38,7 @@ public class CourseInfoService {
     private static String keyourl;
     @Autowired
     private CourseInfoService courseInfoService;
+
     public CourseInfoService(CourseInfoMapper mapper) {
         this.mapper = mapper;
     }
@@ -195,15 +196,15 @@ public class CourseInfoService {
 
     }
 
-    private void updateAiCourse(CourseInfoAiVo courseInfoAiV) {
+    public void updateAiCourse(CourseInfoAiVo courseInfoAiV) {
         mapper.updateAiCourse(courseInfoAiV);
     }
 
-    private void updateAiCourseOneTeacherAndChapList(String teacherData,String chapterListData,String coursename) {
+    public void updateAiCourseOneTeacherAndChapList(String teacherData,String chapterListData,String coursename) {
         mapper.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,coursename);
     }
 
-    private void InsertCourseOne(CourseInfoAiVo courseInfoAiVo) {
+    public void InsertCourseOne(CourseInfoAiVo courseInfoAiVo) {
         mapper.InsertCourseOne(courseInfoAiVo);
     }
 
@@ -352,9 +353,9 @@ public class CourseInfoService {
         mapper.updateAi(courseInfoAilistBen);
     }
 
-    public int findMete(String courseInfoMetel) {
+    public int findMete(String name) {
 
-        return mapper.findMete(courseInfoMetel);
+        return mapper.findMete(name);
     }
 
     public void updateMete(List<CourseInfoMetel> courseInfoMetelListBean) {

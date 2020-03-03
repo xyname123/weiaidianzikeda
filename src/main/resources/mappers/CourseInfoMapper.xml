@@ -64,7 +64,7 @@
     </update>
 
     <select id="findMarked" parameterType="String"  resultType="com.vivedu.ckd.model.CourseInfo">
-        SELECT * FROM course_info where course_info.courseId = #{courseId}
+        SELECT * FROM course_info where course_info.userId = #{courseId}
     </select>
 
     <select id="findT" parameterType="String"  resultType="com.vivedu.ckd.model.T_SHARE_CDXT_YJS_JBXX">
@@ -232,7 +232,7 @@
     </update>
 
     <select id="findMete" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select count(*) from course_info  where  course_info.courseName=#{courseInfoMetel}
+        select count(*) from course_info  where  course_info.courseName=#{name}
     </select>
 
     <select id="findAiVo" parameterType="java.lang.String" resultType="java.lang.Integer">
@@ -513,9 +513,9 @@
     </update>
 
     <insert id="InsertCourseOneMe"  parameterType="com.vivedu.ckd.model.CourseInfoMetel">
-        INSERT INTO course_info(courseId,courseName,courseType,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
+        INSERT INTO course_info(courseId,courseName,courseType,classHour,cover,profile,source,clickNum,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
         VALUES
-        (#{courseid},#{coursename},#{courseType},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},"MeTel",#{clicknum},#{courseFrom},#{url},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
+        (#{courseid},#{coursename},#{courseType},#{classhour},#{cover},#{profile},"MeTel",#{clicknum},#{courseFrom},#{url},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
     </insert>
 
     <insert id="updateCourseFilm"  parameterType="com.vivedu.ckd.model.CourseInfoFilm">

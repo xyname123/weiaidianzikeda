@@ -21,6 +21,7 @@ import java.math.BigInteger;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,9 +107,9 @@ public class ApiController {
             // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
            /* @RequestParam(required = false, value = "page",defaultValue = "1") @ApiParam(value = "页数")Integer page,
             @RequestParam(required = false, value = "size",defaultValue = "10") @ApiParam(value = "页大小") Integer size,*/
-            @RequestParam(required = true, value = "userId") @ApiParam(value = "用户编号") String id) {
+            @RequestParam(required = true, value = "userId") @ApiParam(value = "用户编号") String userId) {
         log.info("进入/learningList方法");
-        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(id);
+        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userId);
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
@@ -118,10 +119,9 @@ public class ApiController {
     @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "收藏的课程")
     public String courseInfoByMarked(
-            // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
-            @RequestParam(required = true, value = "userId") @ApiParam(value = "用户编号") String courseId) {
+            @RequestParam(required = true, value = "userId") @ApiParam(value = "用户编号") String userId) {
         log.info("进入/markedList方法");
-        List<CourseInfo> courseInfo = courseInfoService.courseInfoByMarked(courseId);
+        List<CourseInfo> courseInfo = courseInfoService.courseInfoByMarked(userId);
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
@@ -259,7 +259,7 @@ public class ApiController {
 
         //添加学习次数
        if (courseInfo.getStudyCount() == null) {
-            courseInfoService.updateStudyCount(id,0);
+            courseInfoService.updateStudyCount(id,1);
         }else {
            Integer studyCount = courseInfo.getStudyCount();
            courseInfoService.updateStudyCount(id,studyCount+1);
@@ -277,12 +277,13 @@ public class ApiController {
      * 推荐课程
      */
     @GetMapping(path = "/course/rec", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "课件详情）")
+    @ApiOperation(value = "推荐课程）")
     public String newsRec(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
         log.info("进入/course/rec");
+        pageNum = (pageNum - 1) * pageSize;
         List<CourseInfo> courseInfo = courseInfoService.findRec(pageNum, pageSize);
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
@@ -295,7 +296,7 @@ public class ApiController {
      * 热门推荐课程
      */
     @GetMapping(path = "/course/recIndex", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "recIndex）")
+    @ApiOperation(value = "recIndex")
     public String recIndex(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
@@ -303,9 +304,67 @@ public class ApiController {
         log.info("进入/course/recIndex");
         pageNum = (pageNum - 1) * pageSize;
         List<CourseInfo> courseInfo = courseInfoService.recIndex(pageNum, pageSize);
+
+        ArrayList<CourseInfoPojo> CourseInfoPojoList = new ArrayList<>();
+        for (CourseInfo info : courseInfo) {
+            CourseInfoPojo courseInfoPojo = new CourseInfoPojo();
+            BeanUtils.copyProperties(info, courseInfoPojo);
+
+            //对时间的处理
+            String format = "yyyy-MM-dd";
+            String format1;
+            String format2;
+            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()!=null&&StringUtils.isNotEmpty(info.getStart())) {
+                if (info.getStart() != null && info.getStart() != "") {
+                    Long start = Long.valueOf(Long.parseLong(info.getStart()));
+                    Date date = new Date(start);
+                    if (start != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat(format);
+                        format1 = sdf.format(date);
+                        info.setStart(format1);
+
+                    }
+                }
+                if (info.getEnd() != null && info.getEnd() != "" && !info.getEnd().equals("0")) {
+                    Long end = Long.valueOf(Long.parseLong(info.getEnd()));
+                    Date date2 = new Date(end);
+                    if (end != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat(format);
+                        format2 = sdf.format(date2);
+                        info.setEnd(format2);
+                    }
+                }
+                if (info.getEnd().equals(0)) {
+                    String f ="";
+                    info.setEnd(f);
+                }
+         /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
+           courseInfoPojo.setTimeData(timeData);*/
+                //hashMapMap.put("timeData", timeData);
+
+            }
+            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()==null||StringUtils.isEmpty(info.getStart())) {
+                String timeData="等待安排";
+                courseInfoPojo.setTimeData(timeData);
+                CourseInfoPojoList.add(courseInfoPojo);
+
+            }
+
+            else {
+                String timeData = info.getStart() + " 至 " + info.getEnd();
+                if (info.getEnd().equals("0")) {
+                    timeData= "起于"+info.getStart();
+                }
+                courseInfoPojo.setTimeData(timeData);
+                CourseInfoPojoList.add(courseInfoPojo);
+            }
+
+        }
+
+
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
-        hashMapMap.put("data", courseInfo);
+        hashMapMap.put("data", CourseInfoPojoList);
         return JSON.toJSONString(hashMapMap);
     }
 
@@ -341,9 +400,66 @@ public class ApiController {
         log.info("进入/course/quickRec");
         pageNum = (pageNum - 1) * pageSize;
         List<CourseInfo> courseInfo = courseInfoService.findquickRec(pageNum, pageSize);
+        ArrayList<CourseInfoPojo> CourseInfoPojoList = new ArrayList<>();
+        for (CourseInfo info : courseInfo) {
+            CourseInfoPojo courseInfoPojo = new CourseInfoPojo();
+            BeanUtils.copyProperties(info, courseInfoPojo);
+
+            //对时间的处理
+            String format = "yyyy-MM-dd";
+            String format1;
+            String format2;
+            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()!=null&&StringUtils.isNotEmpty(info.getStart())) {
+                if (info.getStart() != null && info.getStart() != "") {
+                    Long start = Long.valueOf(Long.parseLong(info.getStart()));
+                    Date date = new Date(start);
+                    if (start != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat(format);
+                        format1 = sdf.format(date);
+                        info.setStart(format1);
+
+                    }
+                }
+                if (info.getEnd() != null && info.getEnd() != "" && !info.getEnd().equals("0")) {
+                    Long end = Long.valueOf(Long.parseLong(info.getEnd()));
+                    Date date2 = new Date(end);
+                    if (end != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat(format);
+                        format2 = sdf.format(date2);
+                        info.setEnd(format2);
+                    }
+                }
+                if (info.getEnd().equals(0)) {
+                    String f ="";
+                    info.setEnd(f);
+                }
+         /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
+           courseInfoPojo.setTimeData(timeData);*/
+                //hashMapMap.put("timeData", timeData);
+
+            }
+            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()==null||StringUtils.isEmpty(info.getStart())) {
+                String timeData="等待安排";
+                courseInfoPojo.setTimeData(timeData);
+                CourseInfoPojoList.add(courseInfoPojo);
+
+            }
+
+            else {
+                String timeData = info.getStart() + " 至 " + info.getEnd();
+                if (info.getEnd().equals("0")) {
+                    timeData= "起于"+info.getStart();
+                }
+                courseInfoPojo.setTimeData(timeData);
+                CourseInfoPojoList.add(courseInfoPojo);
+            }
+
+        }
+
+
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
-        hashMapMap.put("data", courseInfo);
+        hashMapMap.put("data", CourseInfoPojoList);
         return JSON.toJSONString(hashMapMap);
     }
 
