@@ -299,11 +299,11 @@ public class CourseInfoService {
 
     }
 
-    private void updateFilmeOne(CourseInfoFilm courseInfoFilm) {
+    public void updateFilmeOne(CourseInfoFilm courseInfoFilm) {
         mapper.updateFilmeOne(courseInfoFilm);
     }
 
-    private void updateCourseFilm(CourseInfoFilm courseInfoFilm) {
+    public void updateCourseFilm(CourseInfoFilm courseInfoFilm) {
         mapper.updateCourseFilm(courseInfoFilm);
     }
 
