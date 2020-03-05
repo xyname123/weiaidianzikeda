@@ -75,6 +75,9 @@ public interface CourseInfoMapper {
     int findFilmT(@Param("id")String courseid);
 
 
+    int getRecommendCourseListSize(@Param("isRec") Integer isRec, @Param("source") String source, @Param("courseName") String courseName,@Param("startDate")String startDate);
+
+    List<CourseInfo> getRecommendCourseList(@Param("isRec") Integer isRec, @Param("firstIndex") Integer firstIndex, @Param("pageSize") Integer pageSize, @Param("source") String source,@Param("courseName") String courseName,@Param("startDate")String startDate,@Param("sortId")Integer sortId);
 
     int getRecommendCourseListSize(@Param("isRec") Integer isRec, @Param("source") String source, @Param("courseName") String courseName);
 

@@ -404,7 +404,7 @@ public class CourseInfoService {
     }
 
 
-    public DemonstrationResponse getRecommendCourseList(Integer isRec, Integer pageNum, Integer pageSize, String source, String courseName) {
+    public DemonstrationResponse getRecommendCourseList(Integer isRec, Integer pageNum, Integer pageSize, String source, String courseName,String categoryID,long startDate,Integer sortId) {
         if (isRec == null || isRec < 0) {
             isRec = 0;
         }
@@ -415,15 +415,15 @@ public class CourseInfoService {
             pageSize = 10;
         }
         int firstIndex = (pageNum - 1) * pageSize;
-
-        List<CourseInfo> courseInfos = mapper.getRecommendCourseList(isRec, firstIndex, pageSize,source,courseName);
-
-        int courseInfosSize = mapper.getRecommendCourseListSize(isRec,source,courseName);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date(startDate);
+        String res = simpleDateFormat.format(date);
+        List<CourseInfo> courseInfos = mapper.getRecommendCourseList(isRec, firstIndex, pageSize,source,courseName,res,sortId);
+        int courseInfosSize = mapper.getRecommendCourseListSize(isRec,source,courseName,res);
         RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum, courseInfosSize, courseInfos);
 
-       return new DemonstrationResponse(200, "获取成功！", recommendCourseData);
+        return new DemonstrationResponse(200, "获取成功！", recommendCourseData);
     }
-
 
     public DemonstrationResponse updateRecommendCourse(Integer isRec, Integer id) {
         if (isRec == null || isRec < 0) {

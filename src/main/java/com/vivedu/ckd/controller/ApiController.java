@@ -557,15 +557,14 @@ public class ApiController {
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "source") @ApiParam(value = "source") String source,
             @RequestParam(required = false, value = "courseName") @ApiParam(value = "courseName") String courseName,
+            @RequestParam(required = false, value = "categoryID") @ApiParam(value = "categoryID") String categoryID,
+            @RequestParam(value = "startDate") @ApiParam(value = "startDate") long startDate,
+            @RequestParam(required = false, value = "sortId") @ApiParam(value = "sortId") Integer sortId,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
-        if (StringUtils.isEmpty(source) && isRec == null && StringUtils.isEmpty(courseName)) {
-
-
+        /*if (StringUtils.isEmpty(source) && isRec == null && StringUtils.isEmpty(courseName)) {
             return  courseInfoService.getRecommendCourseListL(pageNum,pageSize);
-
-        }
-
-        return courseInfoService.getRecommendCourseList(isRec,pageNum,pageSize,source,courseName);
+        }*/
+        return courseInfoService.getRecommendCourseList(isRec,pageNum,pageSize,source,courseName,categoryID,startDate,sortId);
     }
 
 

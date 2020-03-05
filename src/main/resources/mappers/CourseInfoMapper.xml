@@ -545,4 +545,46 @@
             </set>
             where courseId=#{courseid}and source=#{source};
     </update>
+
+    <select id="getRecommendCourseList" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info
+        <where>
+            source != "film"
+            <if test="source != null and source !=''">
+                and source =#{source}
+            </if>
+            <if test="courseName != null and courseName !=''">
+                and course_info.courseName like concat('%',#{courseName},'%')
+            </if>
+            <if test='isRec == 1'>
+                and isRec = 1
+            </if>
+            and insertDate between #{startDate} and NOW()
+        </where>
+        ORDER BY
+        <choose>
+            <when test="sortId == 1">studyCount DESC</when>
+            <otherwise>
+                studyCount ASC
+            </otherwise>
+        </choose>
+        limit #{firstIndex},#{pageSize}
+    </select>
+
+    <select id="getRecommendCourseListSize" resultType="int">
+        SELECT count(*) FROM course_info
+        <where>
+            source != "film"
+            <if test="source != null and source !=''">
+                and source =#{source}
+            </if>
+            <if test="courseName != null and courseName !=''">
+                and course_info.courseName like concat('%',#{courseName},'%')
+            </if>
+            <if test='isRec == 1'>
+                and isRec = 1
+            </if>
+            and insertDate between #{startDate} and NOW()
+        </where>
+    </select>
 </mapper>
