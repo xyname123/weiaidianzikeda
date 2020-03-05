@@ -626,4 +626,16 @@ public class ApiController {
         return courseInfoService.getPersonalCenterInfo(userId);
     }
 
+    /**
+     * 首页推荐新版
+     * */
+    @GetMapping(path = "/topTj", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取个人中心信息")
+    public DemonstrationResponse topDj (
+            @RequestParam(required = true, value = "userId") String userId) throws Exception {
+
+
+        return courseInfoService.getPersonalCenterInfo(userId);
+    }
+
 }

@@ -6,8 +6,6 @@ import com.vivedu.ckd.model.*;
 import com.vivedu.ckd.dao.CourseInfoMapper;
 import com.vivedu.ckd.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONArray;
-import net.sf.json.JsonConfig;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -298,6 +296,37 @@ public class CourseInfoService {
         }
 
     }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateMuKe() {
+
+
+                 //todo 查询另一个数据库,并存入此数据库中
+
+         /*   for (CourseInfoFilm courseInfoFilm : CourseInfoFilmlist) {
+                int met = courseInfoService.findFilmT(courseInfoFilm.getCourseid());
+                if (met <= 0) {
+                    //courseInfoService.updateCourse(CourseInfoFilmlist);
+                    courseInfoService.updateCourseFilm(courseInfoFilm);
+                    //courseInfoService.InsertCourseMetel(CourseInfoMetelList);
+                    String[] teacher = courseInfoFilm.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoFilm.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
+                } else {
+                    // courseInfoService.updateFilm(CourseInfoFilmlist);
+                    courseInfoService.updateFilmeOne(courseInfoFilm);
+                    String[] teacher = courseInfoFilm.getTeacher();
+                    String teacherData = Arrays.toString(teacher);
+                    String[] chapterList = courseInfoFilm.getChapterlist();
+                    String chapterListData = Arrays.toString(chapterList);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
+                }
+            }
+*/
+        }
+
 
     public void updateFilmeOne(CourseInfoFilm courseInfoFilm) {
         mapper.updateFilmeOne(courseInfoFilm);

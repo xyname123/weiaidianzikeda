@@ -56,41 +56,62 @@ public class DockingService {
      */
     // @Scheduled(cron = "0 0/30 * * * ?")
     public void findAllCourse(Integer page, Integer size, String sort) throws InterruptedException {
-        String signKey = MD5Utils.MD5Encode("page=" + 1 + "size=" + 500 + "sort=" + "date" + keyo, "utf8");
-        String ss = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&enc=" + signKey, String.class);
-        Map mapF = (Map) JSON.parse(ss);
-        String datameF = (String) mapF.get("totalnum");
-        int is = Integer.parseInt(datameF);
-        int countmetelF = is / 100 + 1;
-        for (int j = 1; j <= countmetelF; j++) {
-            String ssD = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&enc=" + signKey, String.class);
-            Map mapFssD = (Map) JSON.parse(ssD);
-            String datametes = mapFssD.get("data").toString().trim();
-            List<CourseInfoFilm> CourseInfoFilmlist = JSONObject.parseArray(datametes, CourseInfoFilm.class);
-            // List<CourseInfoFilm> CourseInfoFilmlist = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoFilm(), new JsonConfig());
-            for (CourseInfoFilm courseInfoFilm : CourseInfoFilmlist) {
-                int met = courseInfoService.findFilmT(courseInfoFilm.getCourseid());
-                if (met <= 0) {
-                    //courseInfoService.updateCourse(CourseInfoFilmlist);
-                    courseInfoService.updateCourseFilm(courseInfoFilm);
-                    //courseInfoService.InsertCourseMetel(CourseInfoMetelList);
-                    String[] teacher = courseInfoFilm.getTeacher();
-                    String teacherData = Arrays.toString(teacher);
-                    String[] chapterList = courseInfoFilm.getChapterlist();
-                    String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
-                } else {
-                    // courseInfoService.updateFilm(CourseInfoFilmlist);
-                    courseInfoService.updateFilmeOne(courseInfoFilm);
-                    String[] teacher = courseInfoFilm.getTeacher();
-                    String teacherData = Arrays.toString(teacher);
-                    String[] chapterList = courseInfoFilm.getChapterlist();
-                    String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
+        String sign = MD5Utils.MD5Encode("page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&key=" + keyi, "utf8").toUpperCase();
+
+        String s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + 1 + "&size=" + 500 + "&sort=" + "date", String.class);
+
+        Map map = (Map) JSON.parse(s);
+        Integer data = (Integer) map.get("totalnum");
+        int count = data / 500 + 1;
+        log.info("count---" + count);
+        String dataai = map.get("data").toString().trim();
+        for (int i = 1; i <= count; i++) {
+            try {
+                Thread.sleep(1000);
+                sign = MD5Utils.MD5Encode("page=" + i + "&size=" + 500 + "&sort=" + "date" + "&key=" + keyi, "utf8").toUpperCase();
+                s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + i + "&size=" + 500 + "&sort=" + "date", String.class);
+                String s1 = s.replace("members", "teacher");
+                String s2 = s1.replace("chapters", "chapterList");
+                Map mapai = (Map) JSON.parse(s2);
+                String dataA = mapai.get("data").toString().trim();
+                List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
+                //  List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
+                for (CourseInfoAiVo courseInfoAiVo : CourseInfoAilist) {
+                    String courseid = courseInfoAiVo.getCourseid();
+                    int met = courseInfoService.findAiVo(courseInfoAiVo.getCourseid());
+                    if (met <= 0) {
+                        // courseInfoService.InsertCourse(CourseInfoAilist);
+                        //todo
+                        Object[] teacher = courseInfoAiVo.getTeacher();
+                        String teacherData = Arrays.toString(teacher);
+                        Object[] chapterList = courseInfoAiVo.getChapterList();
+                        String chapterListData = Arrays.toString(chapterList);
+                        courseInfoService.InsertCourseOne(courseInfoAiVo);
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+                    } else {
+                        // courseInfoService.updateAi(CourseInfoAilist);
+                        courseInfoService.updateAiCourse(courseInfoAiVo);
+                        Object[] teacher = courseInfoAiVo.getTeacher();
+                        String teacherData = Arrays.toString(teacher);
+                        Object[] chapterList = courseInfoAiVo.getChapterList();
+                        String chapterListData = Arrays.toString(chapterList);
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+
+                    }
                 }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
         }
+
         //todo--------------------------metel                     uestc.connect.metel.cn
       /*  for (int j = 1; j <= 20; j++) {
 

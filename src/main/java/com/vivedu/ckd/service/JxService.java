@@ -1,6 +1,5 @@
 package com.vivedu.ckd.service;
 
-import com.vivedu.ckd.dao.CourseInfoMapper;
 import com.vivedu.ckd.dao.JxServiceMapper;
 import com.vivedu.ckd.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,8 @@ import java.util.List;
 public class JxService {
     @Autowired
     private JxServiceMapper mapper;
+    @Autowired
+    private CourseInfoService courseInfoService;
 
     public JxService(JxServiceMapper mapper) {
         this.mapper = mapper;
@@ -113,4 +114,7 @@ public class JxService {
     public List<T_SHARE_CDXT_YJS_JBXX> findJxByDDNo(String no) {
         return mapper.findJxByDDNo(no);
     }
+
+    //测试ckd
+
 }
