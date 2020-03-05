@@ -590,7 +590,7 @@ public class ApiController {
     public String courseInfotopState(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer page,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer size,
-            @RequestParam(required = false, value = "state") @ApiParam(value = "页大小") Integer state
+            @RequestParam(required = false, value = "state") @ApiParam(value = "状态") Integer state
     ) {
         log.info("进入/topState");
         List<CourseInfo> courseInfo = courseInfoService.findCoursetopState(state, page, size);

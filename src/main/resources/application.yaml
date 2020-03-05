@@ -34,7 +34,4 @@ mybatis:
 logging:
   level:
     com.vivedu.ckd.dao: debug
-redis:
-  host: 127.0.0.1
-  port: 6379
 

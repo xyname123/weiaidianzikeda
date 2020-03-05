@@ -80,7 +80,7 @@
     </select>
 
     <select id="recIndex" resultType="com.vivedu.ckd.model.CourseInfo">
-        select * from course_info where source != "film" and isRec = 1 order by course_info.studentNum desc  LIMIT #{pageNum},#{pageSize}
+        select * from course_info where source != "film" and isRec = 1 order by course_info.studyCount desc  LIMIT #{pageNum},#{pageSize}
     </select>
 
     <select id="findrquick" resultType="com.vivedu.ckd.model.CourseInfo">
@@ -88,7 +88,7 @@
     </select>
 
     <select id="findquickRec" resultType="com.vivedu.ckd.model.CourseInfo">
-        select * from course_info where source != "film" order by course_info.id, course_info.studentNum desc  LIMIT #{pageNum},#{pageSize}
+        select * from course_info where source != "film" order by course_info.studyCount desc  LIMIT #{pageNum},#{pageSize}
     </select>
 
 
@@ -232,7 +232,7 @@
     </update>
 
     <select id="findMete" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select count(*) from course_info  where  course_info.courseName=#{name}
+        select count(*) from course_info  where  course_info.courseName=#{name} and course_info.source="MeTel"
     </select>
 
     <select id="findAiVo" parameterType="java.lang.String" resultType="java.lang.Integer">
@@ -258,7 +258,7 @@
             <set>
                 courseType=#{courseType},cover=#{cover},profile=#{profile},courseFrom=#{courseFrom},url=#{url},subjectcategory1=#{subjectcategory1},subjectcategory2=#{subjectcategory2},subjectcategory3=#{subjectcategory3},profileEn=#{profileEn},coursenameEn=#{coursenameEn}
             </set>
-            where course_info.courseName=#{coursename};
+            where course_info.courseName=#{coursename}and course_info.source="MeTel";
     </update>
     <select id="getRecommendCourseList" resultType="com.vivedu.ckd.model.CourseInfo">
         SELECT * FROM course_info
@@ -501,7 +501,7 @@
             <set>
                 teacher=#{teacherData},chapterList=#{chapterListData}
             </set>
-            where courseName=#{coursename};
+            where courseName=#{coursename}and source=#{source};
     </update>
 
     <update id="updateAiCourse">
@@ -509,7 +509,7 @@
         <set>
             courseName=#{coursename},courseType=#{courseType},courseKeywords=#{courseKeywords},studentNum=#{studentnum},start=#{start},end=#{end},classHour=#{classhour},cover=#{cover},profile=#{profile},state=#{state},clickNum=#{clicknum},courseFrom=#{courseFrom},url=#{courseUrl},subjectcategory1=#{subjectcategory1},subjectcategory2=#{subjectcategory2},subjectcategory3=#{subjectcategory3}
         </set>
-        where courseId=#{courseid};
+        where courseId=#{courseid}and source=#{source};
     </update>
 
     <insert id="InsertCourseOneMe"  parameterType="com.vivedu.ckd.model.CourseInfoMetel">
@@ -529,6 +529,6 @@
             <set>
                 courseName=#{coursename},courseType=#{courseType},courseKeywords=#{courseKeywords},studentNum=#{studentnum},start=#{start},end=#{end},classHour=#{classhour},cover=#{cover},profile=#{profile},state=#{state},clickNum=#{clicknum},courseFrom=#{courseFrom},url=#{url},source="film"
             </set>
-            where courseId=#{courseid};
+            where courseId=#{courseid}and source=#{source};
     </update>
 </mapper>
