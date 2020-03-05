@@ -64,7 +64,7 @@ public class ApiController {
 
         } else if (StringUtils.isEmpty(userId) && StringUtils.isNotEmpty(courseName)) {
             //根据课程关键字查询课程列表；
-            log.info("courseName-----------"+courseName);
+          log.info("courseName-----------"+courseName);
             pageNum = (pageNum - 1) * pageSize;
             List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize,state);
             int numkey =courseInfoService.findCourseByKeyNum(courseName,state);
