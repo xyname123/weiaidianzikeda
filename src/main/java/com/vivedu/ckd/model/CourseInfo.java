@@ -85,6 +85,8 @@ public class CourseInfo {
     //中国大学慕课的分类
     @Column
     private String  termType;
+    @Column
+    private String  summary;
     //平台课程总数
 /*    @Column
     private String  course;*/

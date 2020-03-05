@@ -18,9 +18,9 @@ public interface CourseInfoMapper {
 
     List<CourseInfo> findCourseByUserIdIf(@Param(value = "userId")String userId,@Param(value = "sort") String sort,@Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize")Integer pageSize);
 
-    List<CourseInfo> findCourseByKey(@Param(value = "courseName")String courseName, @Param(value = "pageNum")Integer pageNum, @Param(value = "pageSize")Integer pageSize);
+    List<CourseInfo> findCourseByKey(@Param(value = "courseName") String courseName, @Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize, @Param(value = "state") Integer state);
 
-    List<CourseInfo> findAllCourse( @Param(value = "pageNum")Integer pageNum, @Param(value = "pageSize")Integer pageSize);
+    List<CourseInfo> findAllCourse(@Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize, @Param(value = "state") Integer state);
 
     List<CourseInfo> findCourse(@Param(value = "id")Integer id,@Param(value = "pageNum")Integer pageNum, @Param(value = "pageSize")Integer pageSize);
 
@@ -88,9 +88,9 @@ public interface CourseInfoMapper {
 
     int findCourseByUserIdNum(String userId);
 
-    int findCourseByKeyNum(String courseName);
+    int findCourseByKeyNum(@Param("courseName")String courseName,@Param("state") Integer state);
 
-    int findAllCourseNum();
+    int findAllCourseNum(@Param("state")Integer state);
 
     List<CourseInfo> findCoursetopState(@Param("state")Integer state, @Param("page")Integer page, @Param("size")Integer size);
 

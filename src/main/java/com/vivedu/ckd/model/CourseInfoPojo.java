@@ -89,6 +89,6 @@ public class CourseInfoPojo {
 
     private String  timeData;
 
-
+    private String  summary;
 
 }

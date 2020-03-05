@@ -49,7 +49,8 @@ public class ApiController {
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize,
             @RequestParam(required = false, value = "sort", defaultValue = "date") @ApiParam(value = "排序") String sort,
-            @RequestParam(required = false, value = "userId") @ApiParam(value = "学工编号") String userId) {
+            @RequestParam(required = false, value = "userId") @ApiParam(value = "学工编号") String userId,
+            @RequestParam(required = false, value = "state") @ApiParam(value = "排序") Integer state) {
         log.info("进入/courseList方法");
         if (StringUtils.isNotEmpty(userId)) {
             //根据学工号查询拥有的课程列表；
@@ -65,22 +66,15 @@ public class ApiController {
             //根据课程关键字查询课程列表；
             log.info("courseName-----------"+courseName);
             pageNum = (pageNum - 1) * pageSize;
-            List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize);
-            int numkey =courseInfoService.findCourseByKeyNum(courseName);
+            List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize,state);
+            int numkey =courseInfoService.findCourseByKeyNum(courseName,state);
             log.info("numkey----"+numkey);
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", numkey);
             hashMapMap.put("data", courseInfo);
             return JSON.toJSONString(hashMapMap);
 
-        } /*else if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(keywords)) {
-            //查询所有课程列表；
-            List<CourseInfo> courseInfo = courseInfoService.findAllCourse();
-            HashMap<String,Object> hashMapMap = new HashMap<>();
-            hashMapMap.put("total", courseInfo.size());
-            hashMapMap.put("data",courseInfo);
-            return JSON.toJSONString(hashMapMap);
-        } */ else if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(courseName) && id !=null) {
+        }  else if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(courseName) && id !=null) {
             //只查询单门课程信息；
             pageNum = (pageNum - 1) * pageSize;
             List<CourseInfo> courseInfo = courseInfoService.findCourse(id, pageNum, pageSize);
@@ -91,8 +85,8 @@ public class ApiController {
         } else {
             //查询所有课程列表；
             pageNum = (pageNum - 1) * pageSize;
-            List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum, pageSize);
-            int allnum = courseInfoService.findAllCourseNum();
+            List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum,pageSize,state);
+            int allnum = courseInfoService.findAllCourseNum(state);
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", allnum);
             hashMapMap.put("data", courseInfo);
@@ -347,7 +341,6 @@ public class ApiController {
                 String timeData="等待安排";
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
-
             }
 
             else {
@@ -360,7 +353,6 @@ public class ApiController {
             }
 
         }
-
 
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
@@ -400,10 +392,12 @@ public class ApiController {
         log.info("进入/course/quickRec");
         pageNum = (pageNum - 1) * pageSize;
         List<CourseInfo> courseInfo = courseInfoService.findquickRec(pageNum, pageSize);
+        //log.info("course"+courseInfo);
         ArrayList<CourseInfoPojo> CourseInfoPojoList = new ArrayList<>();
         for (CourseInfo info : courseInfo) {
             CourseInfoPojo courseInfoPojo = new CourseInfoPojo();
             BeanUtils.copyProperties(info, courseInfoPojo);
+
 
             //对时间的处理
             String format = "yyyy-MM-dd";
@@ -452,10 +446,10 @@ public class ApiController {
                 }
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
+
             }
 
         }
-
 
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
@@ -626,16 +620,5 @@ public class ApiController {
         return courseInfoService.getPersonalCenterInfo(userId);
     }
 
-    /**
-     * 首页推荐新版
-     * */
-    @GetMapping(path = "/topTj", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "获取个人中心信息")
-    public DemonstrationResponse topDj (
-            @RequestParam(required = true, value = "userId") String userId) throws Exception {
-
-
-        return courseInfoService.getPersonalCenterInfo(userId);
-    }
 
 }

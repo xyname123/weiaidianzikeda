@@ -57,13 +57,13 @@ public class CourseInfoService {
         return mapper.findCourseByUserIdIf(userId,sort,pageNum,pageSize);
     }
 
-    public List<CourseInfo> findCourseByKey(String courseName, Integer pageNum, Integer pageSize) {
-        return mapper.findCourseByKey(courseName,pageNum,pageSize);
+    public List<CourseInfo> findCourseByKey(String courseName, Integer pageNum, Integer pageSize, Integer state) {
+        return mapper.findCourseByKey(courseName,pageNum,pageSize,state);
 
     }
 
-    public List<CourseInfo> findAllCourse(Integer pageNum, Integer pageSize) {
-        return mapper.findAllCourse(pageNum,pageSize);
+    public List<CourseInfo> findAllCourse(Integer pageNum, Integer pageSize, Integer state) {
+        return mapper.findAllCourse(pageNum,pageSize,state);
 
     }
 
@@ -458,12 +458,12 @@ public class CourseInfoService {
         return mapper.findCourseByUserIdNum(userId);
     }
 
-    public int findCourseByKeyNum(String courseName) {
-        return mapper.findCourseByKeyNum(courseName);
+    public int findCourseByKeyNum(String courseName, Integer state) {
+        return mapper.findCourseByKeyNum(courseName,state);
     }
 
-    public int findAllCourseNum() {
-        return mapper.findAllCourseNum();
+    public int findAllCourseNum(Integer state) {
+        return mapper.findAllCourseNum(state);
     }
 
     public List<CourseInfo> findCoursetopState(Integer state, Integer page, Integer size) {
