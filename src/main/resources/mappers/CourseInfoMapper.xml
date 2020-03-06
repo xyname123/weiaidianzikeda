@@ -146,9 +146,9 @@
     </insert>
 
     <insert id="InsertCourseOne"  parameterType="com.vivedu.ckd.model.CourseInfoAiVo">
-        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,source,clickNum,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3,insertDate)
         VALUES
-        (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{source},#{clicknum},#{courseFrom},#{courseUrl},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
+        (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{source},#{clicknum},#{courseFrom},#{courseUrl},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3},now())
     </insert>
     <update id="InsertCourseDanTeacher">
         update
@@ -500,15 +500,15 @@
     </update>
 
     <insert id="InsertCourseOneMe"  parameterType="com.vivedu.ckd.model.CourseInfoMetel">
-        INSERT INTO course_info(courseId,courseName,courseType,cover,profile,source,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3)
+        INSERT INTO course_info(courseId,courseName,courseType,cover,profile,source,courseFrom,url,subjectcategory1,subjectcategory2,subjectcategory3,insertDate)
         VALUES
-        (#{courseid},#{coursename},#{courseType},#{cover},#{profile},"MeTel",#{courseFrom},#{url},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3})
+        (#{courseid},#{coursename},#{courseType},#{cover},#{profile},"MeTel",#{courseFrom},#{url},#{subjectcategory1},#{subjectcategory2},#{subjectcategory3},now())
     </insert>
 
     <insert id="updateCourseFilm"  parameterType="com.vivedu.ckd.model.CourseInfoFilm">
-        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,clickNum,courseFrom,url,source)
+        INSERT INTO course_info(courseId,courseName,courseType,courseKeywords,studentNum,start,end,classHour,cover,profile,state,clickNum,courseFrom,url,source,insertDate)
         VALUES
-            (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{clicknum},#{courseFrom},#{url},"film")
+            (#{courseid},#{coursename},#{courseType},#{courseKeywords},#{studentnum},#{start},#{end},#{classhour},#{cover},#{profile},#{state},#{clicknum},#{courseFrom},#{url},"film",now())
     </insert>
 
     <update id="updateFilmeOne">
