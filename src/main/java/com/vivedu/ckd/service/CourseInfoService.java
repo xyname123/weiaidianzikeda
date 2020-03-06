@@ -415,9 +415,12 @@ public class CourseInfoService {
             pageSize = 10;
         }
         int firstIndex = (pageNum - 1) * pageSize;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date(startDate);
-        String res = simpleDateFormat.format(date);
+        String res="";
+        if (startDate != 0) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date(startDate);
+            res = simpleDateFormat.format(date);
+        }
         List<CourseInfo> courseInfos = mapper.getRecommendCourseList(isRec, firstIndex, pageSize,source,courseName,res,sortId);
         int courseInfosSize = mapper.getRecommendCourseListSize(isRec,source,courseName,res);
         RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum, courseInfosSize, courseInfos);

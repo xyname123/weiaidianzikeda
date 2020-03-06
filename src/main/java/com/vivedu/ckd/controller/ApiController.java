@@ -262,6 +262,10 @@ public class ApiController {
         if (courseInfoPojo.getTermType()!=null) {
             courseInfoPojo.setSubjectcategory1(courseInfoPojo.getTermType());
         }
+        //metel的详情展示处理
+        if (courseInfoPojo.getSource().equals("MeTel")) {
+            courseInfoPojo.setSummary(courseInfoPojo.getProfileEn());
+        }
        hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }
@@ -558,7 +562,7 @@ public class ApiController {
             @RequestParam(required = false, value = "source") @ApiParam(value = "source") String source,
             @RequestParam(required = false, value = "courseName") @ApiParam(value = "courseName") String courseName,
             @RequestParam(required = false, value = "categoryID") @ApiParam(value = "categoryID") String categoryID,
-            @RequestParam(value = "startDate") @ApiParam(value = "startDate") long startDate,
+            @RequestParam(required = false,value = "startDate") @ApiParam(value = "startDate") long startDate,
             @RequestParam(required = false, value = "sortId") @ApiParam(value = "sortId") Integer sortId,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
         /*if (StringUtils.isEmpty(source) && isRec == null && StringUtils.isEmpty(courseName)) {
@@ -576,7 +580,7 @@ public class ApiController {
         return courseInfoService.updateRecommendCourse(isRec, id);
     }
 /***
- *  首页推荐选择(1和3)
+ *  首页搜索选择(1和2)
  * */
     @GetMapping(path = "/topState", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "topState")

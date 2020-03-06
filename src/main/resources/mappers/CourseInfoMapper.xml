@@ -16,15 +16,21 @@
     </select>
 
     <select id="findAllCourseNum" resultType="int">
-        SELECT count(*) FROM course_info where 1=1
-        <if test='state != null and state !=""'>
-            and course_info.state=#{state}
+        SELECT count(*) FROM course_info WHERE course_info.source!= "film" and course_info.state IS NOT NULL
+        <if test='state == 1 '>
+            and course_info.state !=2 and course_info.state !="结束"
+        </if>
+        <if test='state == 2 '>
+            and course_info.state !=1 and course_info.state !="上架"
         </if>
     </select>
     <select id="findCourseByKeyNum" resultType="int">
-        SELECT count(*) FROM course_info WHERE course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !=""
-        <if test='state != null and state !=""'>
-            and course_info.state=#{state}
+        SELECT count(*) FROM course_info WHERE course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !="" and course_info.state IS NOT NULL
+        <if test='state == 1 '>
+            and course_info.state !=2 and course_info.state !="结束"
+        </if>
+        <if test='state == 2 '>
+            and course_info.state !=1 and course_info.state !="上架"
         </if>
     </select>
     <select id="findCourseByUserIdIf" resultType="com.vivedu.ckd.model.CourseInfo">
@@ -45,17 +51,23 @@
     </select>
 
     <select id="findCourseByKey" resultType="com.vivedu.ckd.model.CourseInfo">
-        SELECT * FROM course_info WHERE course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !=""
-        <if test='state != null and state !=""'>
-            and course_info.state =#{state}
+        SELECT * FROM course_info WHERE course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !="" and course_info.state IS NOT NULL
+        <if test='state == 1 '>
+            and course_info.state !=2 and course_info.state !="结束"
+        </if>
+        <if test='state == 2 '>
+            and course_info.state !=1 and course_info.state !="上架"
         </if>
         order by course_info.id  desc limit #{pageNum},#{pageSize}
     </select>
 
     <select id="findAllCourse"  resultType="com.vivedu.ckd.model.CourseInfo">
-        SELECT * FROM course_info WHERE course_info.source!= "film"
-        <if test='state != null and state !=""'>
-            and course_info.state =#{state}
+        SELECT * FROM course_info WHERE course_info.source!= "film" and course_info.state IS NOT NULL
+        <if test='state == 1 '>
+            and course_info.state !=2 and course_info.state !="结束"
+        </if>
+        <if test='state == 2 '>
+            and course_info.state !=1 and course_info.state !="上架"
         </if>
         limit #{pageNum},#{pageSize}
     </select>
@@ -297,10 +309,10 @@
         <where>
             course_info.source != "film"
             <if test='state == 1 '>
-                and course_info.state !=3
+                and course_info.state =1
             </if>
-            <if test='state == 3 '>
-                and course_info.state =#{state}
+            <if test='state == 2 '>
+                and course_info.state =2
             </if>
         </where>
         limit #{page},#{size}
@@ -310,10 +322,10 @@
         <where>
             course_info.source != "film"
             <if test='state == 1 '>
-                and course_info.state !=3
+                and course_info.state =1
             </if>
-            <if test='state == 3 '>
-                and course_info.state =#{state}
+            <if test='state == 2 '>
+                and course_info.state =2
             </if>
         </where>
     </select>
@@ -520,6 +532,9 @@
             <if test='isRec == 1'>
                 and isRec = 1
             </if>
+            <if test="startDate != null and startDate !=''">
+                and insertDate between #{startDate} and NOW()
+            </if>
             and insertDate between #{startDate} and NOW()
         </where>
         ORDER BY
@@ -544,6 +559,9 @@
             </if>
             <if test='isRec == 1'>
                 and isRec = 1
+            </if>
+            <if test="startDate != null and startDate !=''">
+                and insertDate between #{startDate} and NOW()
             </if>
             and insertDate between #{startDate} and NOW()
         </where>
