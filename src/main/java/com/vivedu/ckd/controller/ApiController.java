@@ -238,7 +238,7 @@ public class ApiController {
 
         }
         if (!courseInfo.getSource().equals("中国大学MOOC")&&courseInfo.getStart()==null||StringUtils.isEmpty(courseInfo.getStart())) {
-            String timeData="等待安排";
+            String timeData="N/A";
             courseInfoPojo.setTimeData(timeData);
 
         }
@@ -342,7 +342,7 @@ public class ApiController {
 
             }
             if (!info.getSource().equals("中国大学MOOC")&&info.getStart()==null||StringUtils.isEmpty(info.getStart())) {
-                String timeData="等待安排";
+                String timeData="N/A";
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
             }
@@ -437,7 +437,7 @@ public class ApiController {
 
             }
             if (!info.getSource().equals("中国大学MOOC")&&info.getStart()==null||StringUtils.isEmpty(info.getStart())) {
-                String timeData="等待安排";
+                String timeData="N/A";
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
 

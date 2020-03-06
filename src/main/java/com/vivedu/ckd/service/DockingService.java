@@ -65,6 +65,7 @@ public class DockingService {
         int count = data / 500 + 1;
         log.info("count---" + count);
         String dataai = map.get("data").toString().trim();
+        log.info("dataai数据" + dataai);
         for (int i = 1; i <= count; i++) {
             try {
                 Thread.sleep(1000);
@@ -87,7 +88,7 @@ public class DockingService {
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
                         courseInfoService.InsertCourseOne(courseInfoAiVo);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename(),courseInfoAiVo.getSource());
                     } else {
                         // courseInfoService.updateAi(CourseInfoAilist);
                         courseInfoService.updateAiCourse(courseInfoAiVo);
@@ -95,7 +96,7 @@ public class DockingService {
                         String teacherData = Arrays.toString(teacher);
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename(),courseInfoAiVo.getSource());
 
                     }
                 }
@@ -110,6 +111,7 @@ public class DockingService {
                 e.printStackTrace();
             }
 
+        }
         }
 
         //todo--------------------------metel                     uestc.connect.metel.cn
@@ -155,6 +157,6 @@ log.info("courseInfoMetel----------"+courseInfoMetel);
         }
         }
     }*/
-            }}
+            }
 
 

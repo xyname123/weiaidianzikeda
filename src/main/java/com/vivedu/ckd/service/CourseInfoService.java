@@ -169,7 +169,7 @@ public class CourseInfoService {
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
                         courseInfoService.InsertCourseOne(courseInfoAiVo);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename(),courseInfoAiVo.getSource());
                     } else {
                        // courseInfoService.updateAi(CourseInfoAilist);
                         courseInfoService.updateAiCourse(courseInfoAiVo);
@@ -177,7 +177,7 @@ public class CourseInfoService {
                         String teacherData = Arrays.toString(teacher);
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename());
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename(),courseInfoAiVo.getSource());
 
                     }
                 }
@@ -200,8 +200,8 @@ public class CourseInfoService {
         mapper.updateAiCourse(courseInfoAiV);
     }
 
-    public void updateAiCourseOneTeacherAndChapList(String teacherData,String chapterListData,String coursename) {
-        mapper.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,coursename);
+    public void updateAiCourseOneTeacherAndChapList(String teacherData,String chapterListData,String coursename,String source) {
+        mapper.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,coursename,source);
     }
 
     public void InsertCourseOne(CourseInfoAiVo courseInfoAiVo) {
@@ -237,14 +237,14 @@ public class CourseInfoService {
                     String[] chapterList = courseInfoMetel.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
                    courseInfoService.InsertCourseOneMe(courseInfoMetel);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename());
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename(),courseInfoMetel.getSoure());
                 } else {
                     courseInfoService.updateMeteOne(courseInfoMetel);
                     String[] teacher = courseInfoMetel.getTeacher();
                     String teacherData = Arrays.toString(teacher);
                     String[] chapterList = courseInfoMetel.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename());
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename(),courseInfoMetel.getSoure());
                 }
 
             }
@@ -281,7 +281,7 @@ public class CourseInfoService {
                     String teacherData = Arrays.toString(teacher);
                     String[] chapterList = courseInfoFilm.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename(),courseInfoFilm.getSource());
                 } else {
                    // courseInfoService.updateFilm(CourseInfoFilmlist);
                     courseInfoService.updateFilmeOne(courseInfoFilm);
@@ -289,7 +289,7 @@ public class CourseInfoService {
                     String teacherData = Arrays.toString(teacher);
                     String[] chapterList = courseInfoFilm.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename());
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename(),courseInfoFilm.getSource());
                 }
             }
 
@@ -487,7 +487,7 @@ public class CourseInfoService {
     public DemonstrationResponse addStudyDuration(String studentID, Integer time) {
         StudyDuration studyDuration = mapper.queryStudyDuration(studentID);
         int row = 0;
-        if (studyDuration != null || studyDuration.getId() > 0) {
+        if (studyDuration != null && studyDuration.getId() > 0) {
             studyDuration.setLearnTime(studyDuration.getLearnTime() + time);
             row = mapper.updateStudyDuration(studyDuration);
         } else {

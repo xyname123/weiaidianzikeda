@@ -141,7 +141,7 @@ public interface CourseInfoMapper {
 
     void updateMeteOne(CourseInfoMetel courseInfoMetel);
 
-    void updateAiCourseOneTeacherAndChapList(@Param("teacherData")String teacherData, @Param("chapterListData")String chapterListData, @Param("coursename")String coursename);
+    void updateAiCourseOneTeacherAndChapList(@Param("teacherData")String teacherData, @Param("chapterListData")String chapterListData, @Param("coursename")String coursename, @Param("source")String source);
 
     void updateAiCourse(CourseInfoAiVo courseInfoAiVo);
 
