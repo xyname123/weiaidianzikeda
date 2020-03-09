@@ -23,6 +23,9 @@
         <if test='state == 2 '>
             and course_info.state !=1 and course_info.state !="上架"
         </if>
+        <if test='courseTypeCode != null '>
+            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
+        </if>
     </select>
     <select id="findCourseByKeyNum" resultType="int">
         SELECT count(*) FROM course_info WHERE course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !="" and course_info.state IS NOT NULL
@@ -31,6 +34,9 @@
         </if>
         <if test='state == 2 '>
             and course_info.state !=1 and course_info.state !="上架"
+        </if>
+        <if test='courseTypeCode != null '>
+            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
         </if>
     </select>
     <select id="findCourseByUserIdIf" resultType="com.vivedu.ckd.model.CourseInfo">
@@ -58,6 +64,9 @@
         <if test='state == 2 '>
             and course_info.state !=1 and course_info.state !="上架"
         </if>
+        <if test='courseTypeCode != null '>
+            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
+        </if>
         order by course_info.id  desc limit #{pageNum},#{pageSize}
     </select>
 
@@ -68,6 +77,9 @@
         </if>
         <if test='state == 2 '>
             and course_info.state !=1 and course_info.state !="上架"
+        </if>
+        <if test='courseTypeCode != null '>
+            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
         </if>
         limit #{pageNum},#{pageSize}
     </select>

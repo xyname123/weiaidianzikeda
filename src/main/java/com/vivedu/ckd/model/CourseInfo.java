@@ -1,4 +1,5 @@
 package com.vivedu.ckd.model;
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -87,6 +88,8 @@ public class CourseInfo {
     private String  termType;
     @Column
     private String  summary;
+    @Column
+    private String courseTypeCode;
     //平台课程总数
 /*    @Column
     private String  course;*/

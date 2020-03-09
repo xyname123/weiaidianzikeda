@@ -18,9 +18,9 @@ public interface CourseInfoMapper {
 
     List<CourseInfo> findCourseByUserIdIf(@Param(value = "userId")String userId,@Param(value = "sort") String sort,@Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize")Integer pageSize);
 
-    List<CourseInfo> findCourseByKey(@Param(value = "courseName") String courseName, @Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize, @Param(value = "state") Integer state);
+    List<CourseInfo> findCourseByKey(@Param(value = "courseName") String courseName, @Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize, @Param(value = "state") Integer state, @Param(value = "courseTypeCode") Integer courseTypeCode);
 
-    List<CourseInfo> findAllCourse(@Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize, @Param(value = "state") Integer state);
+    List<CourseInfo> findAllCourse(@Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize, @Param(value = "state") Integer state,@Param(value = "courseTypeCode") Integer courseTypeCode);
 
     List<CourseInfo> findCourse(@Param(value = "id")Integer id,@Param(value = "pageNum")Integer pageNum, @Param(value = "pageSize")Integer pageSize);
 
@@ -91,9 +91,9 @@ public interface CourseInfoMapper {
 
     int findCourseByUserIdNum(String userId);
 
-    int findCourseByKeyNum(@Param("courseName")String courseName,@Param("state") Integer state);
+    int findCourseByKeyNum(@Param("courseName")String courseName,@Param("state") Integer state,@Param("courseTypeCode") Integer courseTypeCode);
 
-    int findAllCourseNum(@Param("state")Integer state);
+    int findAllCourseNum(@Param("state")Integer state,@Param("courseTypeCode")Integer courseTypeCode);
 
     List<CourseInfo> findCoursetopState(@Param("state")Integer state, @Param("page")Integer page, @Param("size")Integer size);
 
@@ -150,4 +150,6 @@ public interface CourseInfoMapper {
     void updateCourseFilm(CourseInfoFilm courseInfoFilm);
 
     void updateFilmeOne(CourseInfoFilm courseInfoFilm);
+
+
 }

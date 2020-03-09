@@ -44,18 +44,24 @@ public class ApiController {
     @ApiOperation(value = "课程信息")
     public String courseInfo(
             @RequestParam(required = false, value = "id") @ApiParam(value = "课程编号") Integer id,
-            // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
             @RequestParam(required = false, value = "courseName") @ApiParam(value = "课程关键字") String courseName,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize,
             @RequestParam(required = false, value = "sort", defaultValue = "date") @ApiParam(value = "排序") String sort,
             @RequestParam(required = false, value = "userId") @ApiParam(value = "学工编号") String userId,
-            @RequestParam(required = false, value = "state") @ApiParam(value = "排序") Integer state) {
+            @RequestParam(required = false, value = "state") @ApiParam(value = "排序") Integer state,
+            @RequestParam(required = false, value = "courseTypeCode") @ApiParam(value = "课程分类编码") Integer courseTypeCode) {
         log.info("进入/courseList方法");
         if (StringUtils.isNotEmpty(userId)) {
             //根据学工号查询拥有的课程列表；
             pageNum = (pageNum - 1) * pageSize;
             List<CourseInfo> courseInfo = courseInfoService.findCourseByUserId(userId, sort, pageNum, pageSize);
+            //对学科分类进行处理
+            for (CourseInfo info : courseInfo) {
+                if (info.getSubjectcategory1()!=null) {
+                    info.setCourseTypeCode(info.getSubjectcategory1());
+                }
+            }
             int num =courseInfoService.findCourseByUserIdNum(userId);
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total",num);
@@ -65,8 +71,13 @@ public class ApiController {
         } else if (StringUtils.isEmpty(userId) && StringUtils.isNotEmpty(courseName)) {
             //根据课程关键字查询课程列表；
             pageNum = (pageNum - 1) * pageSize;
-            List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize,state);
-            int numkey =courseInfoService.findCourseByKeyNum(courseName,state);
+            List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize,state,courseTypeCode);
+            for (CourseInfo info : courseInfo) {
+                if (info.getSubjectcategory1()!=null) {
+                    info.setCourseTypeCode(info.getSubjectcategory1());
+                }
+            }
+            int numkey =courseInfoService.findCourseByKeyNum(courseName,state,courseTypeCode);
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", numkey);
             hashMapMap.put("data", courseInfo);
@@ -76,6 +87,11 @@ public class ApiController {
             //只查询单门课程信息；
             pageNum = (pageNum - 1) * pageSize;
             List<CourseInfo> courseInfo = courseInfoService.findCourse(id, pageNum, pageSize);
+            for (CourseInfo info : courseInfo) {
+                if (info.getSubjectcategory1()!=null) {
+                    info.setCourseTypeCode(info.getSubjectcategory1());
+                }
+            }
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", courseInfo.size());
             hashMapMap.put("data", courseInfo);
@@ -83,8 +99,13 @@ public class ApiController {
         } else {
             //查询所有课程列表；
             pageNum = (pageNum - 1) * pageSize;
-            List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum,pageSize,state);
-            int allnum = courseInfoService.findAllCourseNum(state);
+            List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum,pageSize,state,courseTypeCode);
+            for (CourseInfo info : courseInfo) {
+                if (info.getSubjectcategory1()!=null) {
+                    info.setCourseTypeCode(info.getSubjectcategory1());
+                }
+            }
+            int allnum = courseInfoService.findAllCourseNum(state,courseTypeCode);
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", allnum);
             hashMapMap.put("data", courseInfo);
