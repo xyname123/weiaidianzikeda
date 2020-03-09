@@ -15,5 +15,8 @@ public class StudentPersonalCenterInfo {
     private String percentage;
     private List<StudyDuration> studyDurationList;
     private List<CourseInfo> courseInfoList;
+    private List<CourseInfoAiVo> courseInfoaiList;
     private List<ClassSchedule> classScheduleList;
+    private List<CourseInfoFilm> classfilm;
+
 }

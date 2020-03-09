@@ -64,11 +64,9 @@ public class ApiController {
 
         } else if (StringUtils.isEmpty(userId) && StringUtils.isNotEmpty(courseName)) {
             //根据课程关键字查询课程列表；
-          log.info("courseName-----------"+courseName);
             pageNum = (pageNum - 1) * pageSize;
             List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize,state);
             int numkey =courseInfoService.findCourseByKeyNum(courseName,state);
-            log.info("numkey----"+numkey);
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", numkey);
             hashMapMap.put("data", courseInfo);
@@ -98,9 +96,6 @@ public class ApiController {
     @GetMapping(path = "/learningList", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "最近学习的课程")
     public String courseInfoByUserId(
-            // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
-           /* @RequestParam(required = false, value = "page",defaultValue = "1") @ApiParam(value = "页数")Integer page,
-            @RequestParam(required = false, value = "size",defaultValue = "10") @ApiParam(value = "页大小") Integer size,*/
             @RequestParam(required = true, value = "userId") @ApiParam(value = "用户编号") String userId) {
         log.info("进入/learningList方法");
         List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userId);

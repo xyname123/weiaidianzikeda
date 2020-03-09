@@ -2,6 +2,7 @@ package com.vivedu.ckd.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.vivedu.ckd.model.*;
 import com.vivedu.ckd.dao.CourseInfoMapper;
 import com.vivedu.ckd.utils.MD5Utils;
@@ -146,7 +147,6 @@ public class CourseInfoService {
         int count = data / 500 + 1;
         log.info("count---" + count);
         String dataai = map.get("data").toString().trim();
-        log.info("dataai数据" + dataai);
         for (int i = 1; i <= count; i++) {
             try {
                 Thread.sleep(1000);
@@ -540,7 +540,31 @@ public class CourseInfoService {
         List<T_SHARE_CDXT_BKS_KCPK> t_share_cdxt_bks_kcpks = new ArrayList<>();
         StudentPersonalCenterInfo studentPersonalCenterInfo = new StudentPersonalCenterInfo();
         if (userId.length() == 7) {
-            //查出老师课程userid塞入实体类
+            //查出老师课程userid 爱课堂
+           String sign = MD5Utils.MD5Encode("page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&userid="+userId+"&key=" + keyi, "utf8").toUpperCase();
+           String s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + 1 + "&size=" + 500 + "&sort=" + "date"+ "&userid="+userId, String.class);
+           if (s !=null){
+               String s1 = s.replace("members", "teacher");
+               String s2 = s1.replace("chapters", "chapterList");
+               Map mapai = (Map) JSON.parse(s2);
+               String dataA = mapai.get("data").toString().trim();
+               List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
+               if (CourseInfoAilist.size()>0) {
+                   studentPersonalCenterInfo.setCourseInfoaiList(CourseInfoAilist);
+               }
+           }
+           //film
+            String signKey = MD5Utils.MD5Encode("page=" + 1 + "size=" + 500 + "sort=" + "date"+"userid="+userId + keyo, "utf8");
+            String ssD = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" +"&userid="+userId+ "&enc=" + signKey, String.class);
+            if (ssD!= null){
+                Map mapFssD = (Map) JSON.parse(ssD);
+                String datametes = mapFssD.get("data").toString().trim();
+                List<CourseInfoFilm> CourseInfoFilmlist = JSONObject.parseArray(datametes, CourseInfoFilm.class);
+                if (CourseInfoFilmlist.size()>0) {
+                    studentPersonalCenterInfo.setClassfilm(CourseInfoFilmlist);
+                }
+            }
+
             t_share_cdxt_bks_kcpks = mapper.queryJSPK(userId, week + 1);
             List<ClassSchedule> classScheduleList = new ArrayList<>();
             for (T_SHARE_CDXT_BKS_KCPK t : t_share_cdxt_bks_kcpks) {
