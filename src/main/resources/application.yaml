@@ -2,10 +2,6 @@ debug: true
 
 server:
   port: 8090
-  ssl:
-    key-store: classpath:_.uestc.edu.cn.jks
-    key-store-password: SSLuestc2017
-    keyStoreType: JKS
 spring:
   mvc:
     static-path-pattern: /**

@@ -11,7 +11,10 @@ import java.util.List;
 public interface InfoInfoMapper {
 
     List<InfoInfo> findNewsList(@Param(value = "pageNum") Integer pageNum,
-                                @Param(value = "pageSize") Integer pageSize);
+                                @Param(value = "pageSize") Integer pageSize,
+                                @Param(value = "isRec") Integer isRec);
 
     List<InfoInfo> findNewsDetail(Integer id);
+
+    int findCount(Integer isRec);
 }

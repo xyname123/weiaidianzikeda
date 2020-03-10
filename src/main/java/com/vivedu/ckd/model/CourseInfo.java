@@ -89,7 +89,7 @@ public class CourseInfo {
     @Column
     private String  summary;
     @Column
-    private String courseTypeCode;
+    private String courseTypeName;
     //平台课程总数
 /*    @Column
     private String  course;*/

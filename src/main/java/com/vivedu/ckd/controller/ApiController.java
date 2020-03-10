@@ -59,7 +59,7 @@ public class ApiController {
             //对学科分类进行处理
             for (CourseInfo info : courseInfo) {
                 if (info.getSubjectcategory1()!=null) {
-                    info.setCourseTypeCode(info.getSubjectcategory1());
+                    info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
             int num =courseInfoService.findCourseByUserIdNum(userId);
@@ -74,10 +74,20 @@ public class ApiController {
             List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize,state,courseTypeCode);
             for (CourseInfo info : courseInfo) {
                 if (info.getSubjectcategory1()!=null) {
-                    info.setCourseTypeCode(info.getSubjectcategory1());
+                    info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
             int numkey =courseInfoService.findCourseByKeyNum(courseName,state,courseTypeCode);
+            //热门关键词 hotkey相关
+
+
+            hotKey hotNum = courseInfoService.findKeyCourseNameAndHotNum(courseName);
+
+            if (hotNum!=null && hotNum.getCourseKeywordsNum() > 0 ) {
+                courseInfoService.updateKeyCourseNameAndHotNum(courseName,hotNum.getCourseKeywordsNum()+1);
+            } else {
+                courseInfoService.addKeyCourseNameAndHotNum(courseName);
+            }
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", numkey);
             hashMapMap.put("data", courseInfo);
@@ -89,7 +99,7 @@ public class ApiController {
             List<CourseInfo> courseInfo = courseInfoService.findCourse(id, pageNum, pageSize);
             for (CourseInfo info : courseInfo) {
                 if (info.getSubjectcategory1()!=null) {
-                    info.setCourseTypeCode(info.getSubjectcategory1());
+                    info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
             HashMap<String, Object> hashMapMap = new HashMap<>();
@@ -102,7 +112,7 @@ public class ApiController {
             List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum,pageSize,state,courseTypeCode);
             for (CourseInfo info : courseInfo) {
                 if (info.getSubjectcategory1()!=null) {
-                    info.setCourseTypeCode(info.getSubjectcategory1());
+                    info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
             int allnum = courseInfoService.findAllCourseNum(state,courseTypeCode);
@@ -113,13 +123,14 @@ public class ApiController {
         }
     }
 
-    //按照用户id查询最新学习的课程（数组，返回最近学习的10门课程）。
-    @GetMapping(path = "/learningList", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "最近学习的课程")
+/** 新加 2020/3/10
+ * */
+    @GetMapping(path = "/myCourseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "我浏览的课程信息")
     public String courseInfoByUserId(
-            @RequestParam(required = true, value = "userId") @ApiParam(value = "用户编号") String userId) {
-        log.info("进入/learningList方法");
-        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userId);
+            @RequestParam(required = true, value = "userid") @ApiParam(value = "用户编号") String userid) {
+        log.info("进入/myCourseList");
+        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid);
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
@@ -175,19 +186,22 @@ public class ApiController {
         return JSON.toJSONString(hashMapMap);
     }
 
-    @GetMapping(path = "/news/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/news/homeNewsList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "新闻信息列表）")
     public String newsList(
-            // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
+            @RequestParam(required = false, value = "isRec") @ApiParam(value = "isRec") Integer isRec,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
         log.info("进入/news/list方法");
-        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum, pageSize);
+        pageNum = (pageNum - 1) * pageSize;
+        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum,pageSize,isRec);
+        int num =infoInfoService.findCount(isRec);
+
         HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("total", infoInfo.size());
-        hashMapMap.put("data", infoInfo);
-        return JSON.toJSONString(infoInfo);
+        hashMapMap.put("total",num);
+        hashMapMap.put("data",infoInfo);
+        return JSON.toJSONString(hashMapMap);
     }
 
     @GetMapping(path = "/news/detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -210,9 +224,9 @@ public class ApiController {
     public String newsDetail(
             // @RequestParam(required = true, value = "enc") @ApiParam(value = "签名") String enc,
             @RequestParam(required = true, value = "id") @ApiParam(value = "课程Id") Integer id,
+            @RequestParam(required = false, value = "userid") @ApiParam(value = "课程Id") Integer userid,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
-
     ) {
         log.info("进入/course/detail方法");
         HashMap<String, Object> hashMapMap = new HashMap<>();
@@ -282,6 +296,9 @@ public class ApiController {
         if (courseInfoPojo.getSource().equals("MeTel")) {
             courseInfoPojo.setSummary(courseInfoPojo.getProfileEn());
         }
+
+        //对userid的处理与browsecourse关联   id和courseid的关联
+        courseInfoService.insertBrowse(userid,id);
        hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }
@@ -639,5 +656,17 @@ public class ApiController {
         return courseInfoService.getPersonalCenterInfo(userId);
     }
 
+/**
+ * 热门关键词2020/3/10
+ * */
+@GetMapping(path = "/popularKeyWord", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@ApiOperation(value = "热门关键词")
+public String getpopularKeyWordInfo (
+        ) throws Exception {
+        List<hotKey> hotkeyList =courseInfoService.getpopularKeyWordInfo();
+        HashMap<String, Object> hashMapMap = new HashMap<>();
+        hashMapMap.put("data", hotkeyList);
+         return JSON.toJSONString(hashMapMap);
+    }
 
 }

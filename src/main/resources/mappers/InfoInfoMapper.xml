@@ -4,10 +4,22 @@
 <mapper namespace="com.vivedu.ckd.dao.InfoInfoMapper">
 
     <select id="findNewsList" resultType="com.vivedu.ckd.model.InfoInfo">
-        SELECT * FROM info_info ORDER BY info_info.insertDate DESC  limit #{pageNum},#{pageSize}
+        SELECT * FROM info_info
+        <if test='isRec != null '>
+            where info_info.isRec=#{isRec}
+        </if>
+        ORDER BY info_info.insertDate DESC  limit #{pageNum},#{pageSize}
     </select>
 
     <select id="findNewsDetail" resultType="com.vivedu.ckd.model.InfoInfo">
         SELECT * FROM info_info ORDER BY info_info.insertDate DESC
     </select>
+
+    <select id="findCount" resultType="int">
+        SELECT count(*) FROM info_info
+        <if test='isRec != null '>
+            where info_info.isRec=#{isRec}
+        </if>
+    </select>
+
 </mapper>

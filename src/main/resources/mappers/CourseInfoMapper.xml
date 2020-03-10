@@ -3,7 +3,7 @@
 
 <mapper namespace="com.vivedu.ckd.dao.CourseInfoMapper">
     <select id="findCourseByUserId" parameterType="String" resultType="com.vivedu.ckd.model.CourseInfo">
-       SELECT * FROM course_info WHERE course_info.userId = #{userId} ORDER BY course_info.insertDate DESC  limit 10
+       SELECT * FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  browse_course where userid=#{userid} order by catTime desc)
        <!-- SELECT cl.name,cl.chapterId,cl.chapterId FROM course_info ci  LEFT join chapter_list cl on ci.courseId = cl.courseId-->
     </select>
 
@@ -24,7 +24,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
         </if>
     </select>
     <select id="findCourseByKeyNum" resultType="int">
@@ -36,7 +36,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
         </if>
     </select>
     <select id="findCourseByUserIdIf" resultType="com.vivedu.ckd.model.CourseInfo">
@@ -65,7 +65,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
         </if>
         order by course_info.id  desc limit #{pageNum},#{pageSize}
     </select>
@@ -79,7 +79,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeCode=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
         </if>
         limit #{pageNum},#{pageSize}
     </select>
@@ -577,5 +577,33 @@
             </if>
             and insertDate between #{startDate} and NOW()
         </where>
+    </select>
+
+    <insert id="insertBrowse">
+        INSERT INTO browse_course(userid,courseid,catTime)
+        VALUES
+        (#{userid},#{id},now())
+    </insert>
+
+    <select id="findKeyCourseNameAndHotNum" resultType="com.vivedu.ckd.model.hotKey">
+        select courseKeywordsNum from hot_key where courseKeywords=#{courseName}
+    </select>
+
+    <update id="updateKeyCourseNameAndHotNum">
+        update hot_key
+        <set>
+            courseKeywordsNum=#{hot}
+        </set>
+        where courseKeywords=#{courseName};
+    </update>
+
+    <insert id="addKeyCourseNameAndHotNum">
+        INSERT INTO hot_key(courseKeywords,courseKeywordsNum)
+        VALUES
+        (#{courseName},1)
+    </insert>
+
+    <select id="getpopularKeyWordInfo" resultType="com.vivedu.ckd.model.hotKey">
+        select * from hot_key order by hot_key.courseKeywordsNum desc
     </select>
 </mapper>

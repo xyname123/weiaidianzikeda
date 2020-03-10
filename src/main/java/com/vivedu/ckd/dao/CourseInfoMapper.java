@@ -12,7 +12,7 @@ public interface CourseInfoMapper {
 
 
 
-    List<CourseInfo> findCourseByUserId(String id);
+    List<CourseInfo> findCourseByUserId(String userid);
 
     List<CourseInfo> findCourseByUserIdPage(@Param(value = "userId")String userId, @Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize);
 
@@ -151,5 +151,13 @@ public interface CourseInfoMapper {
 
     void updateFilmeOne(CourseInfoFilm courseInfoFilm);
 
+    void insertBrowse(@Param("userid")Integer userid, @Param("id")Integer id);
 
+    hotKey findKeyCourseNameAndHotNum(String courseName);
+
+    void updateKeyCourseNameAndHotNum(@Param("courseName")String courseName ,@Param("hot") int hot);
+
+    void addKeyCourseNameAndHotNum(String courseName);
+
+    List<hotKey> getpopularKeyWordInfo();
 }

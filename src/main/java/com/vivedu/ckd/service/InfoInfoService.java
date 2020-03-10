@@ -16,12 +16,16 @@ public class InfoInfoService {
         this.mapper = mapper;
     }
 
-    public List<InfoInfo> findNewsList(Integer pageNum, Integer pageSize) {
+    public List<InfoInfo> findNewsList(Integer pageNum, Integer pageSize,Integer isRec) {
 
-        return  mapper.findNewsList(pageNum,pageSize);
+        return  mapper.findNewsList(pageNum,pageSize,isRec);
     }
 
     public List<InfoInfo> findNewsDetail(Integer Id) {
         return mapper.findNewsDetail(Id);
+    }
+
+    public int findCount(Integer isRec) {
+        return  mapper.findCount(isRec);
     }
 }

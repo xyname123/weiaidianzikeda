@@ -38,5 +38,6 @@ public class InfoInfo {
     private String source;
     //点击量
     private String clickNum;
-
+    //是否添加到首页(轮播用)
+    private Integer isRec;
 }

@@ -38,6 +38,7 @@ public class CourseInfoService {
     private static String keyourl;
     @Autowired
     private CourseInfoService courseInfoService;
+    private List<hotKey> popularKeyWordInfo;
 
     public CourseInfoService(CourseInfoMapper mapper) {
         this.mapper = mapper;
@@ -45,8 +46,8 @@ public class CourseInfoService {
 
 
 
-  public List<CourseInfo> findCourseByUserIdLearn(String userId) {
-        return mapper.findCourseByUserId(userId);
+  public List<CourseInfo> findCourseByUserIdLearn(String userid) {
+        return mapper.findCourseByUserId(userid);
     }
 
     public List<CourseInfo> findCourseByUserIdPage(String userid, Integer pageNum, Integer pageSize) {
@@ -643,5 +644,25 @@ public class CourseInfoService {
         mapper.updateMeteOne(courseInfoMetel);
     }
 
+
+    public void insertBrowse(Integer userid, Integer id) {
+        mapper.insertBrowse(userid,id);
+    }
+
+    public hotKey findKeyCourseNameAndHotNum(String courseName) {
+       return mapper.findKeyCourseNameAndHotNum(courseName);
+    }
+
+    public void updateKeyCourseNameAndHotNum(String courseName,int hot) {
+         mapper.updateKeyCourseNameAndHotNum(courseName,hot);
+    }
+
+    public void addKeyCourseNameAndHotNum(String courseName) {
+        mapper.addKeyCourseNameAndHotNum(courseName);
+    }
+
+    public List<hotKey> getpopularKeyWordInfo() {
+        return  mapper.getpopularKeyWordInfo();
+    }
 
 }
