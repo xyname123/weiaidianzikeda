@@ -2,6 +2,7 @@ package com.vivedu.ckd.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vivedu.ckd.model.*;
+import com.vivedu.ckd.pojo.ZanshiResponse;
 import com.vivedu.ckd.service.ClassroomService;
 import com.vivedu.ckd.service.CourseInfoService;
 import com.vivedu.ckd.service.CourseStatisticsService;
@@ -80,7 +81,6 @@ public class ApiController {
             int numkey =courseInfoService.findCourseByKeyNum(courseName,state,courseTypeCode);
             //热门关键词 hotkey相关
 
-
             hotKey hotNum = courseInfoService.findKeyCourseNameAndHotNum(courseName);
 
             if (hotNum!=null && hotNum.getCourseKeywordsNum() > 0 ) {
@@ -120,6 +120,7 @@ public class ApiController {
             hashMapMap.put("total", allnum);
             hashMapMap.put("data", courseInfo);
             return JSON.toJSONString(hashMapMap);
+           // return new ZanshiResponse(0,"请求成功",allnum,courseInfo);
         }
     }
 
@@ -127,14 +128,14 @@ public class ApiController {
  * */
     @GetMapping(path = "/myCourseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "我浏览的课程信息")
-    public String courseInfoByUserId(
+    public ZanshiResponse courseInfoByUserId(
             @RequestParam(required = true, value = "userid") @ApiParam(value = "用户编号") String userid) {
         log.info("进入/myCourseList");
         List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid);
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
     }
 
     @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -188,7 +189,7 @@ public class ApiController {
 
     @GetMapping(path = "/news/homeNewsList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "新闻信息列表）")
-    public String newsList(
+    public ZanshiResponse newsList(
             @RequestParam(required = false, value = "isRec") @ApiParam(value = "isRec") Integer isRec,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
@@ -199,9 +200,10 @@ public class ApiController {
         int num =infoInfoService.findCount(isRec);
 
         HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("total",num);
-        hashMapMap.put("data",infoInfo);
-        return JSON.toJSONString(hashMapMap);
+        /*hashMapMap.put("total",num);
+        hashMapMap.put("data",infoInfo);*/
+       // return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0,"请求成功",num,infoInfo);
     }
 
     @GetMapping(path = "/news/detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -661,12 +663,11 @@ public class ApiController {
  * */
 @GetMapping(path = "/popularKeyWord", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @ApiOperation(value = "热门关键词")
-public String getpopularKeyWordInfo (
+public ZanshiResponse getpopularKeyWordInfo (
         ) throws Exception {
         List<hotKey> hotkeyList =courseInfoService.getpopularKeyWordInfo();
         HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("data", hotkeyList);
-         return JSON.toJSONString(hashMapMap);
+         return new ZanshiResponse(0,"请求成功",hotkeyList.size(),hotkeyList);
     }
 
 }
