@@ -43,7 +43,7 @@ public class ApiController {
 
     @GetMapping(path = "/courseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程信息")
-    public String courseInfo(
+    public ZanshiResponse courseInfo(
             @RequestParam(required = false, value = "id") @ApiParam(value = "课程编号") Integer id,
             @RequestParam(required = false, value = "courseName") @ApiParam(value = "课程关键字") String courseName,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
@@ -67,7 +67,7 @@ public class ApiController {
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total",num);
             hashMapMap.put("data", courseInfo);
-            return JSON.toJSONString(hashMapMap);
+            return new ZanshiResponse(0,"请求成功",num,courseInfo);
 
         } else if (StringUtils.isEmpty(userId) && StringUtils.isNotEmpty(courseName)) {
             //根据课程关键字查询课程列表；
@@ -88,10 +88,10 @@ public class ApiController {
             } else {
                 courseInfoService.addKeyCourseNameAndHotNum(courseName);
             }
-            HashMap<String, Object> hashMapMap = new HashMap<>();
+          /*  HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", numkey);
-            hashMapMap.put("data", courseInfo);
-            return JSON.toJSONString(hashMapMap);
+            hashMapMap.put("data", courseInfo);*/
+            return new ZanshiResponse(0,"请求成功",numkey,courseInfo);
 
         }  else if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(courseName) && id !=null) {
             //只查询单门课程信息；
@@ -105,7 +105,7 @@ public class ApiController {
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", courseInfo.size());
             hashMapMap.put("data", courseInfo);
-            return JSON.toJSONString(hashMapMap);
+            return new ZanshiResponse(0,"请求成功",1,courseInfo);
         } else {
             //查询所有课程列表；
             pageNum = (pageNum - 1) * pageSize;
@@ -116,11 +116,11 @@ public class ApiController {
                 }
             }
             int allnum = courseInfoService.findAllCourseNum(state,courseTypeCode);
-            HashMap<String, Object> hashMapMap = new HashMap<>();
+         /*   HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", allnum);
             hashMapMap.put("data", courseInfo);
-            return JSON.toJSONString(hashMapMap);
-           // return new ZanshiResponse(0,"请求成功",allnum,courseInfo);
+            return JSON.toJSONString(hashMapMap);*/
+           return new ZanshiResponse(0,"请求成功",allnum,courseInfo);
         }
     }
 
@@ -272,7 +272,6 @@ public class ApiController {
         if (!courseInfo.getSource().equals("中国大学MOOC")&&courseInfo.getStart()==null||StringUtils.isEmpty(courseInfo.getStart())) {
             String timeData="N/A";
             courseInfoPojo.setTimeData(timeData);
-
         }
 
          else {
@@ -311,7 +310,7 @@ public class ApiController {
      */
     @GetMapping(path = "/course/rec", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "推荐课程）")
-    public String newsRec(
+    public ZanshiResponse newsRec(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
@@ -321,7 +320,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
     }
 
 
@@ -330,7 +329,7 @@ public class ApiController {
      */
     @GetMapping(path = "/course/recIndex", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "recIndex")
-    public String recIndex(
+    public ZanshiResponse recIndex(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
@@ -396,7 +395,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", CourseInfoPojoList);
-        return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0,"请求成功",courseInfo.size(),CourseInfoPojoList);
     }
 
 
@@ -405,7 +404,7 @@ public class ApiController {
      */
     @GetMapping(path = "/course/quick", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "最新课程）")
-    public String recquick(
+    public ZanshiResponse recquick(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
@@ -416,7 +415,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
     }
 
     /***
@@ -424,7 +423,7 @@ public class ApiController {
      */
     @GetMapping(path = "/course/quickRec", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "最新热门课程）")
-    public String quickRec(
+    public ZanshiResponse quickRec(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
@@ -493,13 +492,13 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", CourseInfoPojoList);
-        return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0,"请求成功",courseInfo.size(),CourseInfoPojoList);
     }
 
     //最新资源
     @GetMapping(path = "/course/quickZiyuan", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "quickZiyuan）")
-    public String quickZiyuan(
+    public ZanshiResponse quickZiyuan(
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
@@ -509,9 +508,8 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
     }
-
 
     /**
      * 增加次数
@@ -557,7 +555,7 @@ public class ApiController {
      */
     @GetMapping(path = "/classroom/detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "classroom详情）")
-    public String classroom(
+    public ZanshiResponse classroom(
             @RequestParam(required = false, value = "shooolArea") @ApiParam(value = "校区") String shooolArea
             ,@RequestParam(required = false, value = "maxXin") @ApiParam(value = "屏号") Integer maxXin
             , @RequestParam(required = false, value = "dianNaoXin") @ApiParam(value = "电脑型号") Integer dianNaoXin
@@ -574,7 +572,8 @@ public class ApiController {
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total",kk);
             hashMapMap.put("data", classroom);
-            return JSON.toJSONString(hashMapMap);
+          //  return JSON.toJSONString(hashMapMap);
+            return new ZanshiResponse(0,"请求成功",kk,classroom);
 
         } else {
             List<Classroom> classroom = classroomService.findClassroom(shooolArea,maxXin,dianNaoXin, keTangHuXin,luBoXin,pageNum,pageSize);
@@ -583,9 +582,9 @@ public class ApiController {
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total",kg);
             hashMapMap.put("data", classroom);
-            return JSON.toJSONString(hashMapMap);
+            return new ZanshiResponse(0,"请求成功",kg,classroom);
         }
-        // List<Classroom> classroomtol = classroomService.findClassroomTotal(shooolArea,dianNaoXin, keTangHuXin,luBoXin,maxXin);
+
     }
 
 

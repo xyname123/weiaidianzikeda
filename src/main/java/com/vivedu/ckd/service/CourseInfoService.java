@@ -426,7 +426,7 @@ public class CourseInfoService {
         int courseInfosSize = mapper.getRecommendCourseListSize(isRec,source,courseName,res);
         RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum, courseInfosSize, courseInfos);
 
-        return new DemonstrationResponse(200, "获取成功！", recommendCourseData);
+        return new DemonstrationResponse(0, "获取成功！", recommendCourseData);
     }
 
     public DemonstrationResponse updateRecommendCourse(Integer isRec, Integer id) {
@@ -434,13 +434,13 @@ public class CourseInfoService {
             isRec = 0;
         }
         if (id == null || id <= 0) {
-            return new DemonstrationResponse(500, "请传入正确的id", null);
+            return new DemonstrationResponse(1001, "请传入正确的id", null);
         }
         int row = mapper.updateRecommendCourse(isRec, id);
         if (row > 0) {
-            return new DemonstrationResponse(200, "修改成功！", null);
+            return new DemonstrationResponse(0, "修改成功！", null);
         }
-        return new DemonstrationResponse(500, "修改失败！", null);
+        return new DemonstrationResponse(-1, "修改失败！", null);
     }
 
     public DemonstrationResponse getRecommendCourseListL(Integer pageNum, Integer pageSize) {
@@ -454,7 +454,7 @@ public class CourseInfoService {
         List<CourseInfo> courseInfos = mapper.getRecommendCourseListL(firstIndex,pageSize);
         int k =mapper.getRecommendCourseListK();
         RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum,k,courseInfos);
-        return new DemonstrationResponse(200, "获取成功！", recommendCourseData);
+        return new DemonstrationResponse(0, "获取成功！", recommendCourseData);
     }
 
     public int findCourseByUserIdNum(String userId) {
@@ -500,7 +500,7 @@ public class CourseInfoService {
             row = mapper.addStudyDuration(studyDuration1);
         }
         if (row > 0) {
-            return new DemonstrationResponse(200, "成功！", null);
+            return new DemonstrationResponse(0, "成功！", null);
         } else {
             return new DemonstrationResponse(500, "异常！", null);
         }
@@ -513,7 +513,7 @@ public class CourseInfoService {
         if (lessonsLearned1 != null || lessonsLearned1.getCourseId() > 0) {
             lessonsLearned1.setCreateDate(date);
             mapper.updateLessonsLearned(lessonsLearned1);
-            return new DemonstrationResponse(200, "成功！", null);
+            return new DemonstrationResponse(0, "成功！", null);
         }
         LessonsLearned lessonsLearned = new LessonsLearned();
         lessonsLearned.setStudentID(studentID);
@@ -521,16 +521,16 @@ public class CourseInfoService {
         lessonsLearned.setCreateDate(date);
         int row = mapper.addLessonsLearned(lessonsLearned);
         if (row > 0) {
-            return new DemonstrationResponse(200, "成功！", null);
+            return new DemonstrationResponse(0, "成功！", null);
         } else {
-            return new DemonstrationResponse(500, "异常！", null);
+            return new DemonstrationResponse(-1, "异常！", null);
         }
     }
 
 
     public DemonstrationResponse getPersonalCenterInfo(String userId) throws Exception {
         if (StringUtils.isEmpty(userId) || userId.length() < 7) {
-            return new DemonstrationResponse(500, "请传入正确的用户ID！", null);
+            return new DemonstrationResponse(10001, "请传入正确的用户ID！", null);
         }
         String startDate = "2020-2-24 00:00:00";
         String endDate = "2020-7-15 23:59:59";
@@ -582,7 +582,7 @@ public class CourseInfoService {
                 }
             }
             studentPersonalCenterInfo.setClassScheduleList(classScheduleList);
-            return new DemonstrationResponse(200, "查询成功！", studentPersonalCenterInfo);
+            return new DemonstrationResponse(0, "查询成功！", studentPersonalCenterInfo);
         } else if (userId.length() >= 12) {
             int courseCount = mapper.queryCourseCount(userId, startDate, endDate);
             int courseEnd = mapper.queryCourseEnd(userId, startDate, endDate);
@@ -617,9 +617,9 @@ public class CourseInfoService {
             studentPersonalCenterInfo.setStudyDurationList(studyDurationList);
             studentPersonalCenterInfo.setCourseInfoList(courseInfoList);
             studentPersonalCenterInfo.setClassScheduleList(classScheduleList);
-            return new DemonstrationResponse(200, "查询成功！", studentPersonalCenterInfo);
+            return new DemonstrationResponse(0, "查询成功！", studentPersonalCenterInfo);
         } else {
-            return new DemonstrationResponse(500, "没有用户ID数据！", null);
+            return new DemonstrationResponse(10001, "没有用户ID数据！", null);
         }
     }
 
