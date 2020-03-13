@@ -1,12 +1,10 @@
 package com.vivedu.ckd.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.vivedu.ckd.dao.CategoryMapper;
 import com.vivedu.ckd.model.*;
 import com.vivedu.ckd.pojo.ZanshiResponse;
-import com.vivedu.ckd.service.ClassroomService;
-import com.vivedu.ckd.service.CourseInfoService;
-import com.vivedu.ckd.service.CourseStatisticsService;
-import com.vivedu.ckd.service.InfoInfoService;
+import com.vivedu.ckd.service.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.models.auth.In;
@@ -40,6 +38,8 @@ public class ApiController {
     private InfoInfoService infoInfoService;
     @Autowired
     private ClassroomService classroomService;
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping(path = "/courseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程信息")
@@ -59,73 +59,74 @@ public class ApiController {
             List<CourseInfo> courseInfo = courseInfoService.findCourseByUserId(userId, sort, pageNum, pageSize);
             //对学科分类进行处理
             for (CourseInfo info : courseInfo) {
-                if (info.getSubjectcategory1()!=null) {
+                if (info.getSubjectcategory1() != null) {
                     info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
-            int num =courseInfoService.findCourseByUserIdNum(userId);
+            int num = courseInfoService.findCourseByUserIdNum(userId);
             HashMap<String, Object> hashMapMap = new HashMap<>();
-            hashMapMap.put("total",num);
+            hashMapMap.put("total", num);
             hashMapMap.put("data", courseInfo);
-            return new ZanshiResponse(0,"请求成功",num,courseInfo);
+            return new ZanshiResponse(0, "请求成功", num, courseInfo);
 
         } else if (StringUtils.isEmpty(userId) && StringUtils.isNotEmpty(courseName)) {
             //根据课程关键字查询课程列表；
             pageNum = (pageNum - 1) * pageSize;
-            List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize,state,courseTypeCode);
+            List<CourseInfo> courseInfo = courseInfoService.findCourseByKey(courseName, pageNum, pageSize, state, courseTypeCode);
             for (CourseInfo info : courseInfo) {
-                if (info.getSubjectcategory1()!=null) {
+                if (info.getSubjectcategory1() != null) {
                     info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
-            int numkey =courseInfoService.findCourseByKeyNum(courseName,state,courseTypeCode);
+            int numkey = courseInfoService.findCourseByKeyNum(courseName, state, courseTypeCode);
             //热门关键词 hotkey相关
 
             hotKey hotNum = courseInfoService.findKeyCourseNameAndHotNum(courseName);
 
-            if (hotNum!=null && hotNum.getCourseKeywordsNum() > 0 ) {
-                courseInfoService.updateKeyCourseNameAndHotNum(courseName,hotNum.getCourseKeywordsNum()+1);
+            if (hotNum != null && hotNum.getCourseKeywordsNum() > 0) {
+                courseInfoService.updateKeyCourseNameAndHotNum(courseName, hotNum.getCourseKeywordsNum() + 1);
             } else {
                 courseInfoService.addKeyCourseNameAndHotNum(courseName);
             }
           /*  HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", numkey);
             hashMapMap.put("data", courseInfo);*/
-            return new ZanshiResponse(0,"请求成功",numkey,courseInfo);
+            return new ZanshiResponse(0, "请求成功", numkey, courseInfo);
 
-        }  else if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(courseName) && id !=null) {
+        } else if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(courseName) && id != null) {
             //只查询单门课程信息；
             pageNum = (pageNum - 1) * pageSize;
             List<CourseInfo> courseInfo = courseInfoService.findCourse(id, pageNum, pageSize);
             for (CourseInfo info : courseInfo) {
-                if (info.getSubjectcategory1()!=null) {
+                if (info.getSubjectcategory1() != null) {
                     info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", courseInfo.size());
             hashMapMap.put("data", courseInfo);
-            return new ZanshiResponse(0,"请求成功",1,courseInfo);
+            return new ZanshiResponse(0, "请求成功", 1, courseInfo);
         } else {
             //查询所有课程列表；
             pageNum = (pageNum - 1) * pageSize;
-            List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum,pageSize,state,courseTypeCode);
+            List<CourseInfo> courseInfo = courseInfoService.findAllCourse(pageNum, pageSize, state, courseTypeCode);
             for (CourseInfo info : courseInfo) {
-                if (info.getSubjectcategory1()!=null) {
+                if (info.getSubjectcategory1() != null) {
                     info.setCourseTypeName(info.getSubjectcategory1());
                 }
             }
-            int allnum = courseInfoService.findAllCourseNum(state,courseTypeCode);
+            int allnum = courseInfoService.findAllCourseNum(state, courseTypeCode);
          /*   HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", allnum);
             hashMapMap.put("data", courseInfo);
             return JSON.toJSONString(hashMapMap);*/
-           return new ZanshiResponse(0,"请求成功",allnum,courseInfo);
+            return new ZanshiResponse(0, "请求成功", allnum, courseInfo);
         }
     }
 
-/** 新加 2020/3/10
- * */
+    /**
+     * 新加 2020/3/10
+     */
     @GetMapping(path = "/myCourseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "我浏览的课程信息")
     public ZanshiResponse courseInfoByUserId(
@@ -135,7 +136,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
+        return new ZanshiResponse(0, "请求成功", courseInfo.size(), courseInfo);
     }
 
     @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -196,14 +197,14 @@ public class ApiController {
     ) {
         log.info("进入/news/list方法");
         pageNum = (pageNum - 1) * pageSize;
-        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum,pageSize,isRec);
-        int num =infoInfoService.findCount(isRec);
+        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum, pageSize, isRec);
+        int num = infoInfoService.findCount(isRec);
 
         HashMap<String, Object> hashMapMap = new HashMap<>();
         /*hashMapMap.put("total",num);
         hashMapMap.put("data",infoInfo);*/
-       // return JSON.toJSONString(hashMapMap);
-        return new ZanshiResponse(0,"请求成功",num,infoInfo);
+        // return JSON.toJSONString(hashMapMap);
+        return new ZanshiResponse(0, "请求成功", num, infoInfo);
     }
 
     @GetMapping(path = "/news/detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -240,7 +241,7 @@ public class ApiController {
         String format = "yyyy-MM-dd";
         String format1;
         String format2;
-        if (!courseInfo.getSource().equals("中国大学MOOC")&&courseInfo.getStart()!=null&&StringUtils.isNotEmpty(courseInfo.getStart())) {
+        if (!courseInfo.getSource().equals("中国大学MOOC") && courseInfo.getStart() != null && StringUtils.isNotEmpty(courseInfo.getStart())) {
             if (courseInfo.getStart() != null && courseInfo.getStart() != "") {
                 Long start = Long.valueOf(Long.parseLong(courseInfo.getStart()));
                 Date date = new Date(start);
@@ -261,7 +262,7 @@ public class ApiController {
                 }
             }
             if (courseInfo.getEnd().equals(0)) {
-                String f ="";
+                String f = "";
                 courseInfo.setEnd(f);
             }
          /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
@@ -269,28 +270,26 @@ public class ApiController {
             //hashMapMap.put("timeData", timeData);
 
         }
-        if (!courseInfo.getSource().equals("中国大学MOOC")&&courseInfo.getStart()==null||StringUtils.isEmpty(courseInfo.getStart())) {
-            String timeData="N/A";
+        if (!courseInfo.getSource().equals("中国大学MOOC") && courseInfo.getStart() == null || StringUtils.isEmpty(courseInfo.getStart())) {
+            String timeData = "N/A";
             courseInfoPojo.setTimeData(timeData);
-        }
-
-         else {
+        } else {
             String timeData = courseInfo.getStart() + " 至 " + courseInfo.getEnd();
             if (courseInfo.getEnd().equals("0")) {
-                timeData= "起于"+courseInfo.getStart();
+                timeData = "起于" + courseInfo.getStart();
             }
             courseInfoPojo.setTimeData(timeData);
         }
 
         //添加学习次数
-       if (courseInfo.getStudyCount() == null) {
-            courseInfoService.updateStudyCount(id,1);
-        }else {
-           Integer studyCount = courseInfo.getStudyCount();
-           courseInfoService.updateStudyCount(id,studyCount+1);
-       }
+        if (courseInfo.getStudyCount() == null) {
+            courseInfoService.updateStudyCount(id, 1);
+        } else {
+            Integer studyCount = courseInfo.getStudyCount();
+            courseInfoService.updateStudyCount(id, studyCount + 1);
+        }
         //中国大学慕课
-        if (courseInfoPojo.getTermType()!=null) {
+        if (courseInfoPojo.getTermType() != null) {
             courseInfoPojo.setSubjectcategory1(courseInfoPojo.getTermType());
         }
         //metel的详情展示处理
@@ -299,8 +298,8 @@ public class ApiController {
         }
 
         //对userid的处理与browsecourse关联   id和courseid的关联
-        courseInfoService.insertBrowse(userid,id);
-       hashMapMap.put("data", courseInfoPojo);
+        courseInfoService.insertBrowse(userid, id);
+        hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }
 
@@ -320,7 +319,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
+        return new ZanshiResponse(0, "请求成功", courseInfo.size(), courseInfo);
     }
 
 
@@ -346,7 +345,7 @@ public class ApiController {
             String format = "yyyy-MM-dd";
             String format1;
             String format2;
-            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()!=null&&StringUtils.isNotEmpty(info.getStart())) {
+            if (!info.getSource().equals("中国大学MOOC") && info.getStart() != null && StringUtils.isNotEmpty(info.getStart())) {
                 if (info.getStart() != null && info.getStart() != "") {
                     Long start = Long.valueOf(Long.parseLong(info.getStart()));
                     Date date = new Date(start);
@@ -367,7 +366,7 @@ public class ApiController {
                     }
                 }
                 if (info.getEnd().equals(0)) {
-                    String f ="";
+                    String f = "";
                     info.setEnd(f);
                 }
          /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
@@ -375,16 +374,14 @@ public class ApiController {
                 //hashMapMap.put("timeData", timeData);
 
             }
-            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()==null||StringUtils.isEmpty(info.getStart())) {
-                String timeData="N/A";
+            if (!info.getSource().equals("中国大学MOOC") && info.getStart() == null || StringUtils.isEmpty(info.getStart())) {
+                String timeData = "N/A";
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
-            }
-
-            else {
+            } else {
                 String timeData = info.getStart() + " 至 " + info.getEnd();
                 if (info.getEnd().equals("0")) {
-                    timeData= "起于"+info.getStart();
+                    timeData = "起于" + info.getStart();
                 }
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
@@ -395,7 +392,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", CourseInfoPojoList);
-        return new ZanshiResponse(0,"请求成功",courseInfo.size(),CourseInfoPojoList);
+        return new ZanshiResponse(0, "请求成功", courseInfo.size(), CourseInfoPojoList);
     }
 
 
@@ -411,11 +408,11 @@ public class ApiController {
         log.info("进入/course/quick");
         pageNum = (pageNum - 1) * pageSize;
         List<CourseInfo> courseInfo = courseInfoService.findrquick(pageNum, pageSize);
-        log.info("courseInfo---"+courseInfo);
+        log.info("courseInfo---" + courseInfo);
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
+        return new ZanshiResponse(0, "请求成功", courseInfo.size(), courseInfo);
     }
 
     /***
@@ -441,7 +438,7 @@ public class ApiController {
             String format = "yyyy-MM-dd";
             String format1;
             String format2;
-            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()!=null&&StringUtils.isNotEmpty(info.getStart())) {
+            if (!info.getSource().equals("中国大学MOOC") && info.getStart() != null && StringUtils.isNotEmpty(info.getStart())) {
                 if (info.getStart() != null && info.getStart() != "") {
                     Long start = Long.valueOf(Long.parseLong(info.getStart()));
                     Date date = new Date(start);
@@ -462,7 +459,7 @@ public class ApiController {
                     }
                 }
                 if (info.getEnd().equals(0)) {
-                    String f ="";
+                    String f = "";
                     info.setEnd(f);
                 }
          /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
@@ -470,17 +467,15 @@ public class ApiController {
                 //hashMapMap.put("timeData", timeData);
 
             }
-            if (!info.getSource().equals("中国大学MOOC")&&info.getStart()==null||StringUtils.isEmpty(info.getStart())) {
-                String timeData="N/A";
+            if (!info.getSource().equals("中国大学MOOC") && info.getStart() == null || StringUtils.isEmpty(info.getStart())) {
+                String timeData = "N/A";
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
 
-            }
-
-            else {
+            } else {
                 String timeData = info.getStart() + " 至 " + info.getEnd();
                 if (info.getEnd().equals("0")) {
-                    timeData= "起于"+info.getStart();
+                    timeData = "起于" + info.getStart();
                 }
                 courseInfoPojo.setTimeData(timeData);
                 CourseInfoPojoList.add(courseInfoPojo);
@@ -492,7 +487,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", CourseInfoPojoList);
-        return new ZanshiResponse(0,"请求成功",courseInfo.size(),CourseInfoPojoList);
+        return new ZanshiResponse(0, "请求成功", courseInfo.size(), CourseInfoPojoList);
     }
 
     //最新资源
@@ -508,7 +503,7 @@ public class ApiController {
         HashMap<String, Object> hashMapMap = new HashMap<>();
         hashMapMap.put("total", courseInfo.size());
         hashMapMap.put("data", courseInfo);
-        return new ZanshiResponse(0,"请求成功",courseInfo.size(),courseInfo);
+        return new ZanshiResponse(0, "请求成功", courseInfo.size(), courseInfo);
     }
 
     /**
@@ -557,7 +552,7 @@ public class ApiController {
     @ApiOperation(value = "classroom详情）")
     public ZanshiResponse classroom(
             @RequestParam(required = false, value = "shooolArea") @ApiParam(value = "校区") String shooolArea
-            ,@RequestParam(required = false, value = "maxXin") @ApiParam(value = "屏号") Integer maxXin
+            , @RequestParam(required = false, value = "maxXin") @ApiParam(value = "屏号") Integer maxXin
             , @RequestParam(required = false, value = "dianNaoXin") @ApiParam(value = "电脑型号") Integer dianNaoXin
             , @RequestParam(required = false, value = "keTangHuXin") @ApiParam(value = "课堂互动型号") Integer keTangHuXin
             , @RequestParam(required = false, value = "luBoXin") @ApiParam(value = "录播互动型号") Integer luBoXin
@@ -567,22 +562,22 @@ public class ApiController {
         log.info("进入/classroom/detail方法");
         pageNum = (pageNum - 1) * pageSize;
         if (StringUtils.isEmpty(shooolArea) && maxXin == null && dianNaoXin == null && dianNaoXin == null && keTangHuXin == null && luBoXin == null) {
-            List<Classroom> classroom = classroomService.findClassroomE(pageNum,pageSize);
+            List<Classroom> classroom = classroomService.findClassroomE(pageNum, pageSize);
             int kk = classroomService.findClassroomJ();
             HashMap<String, Object> hashMapMap = new HashMap<>();
-            hashMapMap.put("total",kk);
+            hashMapMap.put("total", kk);
             hashMapMap.put("data", classroom);
-          //  return JSON.toJSONString(hashMapMap);
-            return new ZanshiResponse(0,"请求成功",kk,classroom);
+            //  return JSON.toJSONString(hashMapMap);
+            return new ZanshiResponse(0, "请求成功", kk, classroom);
 
         } else {
-            List<Classroom> classroom = classroomService.findClassroom(shooolArea,maxXin,dianNaoXin, keTangHuXin,luBoXin,pageNum,pageSize);
-           int kg =classroomService.findClassroomK(shooolArea,maxXin,dianNaoXin,keTangHuXin,luBoXin);
+            List<Classroom> classroom = classroomService.findClassroom(shooolArea, maxXin, dianNaoXin, keTangHuXin, luBoXin, pageNum, pageSize);
+            int kg = classroomService.findClassroomK(shooolArea, maxXin, dianNaoXin, keTangHuXin, luBoXin);
             log.info("classroom" + classroom.toString());
             HashMap<String, Object> hashMapMap = new HashMap<>();
-            hashMapMap.put("total",kg);
+            hashMapMap.put("total", kg);
             hashMapMap.put("data", classroom);
-            return new ZanshiResponse(0,"请求成功",kg,classroom);
+            return new ZanshiResponse(0, "请求成功", kg, classroom);
         }
 
     }
@@ -596,13 +591,13 @@ public class ApiController {
             @RequestParam(required = false, value = "source") @ApiParam(value = "source") String source,
             @RequestParam(required = false, value = "courseName") @ApiParam(value = "courseName") String courseName,
             @RequestParam(required = false, value = "categoryID") @ApiParam(value = "categoryID") String categoryID,
-            @RequestParam(required = false,value = "startDate") @ApiParam(value = "startDate") long startDate,
+            @RequestParam(required = false, value = "startDate") @ApiParam(value = "startDate") long startDate,
             @RequestParam(required = false, value = "sortId") @ApiParam(value = "sortId") Integer sortId,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
         /*if (StringUtils.isEmpty(source) && isRec == null && StringUtils.isEmpty(courseName)) {
             return  courseInfoService.getRecommendCourseListL(pageNum,pageSize);
         }*/
-        return courseInfoService.getRecommendCourseList(isRec,pageNum,pageSize,source,courseName,categoryID,startDate,sortId);
+        return courseInfoService.getRecommendCourseList(isRec, pageNum, pageSize, source, courseName, categoryID, startDate, sortId);
     }
 
 
@@ -613,9 +608,10 @@ public class ApiController {
             @RequestParam(value = "id") @ApiParam(value = "id") Integer id) {
         return courseInfoService.updateRecommendCourse(isRec, id);
     }
-/***
- *  首页搜索选择(1和2)
- * */
+
+    /***
+     *  首页搜索选择(1和2)
+     * */
     @GetMapping(path = "/topState", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "topState")
     public String courseInfotopState(
@@ -631,15 +627,16 @@ public class ApiController {
         hashMapMap.put("data", courseInfo);
         return JSON.toJSONString(hashMapMap);
     }
-/**
- * 2020/2/26
- * */
+
+    /**
+     * 2020/2/26
+     */
     @GetMapping(path = "/addStudyDuration", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "添加学习时长")
     public DemonstrationResponse addStudyDuration(
             @RequestParam(required = true, value = "studentID") String studentID,
             @RequestParam(required = true, value = "time") @ApiParam(value = "时长") Integer time) {
-        return courseInfoService.addStudyDuration(studentID,time);
+        return courseInfoService.addStudyDuration(studentID, time);
     }
 
     @GetMapping(path = "/addLessonsLearned", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -647,26 +644,116 @@ public class ApiController {
     public DemonstrationResponse addLessonsLearned(
             @RequestParam(required = true, value = "studentID") BigInteger studentID,
             @RequestParam(required = true, value = "id") @ApiParam(value = "课程号") Integer id) {
-        return courseInfoService.addLessonsLearned(studentID,id);
+        return courseInfoService.addLessonsLearned(studentID, id);
     }
 
     @GetMapping(path = "/getPersonalCenterInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "获取个人中心信息")
-    public DemonstrationResponse getPersonalCenterInfo (
+    public DemonstrationResponse getPersonalCenterInfo(
             @RequestParam(required = true, value = "userId") String userId) throws Exception {
         return courseInfoService.getPersonalCenterInfo(userId);
     }
 
-/**
- * 热门关键词2020/3/10
- * */
-@GetMapping(path = "/popularKeyWord", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@ApiOperation(value = "热门关键词")
-public ZanshiResponse getpopularKeyWordInfo (
-        ) throws Exception {
-        List<hotKey> hotkeyList =courseInfoService.getpopularKeyWordInfo();
+    /**
+     * 热门关键词2020/3/10
+     */
+    @GetMapping(path = "/popularKeyWord", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "热门关键词")
+    public ZanshiResponse getpopularKeyWordInfo(
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
+    ) throws Exception {
+        pageNum = (pageNum - 1) * pageSize;
+        List<hotKey> hotkeyList = courseInfoService.getpopularKeyWordInfo(pageNum, pageSize);
+        int num = courseInfoService.getpopularKeyWordInfoNum(pageNum, pageSize);
         HashMap<String, Object> hashMapMap = new HashMap<>();
-         return new ZanshiResponse(0,"请求成功",hotkeyList.size(),hotkeyList);
+        return new ZanshiResponse(0, "请求成功", num, hotkeyList);
+    }
+
+
+    /**
+     * 课程分类列表3/12
+     */
+    @GetMapping(path = "/getCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "课程分类")
+    public ZanshiResponse getCourseTypeList(
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
+    ) throws Exception {
+        pageNum = (pageNum - 1) * pageSize;
+        List<categoryCode> categoryCodeList = courseInfoService.getCourseType(pageNum, pageSize);
+        int num = courseInfoService.getCourseTypeNum(pageNum, pageSize);
+        return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
+    }
+
+    /**
+     * 课程分类更新3/12
+     */
+    @GetMapping(path = "/updateCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "课程分类更新")
+    public ZanshiResponse updateCourseTypeList(
+            @RequestParam(required = true, value = "Tpye") int Tpye,
+            @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
+            @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
+            @RequestParam(required = false, value = "courseSort") String courseSort,
+            @RequestParam(required = false, value = "courseHot") String courseHot
+    ) throws Exception {
+        //1.增加数据 2.更新数据 3.删除数据
+        if (Tpye ==1) {
+            List<categoryCode> code =categoryService.findAllCode();
+            for (categoryCode categoryCode : code) {
+                if (categoryCode.getCourseTypeName().equals(courseTypeName)) {
+                    return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(),"已存在",0,null);
+                }
+            }
+           int num= categoryService.addCategory(courseTypeName,courseTypeCode,courseSort,courseHot);
+
+            if (num >0) {
+                return new ZanshiResponse(0,"添加成功",num,null);
+            }
+            else{
+                return new ZanshiResponse(-1,"未知错误",0,null);
+            }
+        }
+        if (Tpye ==2) {
+
+            int num= categoryService.upCategory(courseTypeName,courseTypeCode,courseSort,courseHot);
+
+            if (num >0) {
+                return new ZanshiResponse(0,"添加成功",num,null);
+            }
+            else{
+                return new ZanshiResponse(-1,"未知错误",0,null);
+            }
+
+        }
+       if (Tpye ==3) {
+            //分类是否存在下级分类，假设存在则不能删除，只有在不存在下级分类的情况下才可删除
+            List<categoryCode> code =categoryService.findAllCode();
+            for (categoryCode categoryCode : code) {
+
+               String codeParam = categoryCode.getCourseTypeCode();
+
+                if (codeParam.length()==courseTypeCode.length()+2) {
+
+                    if (courseTypeCode == codeParam.substring(0, courseTypeCode.length())) {
+
+                        return new ZanshiResponse(10005, CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, "有下级分类");
+                    } else {
+                        //删除状态  0:正常  1:已删除
+                       int row = categoryService.delCategroy(courseTypeCode);
+                        if (row>0) {
+                            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, "有下级分类");
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+          return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
 
 }

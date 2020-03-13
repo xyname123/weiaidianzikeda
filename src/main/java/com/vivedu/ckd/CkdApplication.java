@@ -20,6 +20,7 @@ public class CkdApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CkdApplication.class, args);
+
 	}
 
 	@Bean

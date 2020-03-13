@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vivedu.ckd.dao.CategoryMapper">
+
+    <insert id="addCategory" parameterType="String">
+        INSERT INTO category_code(courseTypeName,courseTypeCode,courseSort,courseHot,isDel)
+        VALUES
+        (#{courseTypeName},#{courseTypeCode},#{courseSort},#{courseHot},0)
+    </insert>
+
+    <update id="upCategory" parameterType="String">
+        update category_code
+        <set>
+            courseTypeName=#{courseTypeName},courseTypeCode=#{courseTypeCode},courseSort={courseSort},courseHot=#{courseHot}
+        </set>
+        where category_code.courseTypeName=#{courseTypeName};
+    </update>
+
+    <select id="findAllCode" resultType="com.vivedu.ckd.model.categoryCode.">
+        select * from category_code
+    </select>
+
+    <update id="delCategroy" parameterType="String">
+        update category_code
+        <set>
+           isDel=1
+        </set>
+        where category_code.courseTypeCode=#{courseTypeCode};
+    </update>
+</mapper>

@@ -159,5 +159,11 @@ public interface CourseInfoMapper {
 
     void addKeyCourseNameAndHotNum(String courseName);
 
-    List<hotKey> getpopularKeyWordInfo();
+    List<hotKey> getpopularKeyWordInfo(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
+
+    List<categoryCode> getCourseType(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
+
+    int getpopularKeyWordInfoNum(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
+
+    int getCourseTypeNum(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
 }

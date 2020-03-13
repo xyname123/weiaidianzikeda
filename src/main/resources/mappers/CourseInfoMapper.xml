@@ -24,7 +24,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
         </if>
     </select>
     <select id="findCourseByKeyNum" resultType="int">
@@ -36,7 +36,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
         </if>
     </select>
     <select id="findCourseByUserIdIf" resultType="com.vivedu.ckd.model.CourseInfo">
@@ -65,7 +65,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
         </if>
         order by course_info.id  desc limit #{pageNum},#{pageSize}
     </select>
@@ -79,7 +79,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select codeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
         </if>
         limit #{pageNum},#{pageSize}
     </select>
@@ -604,6 +604,17 @@
     </insert>
 
     <select id="getpopularKeyWordInfo" resultType="com.vivedu.ckd.model.hotKey">
-        select * from hot_key order by hot_key.courseKeywordsNum desc
+        select * from hot_key order by hot_key.courseKeywordsNum desc limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="getpopularKeyWordInfoNum" resultType="int" >
+        select count(*) from hot_key order by hot_key.courseKeywordsNum desc limit #{pageNum},#{pageSize}
+    </select>
+    <select id="getCourseType" resultType="com.vivedu.ckd.model.categoryCode">
+        select courseTypeName,courseTypeCode,courseSort,courseHot from category_code limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="getCourseTypeNum" resultType="int" >
+        select count(*) from category_code limit #{pageNum},#{pageSize}
     </select>
 </mapper>

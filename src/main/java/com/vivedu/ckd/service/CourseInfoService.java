@@ -502,7 +502,7 @@ public class CourseInfoService {
         if (row > 0) {
             return new DemonstrationResponse(0, "成功！", null);
         } else {
-            return new DemonstrationResponse(500, "异常！", null);
+            return new DemonstrationResponse(-1, "异常！", null);
         }
     }
 
@@ -661,8 +661,19 @@ public class CourseInfoService {
         mapper.addKeyCourseNameAndHotNum(courseName);
     }
 
-    public List<hotKey> getpopularKeyWordInfo() {
-        return  mapper.getpopularKeyWordInfo();
+    public List<hotKey> getpopularKeyWordInfo(Integer pageNum, Integer pageSize) {
+        return  mapper.getpopularKeyWordInfo(pageNum,pageSize);
     }
 
+    public List<categoryCode> getCourseType(Integer pageNum, Integer pageSize) {
+        return  mapper.getCourseType(pageNum,pageSize);
+    }
+
+    public int getpopularKeyWordInfoNum(Integer pageNum, Integer pageSize) {
+        return  mapper.getpopularKeyWordInfoNum(pageNum,pageSize);
+    }
+
+    public int getCourseTypeNum(Integer pageNum, Integer pageSize) {
+        return  mapper.getCourseTypeNum(pageNum,pageSize);
+    }
 }
