@@ -17,7 +17,7 @@
         where category_code.courseTypeName=#{courseTypeName};
     </update>
 
-    <select id="findAllCode" resultType="com.vivedu.ckd.model.categoryCode.">
+    <select id="findAllCode" resultType="com.vivedu.ckd.model.categoryCode">
         select * from category_code
     </select>
 

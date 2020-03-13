@@ -736,14 +736,14 @@ public class ApiController {
 
                 if (codeParam.length()==courseTypeCode.length()+2) {
 
-                    if (courseTypeCode == codeParam.substring(0, courseTypeCode.length())) {
+                    if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
 
                         return new ZanshiResponse(10005, CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, "有下级分类");
                     } else {
                         //删除状态  0:正常  1:已删除
                        int row = categoryService.delCategroy(courseTypeCode);
                         if (row>0) {
-                            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, "有下级分类");
+                            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
                         }
 
                     }
