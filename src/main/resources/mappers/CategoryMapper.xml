@@ -28,4 +28,38 @@
         </set>
         where category_code.courseTypeCode=#{courseTypeCode};
     </update>
+
+    <select id="getCourseThird" resultType="com.vivedu.ckd.model.categoryThird">
+        select courseTypeName,courseTypeCode,courseSort,courseHot,source from category_third limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="getCourseThirdeNum" resultType="int" >
+        select count(*) from category_third limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="findAllCodeThird" resultType="com.vivedu.ckd.model.categoryThird">
+        select * from category_third
+    </select>
+
+    <insert id="addCategoryThird" parameterType="String">
+        INSERT INTO category_third(courseTypeName,courseTypeCode,courseSort,courseHot,isDel,source)
+        VALUES
+        (#{courseTypeName},#{courseTypeCode},#{courseSort},#{courseHot},0,#{source})
+    </insert>
+
+    <update id="upCategoryThird" parameterType="String">
+        update category_third
+        <set>
+            courseTypeName=#{courseTypeName},courseTypeCode=#{courseTypeCode},courseSort={courseSort},courseHot=#{courseHot},source=#{source}
+        </set>
+        where category_third.courseTypeName=#{courseTypeName};
+    </update>
+
+    <update id="delCategroyThird" parameterType="String">
+        update category_third
+        <set>
+            isDel=1
+        </set>
+        where category_third.courseTypeCode=#{courseTypeCode};
+    </update>
 </mapper>

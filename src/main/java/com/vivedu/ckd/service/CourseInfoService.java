@@ -676,4 +676,12 @@ public class CourseInfoService {
     public int getCourseTypeNum(Integer pageNum, Integer pageSize) {
         return  mapper.getCourseTypeNum(pageNum,pageSize);
     }
+
+    public List<categoryThird> getCourseThird(Integer pageNum, Integer pageSize) {
+        return  mapper.getCourseThird(pageNum,pageSize);
+    }
+
+    public int getCourseThirdeNum(Integer pageNum, Integer pageSize) {
+        return  mapper.getCourseThirdeNum(pageNum,pageSize);
+    }
 }

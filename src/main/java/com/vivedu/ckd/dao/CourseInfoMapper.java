@@ -166,4 +166,8 @@ public interface CourseInfoMapper {
     int getpopularKeyWordInfoNum(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
 
     int getCourseTypeNum(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
+
+    List<categoryThird> getCourseThird(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
+
+    int getCourseThirdeNum(@Param("pageNum")Integer pageNum,@Param("pageSize") Integer pageSize);
 }

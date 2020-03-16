@@ -2,6 +2,7 @@ package com.vivedu.ckd.service;
 
 import com.vivedu.ckd.dao.CategoryMapper;
 import com.vivedu.ckd.model.categoryCode;
+import com.vivedu.ckd.model.categoryThird;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,21 @@ public class CategoryService {
 
     public int delCategroy(String courseTypeCode) {
         return mapper.delCategroy(courseTypeCode);
+    }
+
+    public List<categoryThird> findAllCodeThird() {
+        return mapper.findAllCodeThird();
+    }
+
+    public int addCategoryThird(String courseTypeName, String courseTypeCode, String courseSort, String courseHot, String source) {
+        return mapper.addCategoryThird(courseTypeName,courseTypeCode,courseSort,courseHot,source);
+    }
+
+    public int upCategoryThird(String courseTypeName, String courseTypeCode, String courseSort, String courseHot, String source) {
+        return mapper.upCategoryThird(courseTypeName,courseTypeCode,courseSort,courseHot,source);
+    }
+
+    public int delCategroyThird(String courseTypeCode) {
+        return mapper.delCategroyThird(courseTypeCode);
     }
 }

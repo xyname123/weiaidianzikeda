@@ -116,10 +116,6 @@ public class ApiController {
                 }
             }
             int allnum = courseInfoService.findAllCourseNum(state, courseTypeCode);
-         /*   HashMap<String, Object> hashMapMap = new HashMap<>();
-            hashMapMap.put("total", allnum);
-            hashMapMap.put("data", courseInfo);
-            return JSON.toJSONString(hashMapMap);*/
             return new ZanshiResponse(0, "请求成功", allnum, courseInfo);
         }
     }
@@ -201,9 +197,6 @@ public class ApiController {
         int num = infoInfoService.findCount(isRec);
 
         HashMap<String, Object> hashMapMap = new HashMap<>();
-        /*hashMapMap.put("total",num);
-        hashMapMap.put("data",infoInfo);*/
-        // return JSON.toJSONString(hashMapMap);
         return new ZanshiResponse(0, "请求成功", num, infoInfo);
     }
 
@@ -754,6 +747,93 @@ public class ApiController {
 
         }
           return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
+    }
+
+
+    /**
+     * 三方课程分类列表3/16
+     */
+    @GetMapping(path = "/getCourseTypeSourceList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "三方课程分类列表3")
+    public ZanshiResponse getCourseTypeSourceList(
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
+    ) throws Exception {
+        pageNum = (pageNum - 1) * pageSize;
+        List<categoryThird> categoryCodeList = courseInfoService.getCourseThird(pageNum, pageSize);
+        int num = courseInfoService.getCourseThirdeNum(pageNum, pageSize);
+        return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
+    }
+
+    /**
+     * 三方课程分类更新3/16
+     */
+    @GetMapping(path = "/updateCourseTypeSourceList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "课程分类更新(三方)")
+    public ZanshiResponse updateCourseTypeList(
+            @RequestParam(required = true, value = "Tpye") int Tpye,
+            @RequestParam(required = false, value = "source") String source,
+            @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
+            @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
+            @RequestParam(required = false, value = "courseSort") String courseSort,
+            @RequestParam(required = false, value = "courseHot") String courseHot
+    ) throws Exception {
+        //1.增加数据 2.更新数据 3.删除数据
+        if (Tpye ==1) {
+            List<categoryThird> code =categoryService.findAllCodeThird();
+            for (categoryThird categoryCode : code) {
+                if (categoryCode.getCourseTypeName().equals(courseTypeName)) {
+                    return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(),"已存在",0,null);
+                }
+            }
+            int num= categoryService.addCategoryThird(courseTypeName,courseTypeCode,courseSort,courseHot,source);
+
+            if (num >0) {
+                return new ZanshiResponse(0,"添加成功",num,null);
+            }
+            else{
+                return new ZanshiResponse(-1,"未知错误",0,null);
+            }
+        }
+        if (Tpye ==2) {
+
+            int num= categoryService.upCategoryThird(courseTypeName,courseTypeCode,courseSort,courseHot,source);
+
+            if (num >0) {
+                return new ZanshiResponse(0,"更新成功",num,null);
+            }
+            else{
+                return new ZanshiResponse(-1,"未知错误",0,null);
+            }
+
+        }
+        if (Tpye ==3) {
+            //分类是否存在下级分类，假设存在则不能删除，只有在不存在下级分类的情况下才可删除
+            List<categoryThird> code =categoryService.findAllCodeThird();
+            for (categoryThird categoryCode : code) {
+
+                String codeParam = categoryCode.getCourseTypeCode();
+
+                if (codeParam.length()==courseTypeCode.length()+2) {
+
+                    if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
+
+                        return new ZanshiResponse(10005, CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, "有下级分类");
+                    } else {
+                        //删除状态  0:正常  1:已删除
+                        int row = categoryService.delCategroyThird(courseTypeCode);
+                        if (row>0) {
+                            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+        return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
 
 }
