@@ -38,4 +38,10 @@ public interface CategoryMapper {
                         @Param(value = "source")String source);
 
     int delCategroyThird(String courseTypeCode);
+
+    List<categoryCode> findOne();
+
+    List<categoryCode> findMore(String courseTypeCode);
+
+    List<categoryCode> findBen(String courseTypeCode);
 }

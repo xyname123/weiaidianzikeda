@@ -727,26 +727,56 @@ public class ApiController {
 
                String codeParam = categoryCode.getCourseTypeCode();
 
-                if (codeParam.length()==courseTypeCode.length()+2) {
+                if (codeParam.length() == courseTypeCode.length() + 2) {
 
                     if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
 
                         return new ZanshiResponse(10005, CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, "有下级分类");
                     } else {
                         //删除状态  0:正常  1:已删除
-                       int row = categoryService.delCategroy(courseTypeCode);
-                        if (row>0) {
+                        int row = categoryService.delCategroy(courseTypeCode);
+                        if (row > 0) {
                             return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
                         }
 
                     }
 
+                } else {
+                    return new ZanshiResponse(10001, CodeMsg.PARARM_EXCEPTION.getMessage(), 0, null);
                 }
 
             }
 
         }
-          return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
+
+        if (Tpye==4) {
+            //映射测试
+            List<categoryCode> code =categoryService.findAllCode();
+            for (categoryCode categoryCode : code) {
+
+                String codeParam = categoryCode.getCourseTypeCode();
+
+                //一级分类
+                if (courseTypeCode==null) {
+                    List<categoryCode> categoryName= categoryService.findOne();
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                }
+                //       0101            01
+
+                if (courseTypeCode!=null&&codeParam.length() == courseTypeCode.length() + 2) {
+                    if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
+                        List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
+                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                    } else {
+                        List<categoryCode> categoryName = categoryService.findBen(courseTypeCode);
+                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                    }
+
+                }
+            }
+
+        }
+        return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
 
 
@@ -829,11 +859,16 @@ public class ApiController {
                     }
 
                 }
+                else {
+                    return new ZanshiResponse(10001, CodeMsg.PARARM_EXCEPTION.getMessage(), 0, null);
+                }
 
             }
 
         }
         return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
+
+
 
 }

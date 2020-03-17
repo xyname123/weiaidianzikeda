@@ -50,4 +50,16 @@ public class CategoryService {
     public int delCategroyThird(String courseTypeCode) {
         return mapper.delCategroyThird(courseTypeCode);
     }
+
+    public List<categoryCode> findOne() {
+        return mapper.findOne();
+    }
+
+    public List<categoryCode> findMore(String courseTypeCode) {
+        return mapper.findMore(courseTypeCode);
+    }
+
+    public List<categoryCode> findBen(String courseTypeCode) {
+        return mapper.findBen(courseTypeCode);
+    }
 }
