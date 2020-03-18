@@ -75,9 +75,9 @@ public interface CourseInfoMapper {
     int findFilmT(@Param("id")String courseid);
 
 
-    int getRecommendCourseListSize(@Param("isRec") Integer isRec, @Param("source") String source, @Param("courseName") String courseName,@Param("startDate")String startDate);
+    int getRecommendCourseListSize(@Param("isRec") Integer isRec, @Param("source") String source, @Param("courseName") String courseName,@Param("startDate")String startDate,@Param("categoryID")String categoryID);
 
-    List<CourseInfo> getRecommendCourseList(@Param("isRec") Integer isRec, @Param("firstIndex") Integer firstIndex, @Param("pageSize") Integer pageSize, @Param("source") String source,@Param("courseName") String courseName,@Param("startDate")String startDate,@Param("sortId")Integer sortId);
+    List<CourseInfo> getRecommendCourseList(@Param("isRec") Integer isRec, @Param("firstIndex") Integer firstIndex, @Param("pageSize") Integer pageSize, @Param("source") String source,@Param("courseName") String courseName,@Param("startDate")String startDate,@Param("sortId")Integer sortId,@Param("categoryID")String categoryID);
 
     int getRecommendCourseListSize(@Param("isRec") Integer isRec, @Param("source") String source, @Param("courseName") String courseName);
 
@@ -170,4 +170,30 @@ public interface CourseInfoMapper {
     List<categoryThird> getCourseThird(@Param("pageNum")Integer pageNum, @Param("pageSize")Integer pageSize);
 
     int getCourseThirdeNum(@Param("pageNum")Integer pageNum,@Param("pageSize") Integer pageSize);
+
+    List<GroupClass> getGroupClassList();
+
+    int updateGroupClassSort(@Param("list")List<GroupClass> list);
+
+    List<GroupMember> getGroupMemberList(@Param("groupId")int groupId);
+
+    int updateGroupMemberSort(@Param("list")List<GroupMember> list);
+
+    int queryMaxSortId();
+
+    int addGroupClass(GroupClass groupClass);
+
+    int deleteGroupClass(@Param("id")int id);
+
+    GroupMember queryGroupMember(@Param("courseId")int courseId,@Param("groupId")int groupId);
+
+    int queryGroupMemberMax(@Param("courseId")int courseId,@Param("groupId")int groupId);
+
+    int addGroupMember(GroupMember groupMember);
+
+    int deleteGroupMember(@Param("id") int id);
+
+    int find();
+
+    int findp(@Param("courseId")Integer courseId,@Param("groupClassId") Integer groupClassId);
 }

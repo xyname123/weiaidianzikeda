@@ -88,9 +88,7 @@ public class ApiController {
             } else {
                 courseInfoService.addKeyCourseNameAndHotNum(courseName);
             }
-          /*  HashMap<String, Object> hashMapMap = new HashMap<>();
-            hashMapMap.put("total", numkey);
-            hashMapMap.put("data", courseInfo);*/
+
             return new ZanshiResponse(0, "请求成功", numkey, courseInfo);
 
         } else if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(courseName) && id != null) {
@@ -184,20 +182,18 @@ public class ApiController {
         return JSON.toJSONString(hashMapMap);
     }
 
-    @GetMapping(path = "/news/homeNewsList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/news/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "新闻信息列表）")
-    public ZanshiResponse newsList(
+    public  List<InfoInfo> newsList(
             @RequestParam(required = false, value = "isRec") @ApiParam(value = "isRec") Integer isRec,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
         log.info("进入/news/list方法");
         pageNum = (pageNum - 1) * pageSize;
-        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum, pageSize, isRec);
+        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum,pageSize,isRec);
         int num = infoInfoService.findCount(isRec);
-
-        HashMap<String, Object> hashMapMap = new HashMap<>();
-        return new ZanshiResponse(0, "请求成功", num, infoInfo);
+        return  infoInfo;
     }
 
     @GetMapping(path = "/news/detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -258,9 +254,7 @@ public class ApiController {
                 String f = "";
                 courseInfo.setEnd(f);
             }
-         /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
-           courseInfoPojo.setTimeData(timeData);*/
-            //hashMapMap.put("timeData", timeData);
+
 
         }
         if (!courseInfo.getSource().equals("中国大学MOOC") && courseInfo.getStart() == null || StringUtils.isEmpty(courseInfo.getStart())) {
@@ -362,9 +356,6 @@ public class ApiController {
                     String f = "";
                     info.setEnd(f);
                 }
-         /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
-           courseInfoPojo.setTimeData(timeData);*/
-                //hashMapMap.put("timeData", timeData);
 
             }
             if (!info.getSource().equals("中国大学MOOC") && info.getStart() == null || StringUtils.isEmpty(info.getStart())) {
@@ -455,9 +446,6 @@ public class ApiController {
                     String f = "";
                     info.setEnd(f);
                 }
-         /*   String timeData=courseInfo.getStart()+"到"+courseInfo.getEnd();
-           courseInfoPojo.setTimeData(timeData);*/
-                //hashMapMap.put("timeData", timeData);
 
             }
             if (!info.getSource().equals("中国大学MOOC") && info.getStart() == null || StringUtils.isEmpty(info.getStart())) {
@@ -560,7 +548,6 @@ public class ApiController {
             HashMap<String, Object> hashMapMap = new HashMap<>();
             hashMapMap.put("total", kk);
             hashMapMap.put("data", classroom);
-            //  return JSON.toJSONString(hashMapMap);
             return new ZanshiResponse(0, "请求成功", kk, classroom);
 
         } else {
@@ -587,9 +574,7 @@ public class ApiController {
             @RequestParam(required = false, value = "startDate") @ApiParam(value = "startDate") long startDate,
             @RequestParam(required = false, value = "sortId") @ApiParam(value = "sortId") Integer sortId,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
-        /*if (StringUtils.isEmpty(source) && isRec == null && StringUtils.isEmpty(courseName)) {
-            return  courseInfoService.getRecommendCourseListL(pageNum,pageSize);
-        }*/
+
         return courseInfoService.getRecommendCourseList(isRec, pageNum, pageSize, source, courseName, categoryID, startDate, sortId);
     }
 
@@ -749,33 +734,7 @@ public class ApiController {
 
         }
 
-        if (Tpye==4) {
-            //映射测试
-            List<categoryCode> code =categoryService.findAllCode();
-            for (categoryCode categoryCode : code) {
 
-                String codeParam = categoryCode.getCourseTypeCode();
-
-                //一级分类
-                if (courseTypeCode==null) {
-                    List<categoryCode> categoryName= categoryService.findOne();
-                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
-                }
-                //       0101            01
-
-                if (courseTypeCode!=null&&codeParam.length() == courseTypeCode.length() + 2) {
-                    if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
-                        List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
-                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
-                    } else {
-                        List<categoryCode> categoryName = categoryService.findBen(courseTypeCode);
-                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
-                    }
-
-                }
-            }
-
-        }
         return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
 
@@ -866,9 +825,97 @@ public class ApiController {
             }
 
         }
+        if (Tpye==4) {
+            //映射测试
+            List<categoryCode> code =categoryService.findAllCode();
+            for (categoryCode categoryCode : code) {
+
+                String codeParam = categoryCode.getCourseTypeCode();
+
+                //一级分类
+                if (courseTypeCode==null) {
+                    List<categoryCode> categoryName= categoryService.findOne();
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                }
+
+                if (courseTypeCode!=null&&codeParam.length() == courseTypeCode.length() + 2) {
+                    if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
+                        List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
+                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                    } else {
+                        List<categoryCode> categoryName = categoryService.findBen(courseTypeCode);
+                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                    }
+
+                }
+            }
+
+        }
         return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
 
 
+/***
+ * 首页修改版
+ *
+ */
+    @GetMapping(path = "/getGroupClassList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取组团信息")
+    public DemonstrationResponse getGroupClassList() throws Exception {
+        return courseInfoService.getGroupClassList();
+    }
 
+    @GetMapping(path = "/updateGroupClassSort", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "修改组团信息顺序")
+    public DemonstrationResponse updateGroupClassSort(
+            @RequestParam(required = true, value = "sortList") String sortList) throws Exception {
+        return courseInfoService.updateGroupClassSort(sortList);
+    }
+
+    @PostMapping(path = "/addGroupClass", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "添加组团信息")
+    public DemonstrationResponse addGroupClass(
+            GroupClass groupClass) throws Exception {
+        return courseInfoService.addGroupClass(groupClass);
+    }
+
+    @DeleteMapping(path = "/deleteGroupClass", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "删除组团信息")
+    public DemonstrationResponse deleteGroupClass(
+            @RequestParam(required = true, value = "id") int id) throws Exception {
+        return courseInfoService.deleteGroupClass(id);
+    }
+
+    @GetMapping(path = "/getGroupMemberList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取组团信息")
+    public DemonstrationResponse getGroupMemberList(
+            @RequestParam(required = true, value = "groupId") int groupId
+    ) throws Exception {
+        return courseInfoService.getGroupMemberList(groupId);
+    }
+
+    @GetMapping(path = "/updateGroupMemberSort", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "更新组团信息")
+    public DemonstrationResponse updateGroupMemberSort(
+            @RequestParam(required = true, value = "groupId") int groupId,
+            @RequestParam(required = true, value = "sortList") String sortList
+    ) throws Exception {
+        return courseInfoService.updateGroupMemberSort(groupId,sortList);
+    }
+
+    @PostMapping(path = "/addGroupMember", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "添加组团信息")
+    public DemonstrationResponse addGroupMember(
+            @RequestParam(required = true, value = "courseId") int courseId,
+            @RequestParam(required = true, value = "groupClassId") int groupClassId
+            ) throws Exception {
+        return courseInfoService.addGroupMember(courseId,groupClassId);
+    }
+
+    @DeleteMapping(path = "/deleteGroupMember", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "删除组团信息")
+    public DemonstrationResponse deleteGroupMember(
+            @RequestParam(required = true, value = "id") int id) throws Exception {
+        return courseInfoService.deleteGroupMember(id);
+    }
 }

@@ -617,4 +617,97 @@
     <select id="getCourseTypeNum" resultType="int" >
         select count(*) from category_code limit #{pageNum},#{pageSize}
     </select>
+
+    <select id="getGroupClassList" resultType="com.vivedu.ckd.model.GroupClass">
+        select * from group_class ORDER BY sort ASC
+    </select>
+
+    <update id="updateGroupClassSort" parameterType="java.util.List">
+        <foreach collection="list" item="item">
+            update group_class
+            <set>
+                sort=#{item.sort}
+            </set>
+            where id = #{item.id};
+        </foreach>
+    </update>
+
+    <select id="getGroupMemberList" resultType="com.vivedu.ckd.model.GroupMember">
+        SELECT
+        ci.courseName,
+        ci.cover,
+        gc.*
+        FROM
+        (
+        SELECT
+        gm.courseId,
+        gm.sort,
+        gm.groupClassId,
+        gm.id
+        FROM
+        group_member gm
+        WHERE
+        gm.groupClassId = #{groupId}
+        ) gc
+        LEFT JOIN course_info ci ON ci.id = gc.courseId
+        ORDER BY
+        gc.sort ASC
+    </select>
+
+    <update id="updateGroupMemberSort" parameterType="java.util.List">
+        <foreach collection="list" item="item">
+            update group_member
+            <set>
+                sort=#{item.sort}
+            </set>
+            where courseId = #{item.courseId} and groupClassId = #{item.groupClassId};
+        </foreach>
+    </update>
+
+    <select id="queryMaxSortId" resultType="int">
+        select max(sort) from group_class
+    </select>
+
+    <select id="find" resultType="int">
+        select count(*) from group_class
+    </select>
+
+    <select id="findp" resultType="int">
+        select count(*) from group_member  where courseId = #{courseId} and groupClassId = #{groupClassId}
+    </select>
+    <insert id="addGroupClass" parameterType="com.vivedu.ckd.model.GroupClass">
+        insert into  group_class(
+        groupName,
+        sort)
+        VALUES(
+        #{groupName},
+        #{sort})
+    </insert>
+
+    <delete id="deleteGroupClass" parameterType="int">
+        delete from group_class where id =#{id}
+    </delete>
+
+    <select id="queryGroupMember" resultType="com.vivedu.ckd.model.GroupMember">
+        select * from group_member where courseId = #{courseId} and groupClassId = #{groupId}
+    </select>
+
+    <select id="queryGroupMemberMax" resultType="int">
+        select max(sort) from group_member where courseId = #{courseId} and groupClassId = #{groupId}
+    </select>
+
+    <insert id="addGroupMember" parameterType="com.vivedu.ckd.model.GroupMember">
+        insert into group_member(
+        courseId,
+        groupClassId,
+        sort)
+        VALUES(
+        #{courseId},
+        #{groupClassId},
+        #{sort})
+    </insert>
+
+    <delete id="deleteGroupMember" parameterType="int">
+        delete  from group_member where id =#{id}
+    </delete>
 </mapper>

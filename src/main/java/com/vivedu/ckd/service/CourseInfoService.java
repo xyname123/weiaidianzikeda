@@ -422,8 +422,8 @@ public class CourseInfoService {
             Date date = new Date(startDate);
             res = simpleDateFormat.format(date);
         }
-        List<CourseInfo> courseInfos = mapper.getRecommendCourseList(isRec, firstIndex, pageSize,source,courseName,res,sortId);
-        int courseInfosSize = mapper.getRecommendCourseListSize(isRec,source,courseName,res);
+        List<CourseInfo> courseInfos = mapper.getRecommendCourseList(isRec, firstIndex, pageSize,source,courseName,res,sortId,categoryID);
+        int courseInfosSize = mapper.getRecommendCourseListSize(isRec,source,courseName,res,categoryID);
         RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum, courseInfosSize, courseInfos);
 
         return new DemonstrationResponse(0, "获取成功！", recommendCourseData);
@@ -683,5 +683,146 @@ public class CourseInfoService {
 
     public int getCourseThirdeNum(Integer pageNum, Integer pageSize) {
         return  mapper.getCourseThirdeNum(pageNum,pageSize);
+    }
+    public DemonstrationResponse getGroupClassList() {
+        try {
+            List<GroupClass> groupClassList = mapper.getGroupClassList();
+            return new DemonstrationResponse(0, "查询成功！", groupClassList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse updateGroupClassSort(String sortList) {
+        try {
+            if (StringUtils.isEmpty(sortList)) {
+                return new DemonstrationResponse(-1, "顺序id不能为空", null);
+            }
+            if (sortList.contains(",")) {
+                String[] ids = sortList.split(",");
+                List<GroupClass> groupClassList = new ArrayList<>();
+                for (int i = 0; i < ids.length; i++) {
+                    GroupClass groupClass = new GroupClass(Integer.parseInt(ids[i]), "", i + 1);
+                    groupClassList.add(groupClass);
+                }
+                int rows = mapper.updateGroupClassSort(groupClassList);
+            }
+            return new DemonstrationResponse(0, "修改成功！", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse addGroupClass(GroupClass groupClass) {
+        try {
+            int o =mapper.find();
+            if (o == 0) {
+                groupClass.setSort(1);
+            }else{
+                int max = mapper.queryMaxSortId();
+                groupClass.setSort(max + 1);
+            }
+            int row = mapper.addGroupClass(groupClass);
+            if (row > 0) {
+                return new DemonstrationResponse(0, "添加成功！", null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse deleteGroupClass(int id) {
+        try {
+            if (id <= 0) {
+                return new DemonstrationResponse(-1, "请传正确的id", null);
+            }
+            int row = mapper.deleteGroupClass(id);
+            if (row > 0) {
+                return new DemonstrationResponse(0, "删除成功！", null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse getGroupMemberList(int groupId) {
+        try {
+            if (groupId <= 0) {
+                return new DemonstrationResponse(-1, "请传正确的groupId", null);
+            }
+            List<GroupMember> groupMemberList = mapper.getGroupMemberList(groupId);
+            return new DemonstrationResponse(0, "查询成功！", groupMemberList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse updateGroupMemberSort(int groupId, String sortList) {
+        try {
+            if (groupId <= 0) {
+                return new DemonstrationResponse(-1, "请传正确的groupId", null);
+            }
+            if (StringUtils.isEmpty(sortList)) {
+                return new DemonstrationResponse(-1, "顺序id不能为空", null);
+            }
+            if (sortList.contains(",")) {
+                String[] ids = sortList.split(",");
+                List<GroupMember> groupMemberList = new ArrayList<>();
+                for (int i = 0; i < ids.length; i++) {
+                    GroupMember groupMember = new GroupMember(0, Integer.parseInt(ids[i]), groupId, i + 1, "", "");
+                    groupMemberList.add(groupMember);
+                }
+                int rows = mapper.updateGroupMemberSort(groupMemberList);
+            }
+            return new DemonstrationResponse(0, "修改成功！", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse addGroupMember(Integer courseId ,Integer GroupClassId) {
+        try {
+            GroupMember groupMember1 = mapper.queryGroupMember(courseId, GroupClassId);
+            if (groupMember1 != null) {
+                return new DemonstrationResponse(-1, "此课程已存在在此组中！", null);
+            }
+            int max=1;
+            int o =mapper.findp(courseId,GroupClassId);
+            if (o > 0) {
+                max = mapper.queryGroupMemberMax(courseId,GroupClassId);
+            }
+            GroupMember groupMember = new GroupMember();
+            groupMember.setSort(max);
+            groupMember.setGroupClassId(GroupClassId);
+            groupMember.setCourseId(courseId);
+            int row = mapper.addGroupMember(groupMember);
+            if (row > 0) {
+                return new DemonstrationResponse(0, "添加成功！", null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse deleteGroupMember(int id) {
+        try {
+            if (id <= 0) {
+                return new DemonstrationResponse(-1, "请传正确的id", null);
+            }
+            int row = mapper.deleteGroupMember(id);
+            if (row > 0) {
+                return new DemonstrationResponse(0, "删除成功！", null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
     }
 }
