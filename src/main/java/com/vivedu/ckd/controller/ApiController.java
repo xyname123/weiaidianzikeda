@@ -50,7 +50,7 @@ public class ApiController {
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize,
             @RequestParam(required = false, value = "sort", defaultValue = "date") @ApiParam(value = "排序") String sort,
             @RequestParam(required = false, value = "userId") @ApiParam(value = "学工编号") String userId,
-            @RequestParam(required = false, value = "state") @ApiParam(value = "排序") Integer state,
+            @RequestParam(required = false, value = "state") @ApiParam(value = "课程状态") Integer state,
             @RequestParam(required = false, value = "courseTypeCode") @ApiParam(value = "课程分类编码") Integer courseTypeCode) {
         log.info("进入/courseList方法");
         if (StringUtils.isNotEmpty(userId)) {
@@ -670,14 +670,14 @@ public class ApiController {
     @GetMapping(path = "/updateCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程分类更新")
     public ZanshiResponse updateCourseTypeList(
-            @RequestParam(required = true, value = "Tpye") int Tpye,
+            @RequestParam(required = true, value = "type") int type,
             @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
             @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
             @RequestParam(required = false, value = "courseSort") String courseSort,
             @RequestParam(required = false, value = "courseHot") String courseHot
     ) throws Exception {
         //1.增加数据 2.更新数据 3.删除数据
-        if (Tpye ==1) {
+        if (type ==1) {
             List<categoryCode> code =categoryService.findAllCode();
             for (categoryCode categoryCode : code) {
                 if (categoryCode.getCourseTypeName().equals(courseTypeName)) {
@@ -693,7 +693,7 @@ public class ApiController {
                 return new ZanshiResponse(-1,"未知错误",0,null);
             }
         }
-        if (Tpye ==2) {
+        if (type ==2) {
 
             int num= categoryService.upCategory(courseTypeName,courseTypeCode,courseSort,courseHot);
 
@@ -705,7 +705,7 @@ public class ApiController {
             }
 
         }
-       if (Tpye ==3) {
+       if (type ==3) {
             //分类是否存在下级分类，假设存在则不能删除，只有在不存在下级分类的情况下才可删除
             List<categoryCode> code =categoryService.findAllCode();
             for (categoryCode categoryCode : code) {
@@ -760,7 +760,7 @@ public class ApiController {
     @GetMapping(path = "/updateCourseTypeSourceList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程分类更新(三方)")
     public ZanshiResponse updateCourseTypeList(
-            @RequestParam(required = true, value = "Tpye") int Tpye,
+            @RequestParam(required = true, value = "type") int type,
             @RequestParam(required = false, value = "source") String source,
             @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
             @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
@@ -768,7 +768,7 @@ public class ApiController {
             @RequestParam(required = false, value = "courseHot") String courseHot
     ) throws Exception {
         //1.增加数据 2.更新数据 3.删除数据
-        if (Tpye ==1) {
+        if (type ==1) {
             List<categoryThird> code =categoryService.findAllCodeThird();
             for (categoryThird categoryCode : code) {
                 if (categoryCode.getCourseTypeName().equals(courseTypeName)) {
@@ -784,7 +784,7 @@ public class ApiController {
                 return new ZanshiResponse(-1,"未知错误",0,null);
             }
         }
-        if (Tpye ==2) {
+        if (type ==2) {
 
             int num= categoryService.upCategoryThird(courseTypeName,courseTypeCode,courseSort,courseHot,source);
 
@@ -796,7 +796,7 @@ public class ApiController {
             }
 
         }
-        if (Tpye ==3) {
+        if (type ==3) {
             //分类是否存在下级分类，假设存在则不能删除，只有在不存在下级分类的情况下才可删除
             List<categoryThird> code =categoryService.findAllCodeThird();
             for (categoryThird categoryCode : code) {
@@ -825,7 +825,7 @@ public class ApiController {
             }
 
         }
-        if (Tpye==4) {
+        if (type==4) {
             //映射测试
             List<categoryCode> code =categoryService.findAllCode();
             for (categoryCode categoryCode : code) {
@@ -906,8 +906,8 @@ public class ApiController {
     @PostMapping(path = "/addGroupMember", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "添加组团信息")
     public DemonstrationResponse addGroupMember(
-            @RequestParam(required = true, value = "courseId") int courseId,
-            @RequestParam(required = true, value = "groupClassId") int groupClassId
+            @RequestParam(required = true,value = "courseId") int courseId,
+            @RequestParam(required = true,value = "groupClassId") int groupClassId
             ) throws Exception {
         return courseInfoService.addGroupMember(courseId,groupClassId);
     }
@@ -918,4 +918,14 @@ public class ApiController {
             @RequestParam(required = true, value = "id") int id) throws Exception {
         return courseInfoService.deleteGroupMember(id);
     }
+
+    @GetMapping(path = "/getGroupInformationList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取组团信息")
+    public DemonstrationResponse getGroupInformationList(
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
+    ) throws Exception {
+        return courseInfoService.getGroupInformationList(pageNum,pageSize);
+    }
+
 }

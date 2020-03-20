@@ -10,8 +10,11 @@ import lombok.NoArgsConstructor;
 public class GroupMember {
 
     private int id;
+    //课程id
     private int courseId;
+    //组团id
     private int groupClassId;
+    //,排序码
     private int sort;
 
     private String courseName;

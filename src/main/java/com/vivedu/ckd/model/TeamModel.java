@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupClass {
-    private int id;
-    //组团名
-    private String groupName;
-    //排序字段
-    private int sort;
+public class TeamModel {
+   private int teamId;
+   private String teamName;
+   private List<CourseInfo> courseList;
 }

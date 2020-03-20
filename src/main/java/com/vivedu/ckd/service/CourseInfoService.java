@@ -825,4 +825,33 @@ public class CourseInfoService {
         }
         return new DemonstrationResponse(-1, "异常！", null);
     }
+
+    public DemonstrationResponse getGroupInformationList(Integer pageNum, Integer pageSize) {
+        try {
+            if (pageNum == null || pageNum <= 0) {
+                pageNum = 1;
+            }
+            if (pageSize == null || pageSize <= 0) {
+                pageSize = 10;
+            }
+            int firstIndex = (pageNum - 1) * pageSize;
+            RecommendCourseData recommendCourseData = new RecommendCourseData();
+            recommendCourseData.setCurrentPage(pageNum);
+            List<GroupClass> groupClassList = mapper.getGroupClassListPage(firstIndex, pageSize);
+            int count = mapper.getGroupClassList().size();
+            recommendCourseData.setCount(count);
+            List<TeamModel> teamModelList = new ArrayList<>();
+            for (GroupClass groupClass : groupClassList) {
+                List<CourseInfo> courseInfoList = mapper.getCourseInfoList(groupClass.getId());
+                TeamModel teamModel = new TeamModel(groupClass.getId(), groupClass.getGroupName(), courseInfoList);
+                teamModelList.add(teamModel);
+            }
+            recommendCourseData.setData(teamModelList);
+            return new DemonstrationResponse(0, "查询成功！", recommendCourseData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
 }

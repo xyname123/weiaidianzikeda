@@ -710,4 +710,29 @@
     <delete id="deleteGroupMember" parameterType="int">
         delete  from group_member where id =#{id}
     </delete>
+    <select id="getCourseThird" resultType="com.vivedu.ckd.model.categoryThird">
+        select courseTypeName,courseTypeCode,courseSort,courseHot,source from category_third limit #{pageNum},#{pageSize}
+    </select>
+    <select id="getCourseThirdeNum" resultType="int" >
+        select count(*) from category_third limit #{pageNum},#{pageSize}
+    </select>
+    <select id="getGroupClassListPage" resultType="com.vivedu.ckd.model.GroupClass">
+        select * from group_class ORDER BY sort ASC LIMIT #{firstIndex},#{pageSize}
+    </select>
+
+    <select id="getCourseInfoList" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT
+        ci.*
+        FROM
+        course_info ci
+        WHERE
+        ci.id IN (
+        SELECT
+        gm.id
+        FROM
+        group_member gm
+        WHERE
+        gm.groupClassId = #{groupClassId}
+        )
+    </select>
 </mapper>

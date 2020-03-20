@@ -196,4 +196,8 @@ public interface CourseInfoMapper {
     int find();
 
     int findp(@Param("courseId")Integer courseId,@Param("groupClassId") Integer groupClassId);
+
+    List<GroupClass> getGroupClassListPage(@Param("firstIndex")Integer firstIndex,@Param("pageSize")Integer pageSize);
+
+    List<CourseInfo> getCourseInfoList(@Param("groupClassId")Integer groupClassId);
 }
