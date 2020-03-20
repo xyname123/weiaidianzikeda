@@ -124,13 +124,17 @@ public class ApiController {
     @GetMapping(path = "/myCourseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "我浏览的课程信息")
     public ZanshiResponse courseInfoByUserId(
-            @RequestParam(required = true, value = "userid") @ApiParam(value = "用户编号") String userid) {
+            @RequestParam(required = true, value = "userid") @ApiParam(value = "用户编号") String userid,
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
+        pageNum = (pageNum - 1) * pageSize;
         log.info("进入/myCourseList");
-        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid);
+        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid,pageNum,pageSize);
+        List<CourseInfo> courseInfoNum = courseInfoService.findCourseByUserIdLearnNum(userid);
         HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("total", courseInfo.size());
+        hashMapMap.put("total", courseInfoNum.size());
         hashMapMap.put("data", courseInfo);
-        return new ZanshiResponse(0, "请求成功", courseInfo.size(), courseInfo);
+        return new ZanshiResponse(0, "请求成功", courseInfoNum.size(), courseInfo);
     }
 
     @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

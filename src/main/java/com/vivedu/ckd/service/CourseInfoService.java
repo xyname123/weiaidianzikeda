@@ -45,8 +45,8 @@ public class CourseInfoService {
     }
 
 
-    public List<CourseInfo> findCourseByUserIdLearn(String userid) {
-        return mapper.findCourseByUserId(userid);
+    public List<CourseInfo> findCourseByUserIdLearn(String userid, Integer pageNum, Integer pageSize) {
+        return mapper.findCourseByUserId(userid,pageNum,pageSize);
     }
 
     public List<CourseInfo> findCourseByUserIdPage(String userid, Integer pageNum, Integer pageSize) {
@@ -868,4 +868,7 @@ public class CourseInfoService {
         return new DemonstrationResponse(-1, "异常！", null);
     }
 
+    public List<CourseInfo> findCourseByUserIdLearnNum(String userid) {
+        return mapper.findCourseByUserIdLearnNum(userid);
+    }
 }

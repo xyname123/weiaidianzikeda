@@ -3,8 +3,12 @@
 
 <mapper namespace="com.vivedu.ckd.dao.CourseInfoMapper">
     <select id="findCourseByUserId" parameterType="String" resultType="com.vivedu.ckd.model.CourseInfo">
-       SELECT * FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  browse_course where userid=#{userid} order by catTime desc)
+       SELECT * FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  browse_course where userid=#{userid} order by catTime desc) limit #{pageNum},#{pageSize}
        <!-- SELECT cl.name,cl.chapterId,cl.chapterId FROM course_info ci  LEFT join chapter_list cl on ci.courseId = cl.courseId-->
+    </select>
+    <select id="findCourseByUserIdLearnNum" parameterType="String" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT count(*) FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  browse_course where userid=#{userid} order by catTime desc)
+        <!-- SELECT cl.name,cl.chapterId,cl.chapterId FROM course_info ci  LEFT join chapter_list cl on ci.courseId = cl.courseId-->
     </select>
 
     <select id="findCourseByUserIdPage" resultType="com.vivedu.ckd.model.CourseInfo">

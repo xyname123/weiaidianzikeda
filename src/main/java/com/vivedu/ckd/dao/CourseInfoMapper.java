@@ -12,7 +12,7 @@ public interface CourseInfoMapper {
 
 
 
-    List<CourseInfo> findCourseByUserId(String userid);
+    List<CourseInfo> findCourseByUserId(@Param(value = "userid")String userid, @Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize") Integer pageSize);
 
     List<CourseInfo> findCourseByUserIdPage(@Param(value = "userId")String userId, @Param(value = "pageNum") Integer pageNum, @Param(value = "pageSize") Integer pageSize);
 
@@ -200,4 +200,6 @@ public interface CourseInfoMapper {
     List<GroupClass> getGroupClassListPage(@Param("firstIndex")Integer firstIndex,@Param("pageSize")Integer pageSize);
 
     List<CourseInfo> getCourseInfoList(@Param("groupClassId")Integer groupClassId);
+
+    List<CourseInfo> findCourseByUserIdLearnNum(String userid);
 }

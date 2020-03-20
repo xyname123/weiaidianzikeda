@@ -2,7 +2,6 @@ debug: true
 
 server:
   port: 8090
-
 spring:
   mvc:
     static-path-pattern: /**
