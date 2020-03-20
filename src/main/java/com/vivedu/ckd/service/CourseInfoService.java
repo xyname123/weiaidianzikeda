@@ -45,32 +45,31 @@ public class CourseInfoService {
     }
 
 
-
-  public List<CourseInfo> findCourseByUserIdLearn(String userid) {
+    public List<CourseInfo> findCourseByUserIdLearn(String userid) {
         return mapper.findCourseByUserId(userid);
     }
 
     public List<CourseInfo> findCourseByUserIdPage(String userid, Integer pageNum, Integer pageSize) {
-        return mapper.findCourseByUserIdPage(userid,pageNum,pageSize);
+        return mapper.findCourseByUserIdPage(userid, pageNum, pageSize);
     }
 
 
     public List<CourseInfo> findCourseByUserId(String userId, String sort, Integer pageNum, Integer pageSize) {
-        return mapper.findCourseByUserIdIf(userId,sort,pageNum,pageSize);
+        return mapper.findCourseByUserIdIf(userId, sort, pageNum, pageSize);
     }
 
-    public List<CourseInfo> findCourseByKey(String courseName, Integer pageNum, Integer pageSize, Integer state,Integer courseTypeCode) {
-        return mapper.findCourseByKey(courseName,pageNum,pageSize,state,courseTypeCode);
-
-    }
-
-    public List<CourseInfo> findAllCourse(Integer pageNum, Integer pageSize, Integer state,Integer courseTypeCode) {
-        return mapper.findAllCourse(pageNum,pageSize,state,courseTypeCode);
+    public List<CourseInfo> findCourseByKey(String courseName, Integer pageNum, Integer pageSize, Integer state, Integer courseTypeCode) {
+        return mapper.findCourseByKey(courseName, pageNum, pageSize, state, courseTypeCode);
 
     }
 
-    public List<CourseInfo> findCourse(Integer id,Integer pageNum, Integer pageSize) {
-        return mapper.findCourse(id,pageNum ,pageSize );
+    public List<CourseInfo> findAllCourse(Integer pageNum, Integer pageSize, Integer state, Integer courseTypeCode) {
+        return mapper.findAllCourse(pageNum, pageSize, state, courseTypeCode);
+
+    }
+
+    public List<CourseInfo> findCourse(Integer id, Integer pageNum, Integer pageSize) {
+        return mapper.findCourse(id, pageNum, pageSize);
 
     }
 
@@ -99,14 +98,14 @@ public class CourseInfoService {
     public DemonstrationResponse statisticalCount(int type) {
         TimesStatistics timesStatistics = mapper.query(type);
         Date date = new Date();
-        int row =0;
+        int row = 0;
         if (timesStatistics != null) {
             timesStatistics.setTotalNumber(timesStatistics.getTotalNumber() + 1);
             if (type == 0) {
                 timesStatistics.setDayNumber(timesStatistics.getDayNumber() + 1);
             }
             timesStatistics.setStatisticalDate(date);
-            row =mapper.update(timesStatistics);
+            row = mapper.update(timesStatistics);
         } else {
             timesStatistics = new TimesStatistics();
             timesStatistics.setTotalNumber(1);
@@ -125,13 +124,13 @@ public class CourseInfoService {
 
 
     public DemonstrationResponse getCountList() {
-        StatisticsModel statisticsModel =mapper.getCountList();
+        StatisticsModel statisticsModel = mapper.getCountList();
         return new DemonstrationResponse(200, "更新成功！", statisticsModel);
     }
 
 
-   @Scheduled(cron = "0 0 0 * * ?")
-   public void updateStatisticsCount() {
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void updateStatisticsCount() {
         log.info("开启定时任务");
         mapper.updateStatisticsCount();
     }
@@ -158,27 +157,27 @@ public class CourseInfoService {
                 Map mapai = (Map) JSON.parse(s2);
                 String dataA = mapai.get("data").toString().trim();
                 List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
-              //  List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
+                //  List<CourseInfoAiVo> CourseInfoAilist = JSONArray.toList(JSONArray.fromObject(dataA), new CourseInfoAiVo(), new JsonConfig());
                 for (CourseInfoAiVo courseInfoAiVo : CourseInfoAilist) {
                     String courseid = courseInfoAiVo.getCourseid();
                     int met = courseInfoService.findAiVo(courseInfoAiVo.getCourseid());
                     if (met <= 0) {
-                       // courseInfoService.InsertCourse(CourseInfoAilist);
+                        // courseInfoService.InsertCourse(CourseInfoAilist);
                         //todo
-                       Object[] teacher = courseInfoAiVo.getTeacher();
+                        Object[] teacher = courseInfoAiVo.getTeacher();
                         String teacherData = Arrays.toString(teacher);
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
                         courseInfoService.InsertCourseOne(courseInfoAiVo);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename(),courseInfoAiVo.getSource());
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoAiVo.getCoursename(), courseInfoAiVo.getSource());
                     } else {
-                       // courseInfoService.updateAi(CourseInfoAilist);
+                        // courseInfoService.updateAi(CourseInfoAilist);
                         courseInfoService.updateAiCourse(courseInfoAiVo);
                         Object[] teacher = courseInfoAiVo.getTeacher();
                         String teacherData = Arrays.toString(teacher);
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoAiVo.getCoursename(),courseInfoAiVo.getSource());
+                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoAiVo.getCoursename(), courseInfoAiVo.getSource());
 
                     }
                 }
@@ -201,8 +200,8 @@ public class CourseInfoService {
         mapper.updateAiCourse(courseInfoAiV);
     }
 
-    public void updateAiCourseOneTeacherAndChapList(String teacherData,String chapterListData,String coursename,String source) {
-        mapper.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,coursename,source);
+    public void updateAiCourseOneTeacherAndChapList(String teacherData, String chapterListData, String coursename, String source) {
+        mapper.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, coursename, source);
     }
 
     public void InsertCourseOne(CourseInfoAiVo courseInfoAiVo) {
@@ -227,7 +226,7 @@ public class CourseInfoService {
             log.info("mapmete2" + mapmete2);
             String datametes = mapmete2.get("data").toString().trim();
             List<CourseInfoMetel> CourseInfoMetelList = JSONObject.parseArray(datametes, CourseInfoMetel.class);
-           // List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
+            // List<CourseInfoMetel> CourseInfoMetelList = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoMetel(), new JsonConfig());
             for (CourseInfoMetel courseInfoMetel : CourseInfoMetelList) {
                 courseInfoMetel.setSoure("MeTel");
                 int met = courseInfoService.findMete(courseInfoMetel.getCoursename());
@@ -237,15 +236,15 @@ public class CourseInfoService {
                     String teacherData = Arrays.toString(teacher);
                     String[] chapterList = courseInfoMetel.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
-                   courseInfoService.InsertCourseOneMe(courseInfoMetel);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename(),courseInfoMetel.getSoure());
+                    courseInfoService.InsertCourseOneMe(courseInfoMetel);
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoMetel.getCoursename(), courseInfoMetel.getSoure());
                 } else {
                     courseInfoService.updateMeteOne(courseInfoMetel);
                     String[] teacher = courseInfoMetel.getTeacher();
                     String teacherData = Arrays.toString(teacher);
                     String[] chapterList = courseInfoMetel.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoMetel.getCoursename(),courseInfoMetel.getSoure());
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoMetel.getCoursename(), courseInfoMetel.getSoure());
                 }
 
             }
@@ -271,7 +270,7 @@ public class CourseInfoService {
             Map mapFssD = (Map) JSON.parse(ssD);
             String datametes = mapFssD.get("data").toString().trim();
             List<CourseInfoFilm> CourseInfoFilmlist = JSONObject.parseArray(datametes, CourseInfoFilm.class);
-           // List<CourseInfoFilm> CourseInfoFilmlist = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoFilm(), new JsonConfig());
+            // List<CourseInfoFilm> CourseInfoFilmlist = JSONArray.toList(JSONArray.fromObject(datametes), new CourseInfoFilm(), new JsonConfig());
             for (CourseInfoFilm courseInfoFilm : CourseInfoFilmlist) {
                 int met = courseInfoService.findFilmT(courseInfoFilm.getCourseid());
                 if (met <= 0) {
@@ -282,15 +281,15 @@ public class CourseInfoService {
                     String teacherData = Arrays.toString(teacher);
                     String[] chapterList = courseInfoFilm.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename(),courseInfoFilm.getSource());
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoFilm.getCoursename(), courseInfoFilm.getSource());
                 } else {
-                   // courseInfoService.updateFilm(CourseInfoFilmlist);
+                    // courseInfoService.updateFilm(CourseInfoFilmlist);
                     courseInfoService.updateFilmeOne(courseInfoFilm);
                     String[] teacher = courseInfoFilm.getTeacher();
                     String teacherData = Arrays.toString(teacher);
                     String[] chapterList = courseInfoFilm.getChapterlist();
                     String chapterListData = Arrays.toString(chapterList);
-                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData,chapterListData,courseInfoFilm.getCoursename(),courseInfoFilm.getSource());
+                    courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoFilm.getCoursename(), courseInfoFilm.getSource());
                 }
             }
 
@@ -302,7 +301,7 @@ public class CourseInfoService {
     public void updateMuKe() {
 
 
-                 //todo 查询另一个数据库,并存入此数据库中
+        //todo 查询另一个数据库,并存入此数据库中
 
          /*   for (CourseInfoFilm courseInfoFilm : CourseInfoFilmlist) {
                 int met = courseInfoService.findFilmT(courseInfoFilm.getCourseid());
@@ -326,7 +325,7 @@ public class CourseInfoService {
                 }
             }
 */
-        }
+    }
 
 
     public void updateFilmeOne(CourseInfoFilm courseInfoFilm) {
@@ -340,28 +339,28 @@ public class CourseInfoService {
 
     public List<CourseInfo> findCourseByfilmTop(String film, Integer page, Integer size) {
 
-        return  mapper.findCourseByfilmTop(film,page,size);
+        return mapper.findCourseByfilmTop(film, page, size);
     }
 
     public List<CourseInfo> findRec(Integer pageNum, Integer pageSize) {
 
-        return  mapper.findRec(pageNum,pageSize);
+        return mapper.findRec(pageNum, pageSize);
     }
 
     public List<CourseInfo> recIndex(Integer pageNum, Integer pageSize) {
-        return  mapper.recIndex(pageNum,pageSize);
+        return mapper.recIndex(pageNum, pageSize);
     }
 
     public List<CourseInfo> findrquick(Integer pageNum, Integer pageSize) {
-        return  mapper.findrquick(pageNum,pageSize);
+        return mapper.findrquick(pageNum, pageSize);
     }
 
     public List<CourseInfo> findquickRec(Integer pageNum, Integer pageSize) {
-        return  mapper.findquickRec(pageNum,pageSize);
+        return mapper.findquickRec(pageNum, pageSize);
     }
 
     public List<CourseInfo> findquickZiyuan(Integer pageNum, Integer pageSize) {
-        return  mapper.findquickZiyuan(pageNum,pageSize);
+        return mapper.findquickZiyuan(pageNum, pageSize);
     }
 
     public CourseInfo findCourseDatal(Integer courseId) {
@@ -405,7 +404,7 @@ public class CourseInfoService {
     }
 
 
-    public DemonstrationResponse getRecommendCourseList(Integer isRec, Integer pageNum, Integer pageSize, String source, String courseName,String categoryID,long startDate,Integer sortId) {
+    public DemonstrationResponse getRecommendCourseList(Integer isRec, Integer pageNum, Integer pageSize, String source, String courseName, String categoryID, long startDate, Integer sortId) {
         if (isRec == null || isRec < 0) {
             isRec = 0;
         }
@@ -416,14 +415,14 @@ public class CourseInfoService {
             pageSize = 10;
         }
         int firstIndex = (pageNum - 1) * pageSize;
-        String res="";
+        String res = "";
         if (startDate != 0) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date(startDate);
             res = simpleDateFormat.format(date);
         }
-        List<CourseInfo> courseInfos = mapper.getRecommendCourseList(isRec, firstIndex, pageSize,source,courseName,res,sortId,categoryID);
-        int courseInfosSize = mapper.getRecommendCourseListSize(isRec,source,courseName,res,categoryID);
+        List<CourseInfo> courseInfos = mapper.getRecommendCourseList(isRec, firstIndex, pageSize, source, courseName, res, sortId, categoryID);
+        int courseInfosSize = mapper.getRecommendCourseListSize(isRec, source, courseName, res, categoryID);
         RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum, courseInfosSize, courseInfos);
 
         return new DemonstrationResponse(0, "获取成功！", recommendCourseData);
@@ -451,9 +450,9 @@ public class CourseInfoService {
             pageSize = 10;
         }
         int firstIndex = (pageNum - 1) * pageSize;
-        List<CourseInfo> courseInfos = mapper.getRecommendCourseListL(firstIndex,pageSize);
-        int k =mapper.getRecommendCourseListK();
-        RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum,k,courseInfos);
+        List<CourseInfo> courseInfos = mapper.getRecommendCourseListL(firstIndex, pageSize);
+        int k = mapper.getRecommendCourseListK();
+        RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum, k, courseInfos);
         return new DemonstrationResponse(0, "获取成功！", recommendCourseData);
     }
 
@@ -462,27 +461,25 @@ public class CourseInfoService {
         return mapper.findCourseByUserIdNum(userId);
     }
 
-    public int findCourseByKeyNum(String courseName, Integer state,Integer courseTypeCode) {
-        return mapper.findCourseByKeyNum(courseName,state,courseTypeCode);
+    public int findCourseByKeyNum(String courseName, Integer state, Integer courseTypeCode) {
+        return mapper.findCourseByKeyNum(courseName, state, courseTypeCode);
     }
 
-    public int findAllCourseNum(Integer state,Integer courseTypeCode) {
-        return mapper.findAllCourseNum(state,courseTypeCode);
+    public int findAllCourseNum(Integer state, Integer courseTypeCode) {
+        return mapper.findAllCourseNum(state, courseTypeCode);
     }
 
     public List<CourseInfo> findCoursetopState(Integer state, Integer page, Integer size) {
         /*state  1:正常 3:已完结 */
 
 
-        return mapper.findCoursetopState(state,page,size);
+        return mapper.findCoursetopState(state, page, size);
 
     }
 
     public int findCoursetopStateT(Integer state) {
         return mapper.findCoursetopStateT(state);
     }
-
-
 
 
     public DemonstrationResponse addStudyDuration(String studentID, Integer time) {
@@ -508,8 +505,8 @@ public class CourseInfoService {
 
     public DemonstrationResponse addLessonsLearned(BigInteger studentID, Integer courseId) {
         Date date = new Date();
-        LessonsLearned lessonsLearned1 = mapper.queryLessonsLearned(studentID,courseId);
-        log.info("lessonsLearned1"+lessonsLearned1);
+        LessonsLearned lessonsLearned1 = mapper.queryLessonsLearned(studentID, courseId);
+        log.info("lessonsLearned1" + lessonsLearned1);
         if (lessonsLearned1 != null || lessonsLearned1.getCourseId() > 0) {
             lessonsLearned1.setCreateDate(date);
             mapper.updateLessonsLearned(lessonsLearned1);
@@ -542,29 +539,36 @@ public class CourseInfoService {
         StudentPersonalCenterInfo studentPersonalCenterInfo = new StudentPersonalCenterInfo();
         if (userId.length() == 7) {
             //查出老师课程userid 爱课堂
-           String sign = MD5Utils.MD5Encode("page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&userid="+userId+"&key=" + keyi, "utf8").toUpperCase();
-           String s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + 1 + "&size=" + 500 + "&sort=" + "date"+ "&userid="+userId, String.class);
-           if (s !=null){
-               String s1 = s.replace("members", "teacher");
-               String s2 = s1.replace("chapters", "chapterList");
-               Map mapai = (Map) JSON.parse(s2);
-               String dataA = mapai.get("data").toString().trim();
-               if (StringUtils.isEmpty(dataA)||dataA==null) {
-                   return new DemonstrationResponse(0, "查询成功！但是此老師無課程", null);
-               }
-               List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
-               if (CourseInfoAilist.size()>0) {
-                   studentPersonalCenterInfo.setCourseInfoaiList(CourseInfoAilist);
-               }
-           }
-           //film
-            String signKey = MD5Utils.MD5Encode("page=" + 1 + "size=" + 500 + "sort=" + "date"+"userid="+userId + keyo, "utf8");
-            String ssD = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" +"&userid="+userId+ "&enc=" + signKey, String.class);
-            if (ssD!= null){
+            String sign = MD5Utils.MD5Encode("page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&userid=" + userId + "&key=" + keyi, "utf8").toUpperCase();
+            String s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&userid=" + userId, String.class);
+
+            if (s != null && StringUtils.isNotEmpty(s)) {
+                String s1 = s.replace("members", "teacher");
+                String s2 = s1.replace("chapters", "chapterList");
+                Map mapai = (Map) JSON.parse(s2);
+                String dataA = mapai.get("totalnum").toString().trim();
+                if (dataA.equals("0")) {
+
+                    return new DemonstrationResponse(0, "查询成功！但是此老師無課程", null);
+
+                }
+                List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
+                if (CourseInfoAilist.size() > 0) {
+                    studentPersonalCenterInfo.setCourseInfoaiList(CourseInfoAilist);
+                }
+            } else {
+
+                return new DemonstrationResponse(0, "查询成功！但是此老師無課程", null);
+
+            }
+            //film
+            String signKey = MD5Utils.MD5Encode("page=" + 1 + "size=" + 500 + "sort=" + "date" + "userid=" + userId + keyo, "utf8");
+            String ssD = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&userid=" + userId + "&enc=" + signKey, String.class);
+            if (ssD != null) {
                 Map mapFssD = (Map) JSON.parse(ssD);
                 String datametes = mapFssD.get("data").toString().trim();
                 List<CourseInfoFilm> CourseInfoFilmlist = JSONObject.parseArray(datametes, CourseInfoFilm.class);
-                if (CourseInfoFilmlist.size()>0) {
+                if (CourseInfoFilmlist.size() > 0) {
                     studentPersonalCenterInfo.setClassfilm(CourseInfoFilmlist);
                 }
             }
@@ -590,12 +594,12 @@ public class CourseInfoService {
             int courseCount = mapper.queryCourseCount(userId, startDate, endDate);
             int courseEnd = mapper.queryCourseEnd(userId, startDate, endDate);
             Integer rank = mapper.queryRank(userId, startDate, endDate);
-            if (rank==null) {
-                rank=0;
+            if (rank == null) {
+                rank = 0;
             }
             Integer allCount = mapper.queryAllCount(userId, startDate, endDate);
-            if (allCount==null) {
-                allCount=1;
+            if (allCount == null) {
+                allCount = 1;
             }
             int denominator = (allCount == 0 ? 1 : allCount);
             NumberFormat numberFormat = NumberFormat.getInstance();
@@ -634,11 +638,11 @@ public class CourseInfoService {
 
     public int findCourseDatalCoutnt(Integer id) {
 
-       return mapper.findCourseDatalCoutnt(id);
+        return mapper.findCourseDatalCoutnt(id);
     }
 
     public void updateStudyCount(Integer id, int i) {
-         mapper.updateStudyCount(id,i);
+        mapper.updateStudyCount(id, i);
     }
 
     public void InsertCourseDan(CourseInfoAiVo courseInfoAiVo) {
@@ -646,7 +650,7 @@ public class CourseInfoService {
     }
 
     public void InsertCourseDanTeacher(String coursename, String teacher) {
-        mapper.InsertCourseDanTeacher(coursename,teacher);
+        mapper.InsertCourseDanTeacher(coursename, teacher);
     }
 
     public void updateMeteOne(CourseInfoMetel courseInfoMetel) {
@@ -655,15 +659,15 @@ public class CourseInfoService {
 
 
     public void insertBrowse(Integer userid, Integer id) {
-        mapper.insertBrowse(userid,id);
+        mapper.insertBrowse(userid, id);
     }
 
     public hotKey findKeyCourseNameAndHotNum(String courseName) {
-       return mapper.findKeyCourseNameAndHotNum(courseName);
+        return mapper.findKeyCourseNameAndHotNum(courseName);
     }
 
-    public void updateKeyCourseNameAndHotNum(String courseName,int hot) {
-         mapper.updateKeyCourseNameAndHotNum(courseName,hot);
+    public void updateKeyCourseNameAndHotNum(String courseName, int hot) {
+        mapper.updateKeyCourseNameAndHotNum(courseName, hot);
     }
 
     public void addKeyCourseNameAndHotNum(String courseName) {
@@ -671,28 +675,29 @@ public class CourseInfoService {
     }
 
     public List<hotKey> getpopularKeyWordInfo(Integer pageNum, Integer pageSize) {
-        return  mapper.getpopularKeyWordInfo(pageNum,pageSize);
+        return mapper.getpopularKeyWordInfo(pageNum, pageSize);
     }
 
     public List<categoryCode> getCourseType(Integer pageNum, Integer pageSize) {
-        return  mapper.getCourseType(pageNum,pageSize);
+        return mapper.getCourseType(pageNum, pageSize);
     }
 
     public int getpopularKeyWordInfoNum(Integer pageNum, Integer pageSize) {
-        return  mapper.getpopularKeyWordInfoNum(pageNum,pageSize);
+        return mapper.getpopularKeyWordInfoNum(pageNum, pageSize);
     }
 
     public int getCourseTypeNum(Integer pageNum, Integer pageSize) {
-        return  mapper.getCourseTypeNum(pageNum,pageSize);
+        return mapper.getCourseTypeNum(pageNum, pageSize);
     }
 
     public List<categoryThird> getCourseThird(Integer pageNum, Integer pageSize) {
-        return  mapper.getCourseThird(pageNum,pageSize);
+        return mapper.getCourseThird(pageNum, pageSize);
     }
 
     public int getCourseThirdeNum(Integer pageNum, Integer pageSize) {
-        return  mapper.getCourseThirdeNum(pageNum,pageSize);
+        return mapper.getCourseThirdeNum(pageNum, pageSize);
     }
+
     public DemonstrationResponse getGroupClassList() {
         try {
             List<GroupClass> groupClassList = mapper.getGroupClassList();
@@ -726,10 +731,10 @@ public class CourseInfoService {
 
     public DemonstrationResponse addGroupClass(GroupClass groupClass) {
         try {
-            int o =mapper.find();
+            int o = mapper.find();
             if (o == 0) {
                 groupClass.setSort(1);
-            }else{
+            } else {
                 int max = mapper.queryMaxSortId();
                 groupClass.setSort(max + 1);
             }
@@ -795,16 +800,16 @@ public class CourseInfoService {
         return new DemonstrationResponse(-1, "异常！", null);
     }
 
-    public DemonstrationResponse addGroupMember(Integer courseId ,Integer GroupClassId) {
+    public DemonstrationResponse addGroupMember(Integer courseId, Integer GroupClassId) {
         try {
             GroupMember groupMember1 = mapper.queryGroupMember(courseId, GroupClassId);
             if (groupMember1 != null) {
                 return new DemonstrationResponse(-1, "此课程已存在在此组中！", null);
             }
-            int max=1;
-            int o =mapper.findp(courseId,GroupClassId);
+            int max = 1;
+            int o = mapper.findp(courseId, GroupClassId);
             if (o > 0) {
-                max = mapper.queryGroupMemberMax(courseId,GroupClassId);
+                max = mapper.queryGroupMemberMax(courseId, GroupClassId);
             }
             GroupMember groupMember = new GroupMember();
             groupMember.setSort(max);
