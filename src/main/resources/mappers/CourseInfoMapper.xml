@@ -434,7 +434,7 @@
         where ll.studentID =#{userId} and ll.createDate between #{startDate} and #{endDate}
     </select>
 
-    <select id="queryRank" resultType="int">
+    <select id="queryRank" resultType="Integer">
         SELECT
         CASE
         WHEN @prevRank = vs.size THEN  @curRank
@@ -447,7 +447,7 @@
         ORDER BY vs.size
     </select>
 
-    <select id="queryAllCount" resultType="int">
+    <select id="queryAllCount" resultType="Integer">
         SELECT MAX(tt.rankok) FROM (SELECT
         CASE
         WHEN @prevRank = vs.size THEN  @curRank

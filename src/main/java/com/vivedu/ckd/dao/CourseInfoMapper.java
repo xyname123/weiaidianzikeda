@@ -120,9 +120,9 @@ public interface CourseInfoMapper {
 
     List<CourseInfo> queryCourseInfoList(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
 
-    int queryRank(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
+    Integer queryRank(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
 
-    int queryAllCount(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
+    Integer queryAllCount(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate")String endDate);
 
     List<T_SHARE_CDXT_BKS_KCPK> queryKCPK(@Param("userId") String userId,@Param("week")long week);
 

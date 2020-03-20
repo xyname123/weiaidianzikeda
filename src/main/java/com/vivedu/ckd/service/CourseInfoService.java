@@ -549,6 +549,9 @@ public class CourseInfoService {
                String s2 = s1.replace("chapters", "chapterList");
                Map mapai = (Map) JSON.parse(s2);
                String dataA = mapai.get("data").toString().trim();
+               if (StringUtils.isEmpty(dataA)||dataA==null) {
+                   return new DemonstrationResponse(0, "查询成功！但是此老師無課程", null);
+               }
                List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
                if (CourseInfoAilist.size()>0) {
                    studentPersonalCenterInfo.setCourseInfoaiList(CourseInfoAilist);
@@ -586,8 +589,14 @@ public class CourseInfoService {
         } else if (userId.length() >= 12) {
             int courseCount = mapper.queryCourseCount(userId, startDate, endDate);
             int courseEnd = mapper.queryCourseEnd(userId, startDate, endDate);
-            int rank = mapper.queryRank(userId, startDate, endDate);
-            int allCount = mapper.queryAllCount(userId, startDate, endDate);
+            Integer rank = mapper.queryRank(userId, startDate, endDate);
+            if (rank==null) {
+                rank=0;
+            }
+            Integer allCount = mapper.queryAllCount(userId, startDate, endDate);
+            if (allCount==null) {
+                allCount=1;
+            }
             int denominator = (allCount == 0 ? 1 : allCount);
             NumberFormat numberFormat = NumberFormat.getInstance();
             // 设置精确到小数点后2位
