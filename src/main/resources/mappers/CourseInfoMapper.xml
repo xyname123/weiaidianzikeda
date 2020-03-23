@@ -2,12 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.vivedu.ckd.dao.CourseInfoMapper">
-    <select id="findCourseByUserId" parameterType="String" resultType="com.vivedu.ckd.model.CourseInfo">
-       SELECT * FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  browse_course where userid=#{userid} order by catTime desc) limit #{pageNum},#{pageSize}
+    <select id="findCourseByUserId" resultType="com.vivedu.ckd.model.CourseInfo">
+       SELECT * FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  browse_course where userid=#{userid}) order by catTime DESC limit #{pageNum},#{pageSize}
        <!-- SELECT cl.name,cl.chapterId,cl.chapterId FROM course_info ci  LEFT join chapter_list cl on ci.courseId = cl.courseId-->
     </select>
-    <select id="findCourseByUserIdLearnNum" parameterType="String" resultType="com.vivedu.ckd.model.CourseInfo">
-        SELECT count(*) FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  browse_course where userid=#{userid} order by catTime desc)
+
+    <update id="catTime">
+        update
+        course_info
+        <set>
+            catTime =#{time}
+        </set>
+        WHERE course_info.id =#{couseid}
+    </update>
+
+    <select id="findtime" resultType="com.vivedu.ckd.model.BrowseCourse">
+       SELECT * from  browse_course where userid=#{userid}
+    </select>
+
+    <select id="findCourseByUserIdLearnNum"  resultType="int">
+       SELECT   distinct count(courseid)  FROM  browse_course where userid=#{userid}
         <!-- SELECT cl.name,cl.chapterId,cl.chapterId FROM course_info ci  LEFT join chapter_list cl on ci.courseId = cl.courseId-->
     </select>
 

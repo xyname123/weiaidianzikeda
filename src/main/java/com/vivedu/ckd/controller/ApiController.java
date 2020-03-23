@@ -129,12 +129,14 @@ public class ApiController {
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
         pageNum = (pageNum - 1) * pageSize;
         log.info("进入/myCourseList");
+        //catime替换为insertime
+        List<BrowseCourse> brow = courseInfoService.findtime(userid);
+        for (BrowseCourse browseCourse : brow) {
+            courseInfoService.catTime(browseCourse.getCatTime(),browseCourse.getCourseid());
+        }
         List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid,pageNum,pageSize);
-        List<CourseInfo> courseInfoNum = courseInfoService.findCourseByUserIdLearnNum(userid);
-        HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("total", courseInfoNum.size());
-        hashMapMap.put("data", courseInfo);
-        return new ZanshiResponse(0, "请求成功", courseInfoNum.size(), courseInfo);
+        int num = courseInfoService.findCourseByUserIdLearnNum(userid);
+        return new ZanshiResponse(0, "请求成功", num, courseInfo);
     }
 
     @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -879,7 +881,7 @@ public class ApiController {
     @PostMapping(path = "/addGroupClass", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "添加组团信息")
     public DemonstrationResponse addGroupClass(
-            GroupClass groupClass) throws Exception {
+           @RequestBody GroupClass groupClass) throws Exception {
         return courseInfoService.addGroupClass(groupClass);
     }
 

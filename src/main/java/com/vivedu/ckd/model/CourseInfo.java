@@ -90,6 +90,8 @@ public class CourseInfo {
     private String  summary;
     @Column
     private String courseTypeName;
+    @Column
+    private  Timestamp catTime;
     //平台课程总数
 /*    @Column
     private String  course;*/

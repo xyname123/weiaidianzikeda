@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -868,7 +869,15 @@ public class CourseInfoService {
         return new DemonstrationResponse(-1, "异常！", null);
     }
 
-    public List<CourseInfo> findCourseByUserIdLearnNum(String userid) {
+    public int findCourseByUserIdLearnNum(String userid) {
         return mapper.findCourseByUserIdLearnNum(userid);
+    }
+
+    public void catTime(Timestamp time, String couseid) {
+         mapper.catTime(time,couseid);
+    }
+
+    public List<BrowseCourse> findtime(String userid) {
+        return mapper.findtime(userid);
     }
 }

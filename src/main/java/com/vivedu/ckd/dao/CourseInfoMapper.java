@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Mapper
@@ -201,5 +202,9 @@ public interface CourseInfoMapper {
 
     List<CourseInfo> getCourseInfoList(@Param("groupClassId")Integer groupClassId);
 
-    List<CourseInfo> findCourseByUserIdLearnNum(String userid);
+    int findCourseByUserIdLearnNum(String userid);
+
+    void catTime(@Param("time")Timestamp time, @Param("couseid")String couseid);
+
+    List<BrowseCourse> findtime(String userid);
 }
