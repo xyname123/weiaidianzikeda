@@ -753,4 +753,31 @@
         gm.groupClassId = #{groupClassId}
         )
     </select>
+
+    <delete id="deleteGroupSort" parameterType="int">
+        delete from group_member where groupClassId =#{groupId}
+    </delete>
+
+    <insert id="updateGroupSort" parameterType="java.util.List">
+        insert into group_member(
+        courseId,
+        groupClassId,
+        sort)
+        VALUES
+        <foreach collection="list" item="item" index="index">
+            (#{item.courseId},
+            #{item.groupClassId},
+            #{item.sort})
+        </foreach>
+    </insert>
+
+    <update id="updateGroup" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index">
+            update group_class
+            <set>
+                sort=#{item.sort}
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
 </mapper>

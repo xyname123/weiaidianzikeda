@@ -207,4 +207,11 @@ public interface CourseInfoMapper {
     void catTime(@Param("time")Timestamp time, @Param("couseid")String couseid);
 
     List<BrowseCourse> findtime(String userid);
+
+    int  deleteGroupSort(@Param("groupId")int groupId);
+
+    int updateGroupSort(List<GroupMember> list);
+
+    int updateGroup(List<GroupClass> list);
+
 }

@@ -934,4 +934,11 @@ public class ApiController {
         return courseInfoService.getGroupInformationList(pageNum,pageSize);
     }
 
+    @PostMapping(path = "/updateGroupSort", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "修改组团顺序")
+    public DemonstrationResponse updateGroupSort(
+            List<GroupSortModel> groupSortModelList) throws Exception {
+        return courseInfoService.updateGroupSort(groupSortModelList);
+    }
+
 }

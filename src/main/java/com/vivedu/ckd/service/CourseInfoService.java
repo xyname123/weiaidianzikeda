@@ -880,4 +880,31 @@ public class CourseInfoService {
     public List<BrowseCourse> findtime(String userid) {
         return mapper.findtime(userid);
     }
+
+    public DemonstrationResponse updateGroupSort(
+            List<GroupSortModel> groupSortModelList) {
+        try {
+            String[] groupIdList = groupSortModelList.get(0).getGroupSort().split(",");
+            List<GroupClass> groupClassList = new ArrayList<>();
+            for (int i = 0; i < groupIdList.length; i++) {
+                GroupClass groupClass = new GroupClass(Integer.parseInt(groupIdList[i]), "", i + 1);
+                groupClassList.add(groupClass);
+            }
+            mapper.updateGroup(groupClassList);
+            for (GroupSortModel groupMember : groupSortModelList) {
+                mapper.deleteGroupSort(groupMember.getGroupId());
+                String[] s = groupMember.getGroupMemberSort().split(",");
+                List<GroupMember> groupMemberList = new ArrayList<>();
+                for (int i = 0; i < s.length; i++) {
+                    GroupMember groupMember1 = new GroupMember(1, Integer.parseInt(s[i]), groupMember.getGroupId(), i + 1, "", "");
+                    groupMemberList.add(groupMember1);
+                }
+                int row = mapper.updateGroupSort(groupMemberList);
+            }
+            return new DemonstrationResponse(0, "添加成功！", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
 }
