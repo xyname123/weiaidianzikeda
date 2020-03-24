@@ -129,7 +129,6 @@ public class ApiController {
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
         pageNum = (pageNum - 1) * pageSize;
         log.info("进入/myCourseList");
-        //catime替换为insertime
         List<BrowseCourse> brow = courseInfoService.findtime(userid);
         for (BrowseCourse browseCourse : brow) {
             courseInfoService.catTime(browseCourse.getCatTime(),browseCourse.getCourseid());
@@ -666,7 +665,7 @@ public class ApiController {
     ) throws Exception {
         pageNum = (pageNum - 1) * pageSize;
         List<categoryCode> categoryCodeList = courseInfoService.getCourseType(pageNum, pageSize);
-        int num = courseInfoService.getCourseTypeNum(pageNum, pageSize);
+        int num = courseInfoService.getCourseTypeNum();
         return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
     }
 
@@ -756,7 +755,7 @@ public class ApiController {
     ) throws Exception {
         pageNum = (pageNum - 1) * pageSize;
         List<categoryThird> categoryCodeList = courseInfoService.getCourseThird(pageNum, pageSize);
-        int num = courseInfoService.getCourseThirdeNum(pageNum, pageSize);
+        int num = courseInfoService.getCourseThirdeNum();
         return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
     }
 

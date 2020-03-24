@@ -633,7 +633,7 @@
     </select>
 
     <select id="getCourseTypeNum" resultType="int" >
-        select count(*) from category_code limit #{pageNum},#{pageSize}
+        select count(*) from category_code
     </select>
 
     <select id="getGroupClassList" resultType="com.vivedu.ckd.model.GroupClass">
@@ -732,7 +732,7 @@
         select courseTypeName,courseTypeCode,courseSort,courseHot,source from category_third limit #{pageNum},#{pageSize}
     </select>
     <select id="getCourseThirdeNum" resultType="int" >
-        select count(*) from category_third limit #{pageNum},#{pageSize}
+        select count(*) from category_third
     </select>
     <select id="getGroupClassListPage" resultType="com.vivedu.ckd.model.GroupClass">
         select * from group_class ORDER BY sort ASC LIMIT #{firstIndex},#{pageSize}

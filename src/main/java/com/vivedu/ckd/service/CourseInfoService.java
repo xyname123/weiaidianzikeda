@@ -687,16 +687,16 @@ public class CourseInfoService {
         return mapper.getpopularKeyWordInfoNum(pageNum, pageSize);
     }
 
-    public int getCourseTypeNum(Integer pageNum, Integer pageSize) {
-        return mapper.getCourseTypeNum(pageNum, pageSize);
+    public int getCourseTypeNum() {
+        return mapper.getCourseTypeNum();
     }
 
     public List<categoryThird> getCourseThird(Integer pageNum, Integer pageSize) {
         return mapper.getCourseThird(pageNum, pageSize);
     }
 
-    public int getCourseThirdeNum(Integer pageNum, Integer pageSize) {
-        return mapper.getCourseThirdeNum(pageNum, pageSize);
+    public int getCourseThirdeNum() {
+        return mapper.getCourseThirdeNum();
     }
 
     public DemonstrationResponse getGroupClassList() {
