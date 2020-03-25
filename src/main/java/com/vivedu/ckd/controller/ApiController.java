@@ -344,10 +344,11 @@ public class ApiController {
         //对收藏的管理 1为收藏
         if (userid!=null){
             MarkedCourse markedCourse = markedCourseService.findMarkedGm(userid,id);
-            if (markedCourse.getState()!=null){
-                courseInfoPojo.setOk(markedCourse.getState());
-            }else {
+            if (markedCourse==null||markedCourse.getState()==null){
                 courseInfoPojo.setOk(0);
+
+            }else {
+                courseInfoPojo.setOk(markedCourse.getState());
             }
         }
 
