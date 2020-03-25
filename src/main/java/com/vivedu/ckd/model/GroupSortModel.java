@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class GroupSortModel {
     //组团id
     private int groupId;
-
+    private String groupName;
     //组团里的课程排序 以逗号隔开
     private String groupMemberSort;
 }

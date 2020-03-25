@@ -888,12 +888,23 @@ public class CourseInfoService {
     public DemonstrationResponse updateGroupSort(
             List<GroupSortModel> groupSortModelList) {
         try {
-            List<GroupClass> groupClassList = new ArrayList<>();
-            for (int i = 0; i < groupSortModelList.size(); i++) {
-                GroupClass groupClass = new GroupClass(groupSortModelList.get(i).getGroupId(), "", i + 1);
-                groupClassList.add(groupClass);
+            if(groupSortModelList.size()==0){
+                mapper.delete();
             }
-            mapper.updateGroup(groupClassList);
+            List<GroupClass> groupClassList = new ArrayList<>();
+            List<Integer> idList = new ArrayList<>();
+            for (int i = 0; i < groupSortModelList.size(); i++) {
+                idList.add(groupSortModelList.get(i).getGroupId());
+                GroupClass groupClass = new GroupClass(groupSortModelList.get(i).getGroupId(), groupSortModelList.get(i).getGroupName(), i + 1);
+                groupClassList.add(groupClass);
+
+            }
+            if(idList.size()>0){
+                mapper.deleteGroup(idList);
+            }
+            if(groupClassList.size()>0){
+                mapper.updateGroup(groupClassList);
+            }
             for (GroupSortModel groupMember : groupSortModelList) {
                 mapper.deleteGroupSort(groupMember.getGroupId());
                 if (StringUtils.isNotEmpty(groupMember.getGroupMemberSort())) {
@@ -919,5 +930,66 @@ public class CourseInfoService {
     }
 
 
+    public void add(Integer id) {
+        mapper.add(id);
+    }
 
+    public List<CatNumber> thridMonth(Integer id) {
+        return   mapper.thridMonth(id);
+    }
+
+    public List<CatNumber> sixMonth(Integer id) {
+        return   mapper.sixMonth(id);
+    }
+
+    public List<CatNumber> oneYear(Integer id) {
+        return   mapper.oneYear(id);
+    }
+    public DemonstrationResponse addCourseReviews(
+            CourseReviews courseReviews) {
+        try {
+            if (courseReviews == null) {
+                return new DemonstrationResponse(-1, "请传入正确的数据！", null);
+            }
+            Date date = new Date();
+            courseReviews.setReviewsDate(date);
+            courseReviews.setStatus(0);
+            int row = mapper.addCourseReviews(courseReviews);
+            if (row > 0) {
+                return new DemonstrationResponse(0, "添加成功！", null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public DemonstrationResponse getCourseReviewsList(Integer pageNum, Integer pageSize,String courseId
+    ) {
+        try {
+            if (pageNum == null || pageNum <= 0) {
+                pageNum = 1;
+            }
+            if (pageSize == null || pageSize <= 0) {
+                pageSize = 10;
+            }
+            int firstIndex = (pageNum - 1) * pageSize;
+            List<CourseReviews> courseReviews = new ArrayList<>();
+            courseReviews = mapper.getCourseReviewsList(pageSize,firstIndex,courseId);
+            int count = mapper.getCourseReviewsListCount(courseId);
+            RecommendCourseData recommendCourseData = new RecommendCourseData(pageNum,count,courseReviews);
+            return new DemonstrationResponse(0, "查询成功！", recommendCourseData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+    public List<CatNumber> week(Integer id) {
+      return   mapper.week(id);
+    }
+
+    public List<CatNumber> Month(Integer id) {
+        return   mapper.Month(id);
+    }
 }

@@ -303,10 +303,31 @@ public class ApiController {
         //添加学习次数
         if (courseInfo.getStudyCount() == null) {
             courseInfoService.updateStudyCount(id, 1);
+
         } else {
             Integer studyCount = courseInfo.getStudyCount();
             courseInfoService.updateStudyCount(id, studyCount + 1);
         }
+        //访问人数(学习次数的调整)
+        courseInfoService.add(id);
+        //新增访问记录的查询
+        //1.查询本周
+        List<CatNumber> week =courseInfoService.week(id);
+
+        courseInfoPojo.setWeek(week.size());
+        //2.查询本月
+        List<CatNumber> Month =courseInfoService.Month(id);
+        courseInfoPojo.setMonth(Month.size());
+        //3.查询最近三个月
+        List<CatNumber> threeMonth =courseInfoService.thridMonth(id);
+        courseInfoPojo.setThreeMonth(threeMonth.size());
+        //4.查询最近6个月
+        List<CatNumber> sixMonth =courseInfoService.sixMonth(id);
+        courseInfoPojo.setSixMonth(sixMonth.size());
+        //5.查询最近一年
+        List<CatNumber> oneyear =courseInfoService.oneYear(id);
+        courseInfoPojo.setOneYear(oneyear.size());
+
         //中国大学慕课
         if (courseInfoPojo.getTermType() != null) {
             courseInfoPojo.setSubjectcategory1(courseInfoPojo.getTermType());
@@ -317,14 +338,19 @@ public class ApiController {
         }
 
         //对userid的处理与browsecourse关联   id和courseid的关联
-        courseInfoService.insertBrowse(userid,id);
+        if (userid!=null) {
+            courseInfoService.insertBrowse(userid,id);
+        }
         //对收藏的管理 1为收藏
-       MarkedCourse markedCourse = markedCourseService.findMarkedGm(userid,id);
-       if (markedCourse.getState()!=null){
-           courseInfoPojo.setOk(markedCourse.getState());
-       }else {
-           courseInfoPojo.setOk(0);
-       }
+        if (userid!=null){
+            MarkedCourse markedCourse = markedCourseService.findMarkedGm(userid,id);
+            if (markedCourse.getState()!=null){
+                courseInfoPojo.setOk(markedCourse.getState());
+            }else {
+                courseInfoPojo.setOk(0);
+            }
+        }
+
         hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }
@@ -974,4 +1000,20 @@ public class ApiController {
         return courseInfoService.updateGroupSort(groupSortModelList);
     }
 
+    @PostMapping(path = "/addCourseReviews", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "添加课程评论")
+    public DemonstrationResponse addCourseReviews(
+            @RequestBody CourseReviews courseReviews) throws Exception {
+        return courseInfoService.addCourseReviews(courseReviews);
+    }
+
+    @GetMapping(path = "/getCourseReviewsList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取课程评列表")
+    public DemonstrationResponse getCourseReviewsList(
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize,
+            @RequestParam(required = false, value = "courseId") @ApiParam(value = "课程id") String courseId
+    ) throws Exception {
+        return courseInfoService.getCourseReviewsList(pageNum,pageSize,courseId);
+    }
 }

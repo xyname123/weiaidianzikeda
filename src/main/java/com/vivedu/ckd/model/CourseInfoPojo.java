@@ -93,4 +93,13 @@ public class CourseInfoPojo {
 
     private Integer  ok;
 
+    private Integer  week;
+
+    private Integer  Month;
+
+    private Integer  threeMonth;
+
+    private Integer  sixMonth;
+
+    private Integer  oneYear;
 }

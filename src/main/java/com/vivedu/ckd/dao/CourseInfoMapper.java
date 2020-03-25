@@ -215,6 +215,26 @@ public interface CourseInfoMapper {
     int updateGroup(List<GroupClass> list);
 
 
+    int deleteGroup(List<Integer> list);
+
+    int delete();
 
 
+    void add(Integer id);
+
+    List<CatNumber> thridMonth(Integer id);
+
+    List<CatNumber> sixMonth(Integer id);
+
+    List<CatNumber> oneYear(Integer id);
+
+    int addCourseReviews(CourseReviews courseReviews);
+
+    List<CourseReviews> getCourseReviewsList(@Param("pageSize")Integer pageSize,@Param("firstIndex")Integer firstIndex,@Param("courseId")String courseId);
+
+    int getCourseReviewsListCount(@Param("courseId")String courseId);
+
+    List<CatNumber> week(Integer id);
+
+    List<CatNumber> Month(Integer id);
 }

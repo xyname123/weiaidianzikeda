@@ -552,7 +552,7 @@
     <select id="getRecommendCourseList" resultType="com.vivedu.ckd.model.CourseInfo">
         SELECT * FROM course_info
         <where>
-            source != "film"
+            insertDate between #{startDate} and NOW()
             <if test="source != null and source !=''">
                 and source =#{source}
             </if>
@@ -565,7 +565,6 @@
             <if test="startDate != null and startDate !=''">
                 and insertDate between #{startDate} and NOW()
             </if>
-            and insertDate between #{startDate} and NOW()
         </where>
         ORDER BY
         <choose>
@@ -580,7 +579,7 @@
     <select id="getRecommendCourseListSize" resultType="int">
         SELECT count(*) FROM course_info
         <where>
-            source != "film"
+            insertDate between #{startDate} and NOW()
             <if test="source != null and source !=''">
                 and source =#{source}
             </if>
@@ -593,7 +592,7 @@
             <if test="startDate != null and startDate !=''">
                 and insertDate between #{startDate} and NOW()
             </if>
-            and insertDate between #{startDate} and NOW()
+
         </where>
     </select>
 
@@ -775,9 +774,105 @@
         <foreach collection="list" item="item" index="index">
             update group_class
             <set>
+                groupName =#{item.groupName},
                 sort=#{item.sort}
             </set>
             where id = #{item.id};
         </foreach>
     </update>
+
+    <delete id="deleteGroup" parameterType="java.util.List">
+        delete from group_class where
+        id NOT IN
+        <foreach collection="list" item="item" index="index"  open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="delete">
+        delete from group_class
+    </delete>
+    <insert id="addCourseReviews" parameterType="com.vivedu.ckd.model.CourseReviews">
+        insert into course_reviews(
+        courseId,
+        userId,
+        comments,
+        status,
+        reviewsDate
+        )
+        VALUES(
+        #{courseId},
+        #{userId},
+        #{comments},
+        #{status},
+        #{reviewsDate}
+        )
+    </insert>
+
+    <select id="getCourseReviewsListCount" resultType="int">
+        select count(*) from course_reviews
+        <where>
+            <if test="courseId != null and courseId !=''">
+                courseId =#{courseId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getCourseReviewsList" resultType="com.vivedu.ckd.model.CourseReviews">
+        SELECT
+        cr.*,
+        IF (
+        LENGTH(cr.userId) = 7,
+        (
+        SELECT
+        ts.XM
+        FROM
+        t_share_cdxt_bks_jspk ts
+        WHERE
+        ts.ZGH = cr.userId
+        LIMIT 0,1
+        ),
+        (
+        SELECT
+        tj.XM
+        FROM
+        t_share_cdxt_bks_jbxx tj
+        WHERE
+        tj.XH = cr.userId
+        LIMIT 0,1
+        )
+        ) userName,
+        (SELECT ci.courseName FROM course_info ci WHERE ci.id = cr.courseId) courseName
+        FROM
+        course_reviews cr
+        <where>
+            <if test="courseId != null and courseId !=''">
+                where cr.courseId =#{courseId}
+            </if>
+        </where>
+        ORDER BY cr.reviewsDate DESC LIMIT #{firstIndex},#{pageSize}
+    </select>
+    <insert id="add">
+        insert into cat_number(courseId,catTime)
+        VALUES (#{id},now())
+    </insert>
+
+    <select id="thridMonth" resultType="com.vivedu.ckd.model.CatNumber">
+        select * from cat_number where courseid=#{id} and catTime>DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+    </select>
+    <select id="sixMonth" resultType="com.vivedu.ckd.model.CatNumber">
+        select * from cat_number where courseid=#{id} and catTime>DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+    </select>
+
+    <select id="oneYear" resultType="com.vivedu.ckd.model.CatNumber">
+        select * from cat_number where courseid=#{id} and catTime>DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    </select>
+
+    <select id="week" resultType="com.vivedu.ckd.model.CatNumber">
+        SELECT * FROM cat_number  WHERE courseid=#{id} AND YEARWEEK(date_format(catTime,'%Y-%m-%d'),1) = YEARWEEK(now(),1);
+    </select>
+
+    <select id="Month" resultType="com.vivedu.ckd.model.CatNumber">
+        SELECT * FROM cat_number  WHERE courseid=#{id} AND DATE_FORMAT(catTime,'%Y%m' ) = DATE_FORMAT( CURDATE(), '%Y%m' )
+    </select>
 </mapper>
