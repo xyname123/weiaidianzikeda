@@ -552,13 +552,17 @@ public class CourseInfoService {
 
                     return new DemonstrationResponse(0, "查询成功！但是此老師無課程", null);
 
+                } else {
+                    String datax = mapai.get("data").toString().trim();
+                    log.info("datax----"+datax);
+                    List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(datax,CourseInfoAiVo.class);
+                    if (CourseInfoAilist.size() > 0) {
+                        studentPersonalCenterInfo.setCourseInfoaiList(CourseInfoAilist);
+                    }
                 }
-                List<CourseInfoAiVo> CourseInfoAilist = JSONObject.parseArray(dataA, CourseInfoAiVo.class);
-                if (CourseInfoAilist.size() > 0) {
-                    studentPersonalCenterInfo.setCourseInfoaiList(CourseInfoAilist);
-                }
-            } else {
 
+            }
+            else {
                 return new DemonstrationResponse(0, "查询成功！但是此老師無課程", null);
 
             }
@@ -869,7 +873,7 @@ public class CourseInfoService {
         return new DemonstrationResponse(-1, "异常！", null);
     }
 
-    public int findCourseByUserIdLearnNum(String userid) {
+    public List<BrowseCourse> findCourseByUserIdLearnNum(String userid) {
         return mapper.findCourseByUserIdLearnNum(userid);
     }
 
@@ -884,22 +888,28 @@ public class CourseInfoService {
     public DemonstrationResponse updateGroupSort(
             List<GroupSortModel> groupSortModelList) {
         try {
-            String[] groupIdList = groupSortModelList.get(0).getGroupSort().split(",");
             List<GroupClass> groupClassList = new ArrayList<>();
-            for (int i = 0; i < groupIdList.length; i++) {
-                GroupClass groupClass = new GroupClass(Integer.parseInt(groupIdList[i]), "", i + 1);
+            for (int i = 0; i < groupSortModelList.size(); i++) {
+                GroupClass groupClass = new GroupClass(groupSortModelList.get(i).getGroupId(), "", i + 1);
                 groupClassList.add(groupClass);
             }
             mapper.updateGroup(groupClassList);
             for (GroupSortModel groupMember : groupSortModelList) {
                 mapper.deleteGroupSort(groupMember.getGroupId());
-                String[] s = groupMember.getGroupMemberSort().split(",");
-                List<GroupMember> groupMemberList = new ArrayList<>();
-                for (int i = 0; i < s.length; i++) {
-                    GroupMember groupMember1 = new GroupMember(1, Integer.parseInt(s[i]), groupMember.getGroupId(), i + 1, "", "");
-                    groupMemberList.add(groupMember1);
+                if (StringUtils.isNotEmpty(groupMember.getGroupMemberSort())) {
+                    if(groupMember.getGroupMemberSort().contains(",")){
+                        String[] s = groupMember.getGroupMemberSort().split(",");
+                        List<GroupMember> groupMemberList = new ArrayList<>();
+                        for (int i = 0; i < s.length; i++) {
+                            GroupMember groupMember1 = new GroupMember(1, Integer.parseInt(s[i]), groupMember.getGroupId(), i + 1, "", "");
+                            groupMemberList.add(groupMember1);
+                        }
+                        int row = mapper.updateGroupSort(groupMemberList);
+                    }else {
+                        GroupMember groupMember1 = new GroupMember(1, Integer.parseInt(groupMember.getGroupMemberSort()), groupMember.getGroupId(), 1, "", "");
+                        mapper.addGroupMember(groupMember1);
+                    }
                 }
-                int row = mapper.updateGroupSort(groupMemberList);
             }
             return new DemonstrationResponse(0, "添加成功！", null);
         } catch (Exception e) {
@@ -907,4 +917,7 @@ public class CourseInfoService {
         }
         return new DemonstrationResponse(-1, "异常！", null);
     }
+
+
+
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vivedu.ckd.dao.MarkedCourseMapper">
+    <update id="marked">
+        update marked_course
+        <set>
+            state=#{state},
+            catTime=now()
+        </set>
+        where marked_course.courseId=#{courseid} and marked_course.userId=#{userid}
+    </update>
+
+    <select id="findMarkedCourse" resultType="com.vivedu.ckd.model.MarkedCourse">
+        SELECT * FROM  marked_course where marked_course.userId = #{userid} and marked_course.courseId= #{courseid}
+    </select>
+
+    <insert id="addMarked">
+        INSERT INTO marked_course(userId,state,courseId,catTime)
+        VALUES
+        (#{userid},#{state},#{courseid},now())
+    </insert>
+
+    <select id="courseInfoByMarked" resultType="com.vivedu.ckd.model.CourseInfo">
+        SELECT * FROM course_info WHERE course_info.id in (SELECT  distinct courseid from  marked_course where userId=#{userid} and state=1) order by markedTime DESC limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="courseInfoByMarkedNum" resultType="int">
+       SELECT  count(*)  from  marked_course where userId=#{userid} and state=1
+    </select>
+
+    <select id="findMarkedCourseK" resultType="com.vivedu.ckd.model.MarkedCourse">
+        SELECT  * from  marked_course where userId=#{userid} and state=1
+    </select>
+
+
+    <update id="catTimecourse">
+        update
+        course_info
+        <set>
+            markedTime =#{catTime}
+        </set>
+        WHERE course_info.id =#{courseid}
+    </update>
+
+    <select id="findMarkedGm" resultType="com.vivedu.ckd.model.MarkedCourse">
+        SELECT  * from  marked_course where userId=#{userid} and courseId=#{id}
+    </select>
+</mapper>

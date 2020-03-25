@@ -91,4 +91,6 @@ public class CourseInfoPojo {
 
     private String  summary;
 
+    private Integer  ok;
+
 }

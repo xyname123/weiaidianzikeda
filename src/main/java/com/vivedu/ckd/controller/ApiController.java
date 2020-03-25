@@ -40,6 +40,8 @@ public class ApiController {
     private ClassroomService classroomService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private MarkedCourseService markedCourseService;
 
     @GetMapping(path = "/courseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程信息")
@@ -134,20 +136,45 @@ public class ApiController {
             courseInfoService.catTime(browseCourse.getCatTime(),browseCourse.getCourseid());
         }
         List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid,pageNum,pageSize);
-        int num = courseInfoService.findCourseByUserIdLearnNum(userid);
+        List<BrowseCourse> num = courseInfoService.findCourseByUserIdLearnNum(userid);
+        return new ZanshiResponse(0, "请求成功", num.size(), courseInfo);
+    }
+    /**
+     * 3/25
+     * */
+    @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "我收藏的课程")
+    public ZanshiResponse ByMarked(
+            @RequestParam(required = true, value = "userid") @ApiParam(value = "用户编号") String userid,
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize) {
+        pageNum = (pageNum - 1) * pageSize;
+        List<MarkedCourse> MarkedCourses = markedCourseService.findMarkedCourseK(userid);
+        for (MarkedCourse course : MarkedCourses) {
+            markedCourseService.catTimecourse(course.getCatTime(),course.getCourseid());
+        }
+        List<MarkedCourse> courseInfo = markedCourseService.courseInfoByMarked(userid,pageNum,pageSize);
+        int num = markedCourseService.courseInfoByMarkedNum(userid);
         return new ZanshiResponse(0, "请求成功", num, courseInfo);
     }
-
-    @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "收藏的课程")
-    public String courseInfoByMarked(
-            @RequestParam(required = true, value = "userId") @ApiParam(value = "用户编号") String userId) {
-        log.info("进入/markedList方法");
-        List<CourseInfo> courseInfo = courseInfoService.courseInfoByMarked(userId);
-        HashMap<String, Object> hashMapMap = new HashMap<>();
-        hashMapMap.put("total", courseInfo.size());
-        hashMapMap.put("data", courseInfo);
-        return JSON.toJSONString(hashMapMap);
+   /**
+    * 3/24
+    * */
+    @GetMapping(path = "/marked", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "是否收藏")
+    public ZanshiResponse Marked(
+            @RequestParam(required = true,value = "userid") @ApiParam(value = "用户编号") String userid,
+            @RequestParam(required = true,value = "courseid") @ApiParam(value = "课程编号") Integer courseid,
+            @RequestParam(required = true,value = "state") @ApiParam(value = "状态") Integer state) {
+        log.info("进入/marked方法");
+       MarkedCourse markedcourse = markedCourseService.findMarkedCourse(userid,state,courseid);
+        if (markedcourse != null) {
+            int marked = markedCourseService.marked(userid,state,courseid);
+            return new ZanshiResponse(0, "请求成功", 1, null);
+        } else {
+            int marked = markedCourseService.addMarked(userid,state,courseid);
+        }
+        return new ZanshiResponse(-1, "未知错误", 1, null);
     }
 
     @GetMapping(path = "/openCourseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -290,7 +317,14 @@ public class ApiController {
         }
 
         //对userid的处理与browsecourse关联   id和courseid的关联
-        courseInfoService.insertBrowse(userid, id);
+        courseInfoService.insertBrowse(userid,id);
+        //对收藏的管理 1为收藏
+       MarkedCourse markedCourse = markedCourseService.findMarkedGm(userid,id);
+       if (markedCourse.getState()!=null){
+           courseInfoPojo.setOk(markedCourse.getState());
+       }else {
+           courseInfoPojo.setOk(0);
+       }
         hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }
@@ -936,7 +970,7 @@ public class ApiController {
     @PostMapping(path = "/updateGroupSort", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "修改组团顺序")
     public DemonstrationResponse updateGroupSort(
-            List<GroupSortModel> groupSortModelList) throws Exception {
+            @RequestBody List<GroupSortModel> groupSortModelList) throws Exception {
         return courseInfoService.updateGroupSort(groupSortModelList);
     }
 

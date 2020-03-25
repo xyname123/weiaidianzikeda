@@ -202,7 +202,7 @@ public interface CourseInfoMapper {
 
     List<CourseInfo> getCourseInfoList(@Param("groupClassId")Integer groupClassId);
 
-    int findCourseByUserIdLearnNum(String userid);
+    List<BrowseCourse> findCourseByUserIdLearnNum(String userid);
 
     void catTime(@Param("time")Timestamp time, @Param("couseid")String couseid);
 
@@ -213,5 +213,8 @@ public interface CourseInfoMapper {
     int updateGroupSort(List<GroupMember> list);
 
     int updateGroup(List<GroupClass> list);
+
+
+
 
 }

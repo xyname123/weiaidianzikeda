@@ -20,8 +20,8 @@
        SELECT * from  browse_course where userid=#{userid}
     </select>
 
-    <select id="findCourseByUserIdLearnNum"  resultType="int">
-       SELECT   distinct count(courseid)  FROM  browse_course where userid=#{userid}
+    <select id="findCourseByUserIdLearnNum" resultType="com.vivedu.ckd.model.BrowseCourse">
+       SELECT   distinct courseid  FROM  browse_course where userid=#{userid}
         <!-- SELECT cl.name,cl.chapterId,cl.chapterId FROM course_info ci  LEFT join chapter_list cl on ci.courseId = cl.courseId-->
     </select>
 
@@ -42,7 +42,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where courseTypeCode=#{courseTypeCode})
         </if>
     </select>
     <select id="findCourseByKeyNum" resultType="int">
@@ -54,7 +54,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where courseTypeCode=#{courseTypeCode})
         </if>
     </select>
     <select id="findCourseByUserIdIf" resultType="com.vivedu.ckd.model.CourseInfo">
@@ -83,7 +83,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where courseTypeCode=#{courseTypeCode})
         </if>
         order by course_info.id  desc limit #{pageNum},#{pageSize}
     </select>
@@ -97,7 +97,7 @@
             and course_info.state !=1 and course_info.state !="上架"
         </if>
         <if test='courseTypeCode != null '>
-            and courseTypeName=(select courseTypeName  from category_code where code=#{courseTypeCode})
+            and courseTypeName=(select courseTypeName  from category_code where courseTypeCode=#{courseTypeCode})
         </if>
         limit #{pageNum},#{pageSize}
     </select>
@@ -746,7 +746,7 @@
         WHERE
         ci.id IN (
         SELECT
-        gm.id
+        gm.courseId
         FROM
         group_member gm
         WHERE
@@ -764,7 +764,7 @@
         groupClassId,
         sort)
         VALUES
-        <foreach collection="list" item="item" index="index">
+        <foreach collection="list" item="item" index="index" separator=",">
             (#{item.courseId},
             #{item.groupClassId},
             #{item.sort})
@@ -777,7 +777,7 @@
             <set>
                 sort=#{item.sort}
             </set>
-            where id = #{item.id}
+            where id = #{item.id};
         </foreach>
     </update>
 </mapper>
