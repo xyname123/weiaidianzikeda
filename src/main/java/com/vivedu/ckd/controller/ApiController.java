@@ -353,7 +353,14 @@ public class ApiController {
                 courseInfoPojo.setOk(markedCourse.getState());
             }
         }
-
+        //对视屏url的处理
+        courseInfoPojo.setLocalresourceUrl("");
+        if (courseInfo.getWebVideoUrl()==null) {
+            courseInfoPojo.setResourceUrl("");
+        }else {
+            courseInfoPojo.setResourceUrl(courseInfo.getWebVideoUrl());
+        }
+        courseInfoPojo.setResourceType(0);
         hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }

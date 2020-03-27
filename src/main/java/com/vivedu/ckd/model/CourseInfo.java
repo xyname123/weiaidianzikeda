@@ -94,6 +94,12 @@ public class CourseInfo {
     private  Timestamp catTime;
     @Column
     private  Timestamp markedTime;
+    //本地资源地址  默认空(localVideoUrl)
+    private String localVideoUrl;
+    //远程资源地址 替换(webVideoUrl)
+    private String webVideoUrl;
+    //资源类型(0视频,1网页); 默认0
+    private Integer resourceType;
     //平台课程总数
 /*    @Column
     private String  course;*/

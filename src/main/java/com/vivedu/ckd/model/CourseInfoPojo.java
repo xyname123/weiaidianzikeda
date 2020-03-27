@@ -102,4 +102,12 @@ public class CourseInfoPojo {
     private Integer  sixMonth;
 
     private Integer  oneYear;
+
+    //本地资源地址  默认空(localVideoUrl)
+    private String localresourceUrl;
+    //远程资源地址 替换(webVideoUrl)
+    private String resourceUrl;
+    //资源类型(0视频,1网页); 默认0
+    private Integer resourceType;
+
 }
