@@ -798,14 +798,16 @@
         userId,
         comments,
         status,
-        reviewsDate
+        reviewsDate,
+        userName
         )
         VALUES(
         #{courseId},
         #{userId},
         #{comments},
         #{status},
-        #{reviewsDate}
+        #{reviewsDate},
+        #{userName}
         )
     </insert>
 
@@ -821,33 +823,12 @@
     <select id="getCourseReviewsList" resultType="com.vivedu.ckd.model.CourseReviews">
         SELECT
         cr.*,
-        IF (
-        LENGTH(cr.userId) = 7,
-        (
-        SELECT
-        ts.XM
-        FROM
-        t_share_cdxt_bks_jspk ts
-        WHERE
-        ts.ZGH = cr.userId
-        LIMIT 0,1
-        ),
-        (
-        SELECT
-        tj.XM
-        FROM
-        t_share_cdxt_bks_jbxx tj
-        WHERE
-        tj.XH = cr.userId
-        LIMIT 0,1
-        )
-        ) userName,
         (SELECT ci.courseName FROM course_info ci WHERE ci.id = cr.courseId) courseName
         FROM
         course_reviews cr
         <where>
             <if test="courseId != null and courseId !=''">
-                where cr.courseId =#{courseId}
+                 cr.courseId =#{courseId}
             </if>
         </where>
         ORDER BY cr.reviewsDate DESC LIMIT #{firstIndex},#{pageSize}

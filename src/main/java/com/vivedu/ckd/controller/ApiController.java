@@ -157,6 +157,7 @@ public class ApiController {
         int num = markedCourseService.courseInfoByMarkedNum(userid);
         return new ZanshiResponse(0, "请求成功", num, courseInfo);
     }
+
    /**
     * 3/24
     * */
@@ -173,8 +174,9 @@ public class ApiController {
             return new ZanshiResponse(0, "请求成功", 1, null);
         } else {
             int marked = markedCourseService.addMarked(userid,state,courseid);
+            return new ZanshiResponse(0, "请求成功", 1, null);
         }
-        return new ZanshiResponse(-1, "未知错误", 1, null);
+
     }
 
     @GetMapping(path = "/openCourseList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
