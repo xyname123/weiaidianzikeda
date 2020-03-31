@@ -56,8 +56,8 @@ public class CourseInfoFilm {
         private String[] teacher;
         //章节列表
         private String[] chapterlist;
-
-
+        //新增视屏url
+        private String videourl;
 }
 
 

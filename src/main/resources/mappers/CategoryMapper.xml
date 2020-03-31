@@ -18,7 +18,7 @@
     </update>
 
     <select id="findAllCode" resultType="com.vivedu.ckd.model.categoryCode">
-        select * from category_code
+        select * from category_code where isDel=0
     </select>
 
     <update id="delCategroy" parameterType="String">

@@ -265,7 +265,7 @@ public class CourseInfoService {
         Map mapF = (Map) JSON.parse(ss);
         String datameF = (String) mapF.get("totalnum");
         int is = Integer.parseInt(datameF);
-        int countmetelF = is / 100 + 1;
+        int countmetelF = is / 500 + 1;
         for (int j = 1; j <= countmetelF; j++) {
             String ssD = restTemplate.getForObject("http://film.uestc.edu.cn/api/courseList?page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&enc=" + signKey, String.class);
             Map mapFssD = (Map) JSON.parse(ssD);
