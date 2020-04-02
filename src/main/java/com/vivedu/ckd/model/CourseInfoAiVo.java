@@ -64,6 +64,7 @@ public class CourseInfoAiVo {
 
     private String subjectcategory3;
 
+    private  Object[] acts;
 }
 
 

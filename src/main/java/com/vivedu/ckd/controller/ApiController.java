@@ -360,7 +360,11 @@ public class ApiController {
         }else {
             courseInfoPojo.setResourceUrl(courseInfo.getWebVideoUrl());
         }
-        courseInfoPojo.setResourceType(0);
+        if (courseInfo.getSource().equals("爱课堂")) {
+            courseInfoPojo.setResourceType(1);
+        } else {
+            courseInfoPojo.setResourceType(0);
+        }
         hashMapMap.put("data", courseInfoPojo);
         return JSON.toJSONString(hashMapMap);
     }
@@ -723,10 +727,10 @@ public class ApiController {
         return new ZanshiResponse(0, "请求成功", num, hotkeyList);
     }
 
-
-    /**
-     * 课程分类列表3/12
-     */
+/*
+    *//**
+     * 课程分类列表3/12     新改版(4/1新版的分类用于首页推荐的分类)
+     *//*
     @GetMapping(path = "/getCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程分类")
     public ZanshiResponse getCourseTypeList(
@@ -737,7 +741,42 @@ public class ApiController {
         List<categoryCode> categoryCodeList = courseInfoService.getCourseType(pageNum, pageSize);
         int num = courseInfoService.getCourseTypeNum();
         return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
+    }*/
+    /**
+     * 课程分类列表3/12     新改版(4/1新版的分类用于首页推荐的分类)
+     */
+    @GetMapping(path = "/getCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "课程分类")
+    public ZanshiResponse getCourseTypeList(
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize,
+            @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode
+    ) throws Exception {
+        List<categoryCode> code =categoryService.findAllCode();
+        for (categoryCode categoryCode : code) {
+
+            String codeParam = categoryCode.getCourseTypeCode();
+
+            //一级分类
+            if (courseTypeCode==null) {
+                List<categoryCode> categoryName= categoryService.findOne();
+                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+            }
+
+            if (courseTypeCode!=null&&codeParam.length() == courseTypeCode.length() + 2) {
+                if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
+                    List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                } else {
+                    List<categoryCode> categoryName = categoryService.findBen(courseTypeCode);
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                }
+
+            }
+        }
+        return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
+
 
     /**
      * 课程分类更新3/12

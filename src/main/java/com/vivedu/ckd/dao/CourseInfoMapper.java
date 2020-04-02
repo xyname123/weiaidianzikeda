@@ -237,4 +237,10 @@ public interface CourseInfoMapper {
     List<CatNumber> week(Integer id);
 
     List<CatNumber> Month(Integer id);
+
+    void updateAiCourseOneTeacherAndChapListAndacts(@Param("actsData")String actsData,
+                                                    @Param("teacherData")String teacherData,
+                                                    @Param("chapterListData")String chapterListData,
+                                                    @Param("coursename")String coursename,
+                                                    @Param("source") String source);
 }

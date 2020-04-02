@@ -169,8 +169,11 @@ public class CourseInfoService {
                         String teacherData = Arrays.toString(teacher);
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
+                        //新增
+                        Object[] acts = courseInfoAiVo.getActs();
+                        String actsData =Arrays.toString(acts);
                         courseInfoService.InsertCourseOne(courseInfoAiVo);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoAiVo.getCoursename(), courseInfoAiVo.getSource());
+                        courseInfoService.updateAiCourseOneTeacherAndChapListAndacts(actsData,teacherData, chapterListData, courseInfoAiVo.getCoursename(), courseInfoAiVo.getSource());
                     } else {
                         // courseInfoService.updateAi(CourseInfoAilist);
                         courseInfoService.updateAiCourse(courseInfoAiVo);
@@ -178,7 +181,9 @@ public class CourseInfoService {
                         String teacherData = Arrays.toString(teacher);
                         Object[] chapterList = courseInfoAiVo.getChapterList();
                         String chapterListData = Arrays.toString(chapterList);
-                        courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoAiVo.getCoursename(), courseInfoAiVo.getSource());
+                        Object[] acts = courseInfoAiVo.getActs();
+                        String actsData =Arrays.toString(acts);
+                        courseInfoService.updateAiCourseOneTeacherAndChapListAndacts(actsData,teacherData, chapterListData, courseInfoAiVo.getCoursename(), courseInfoAiVo.getSource());
 
                     }
                 }
@@ -993,5 +998,9 @@ public class CourseInfoService {
 
     public List<CatNumber> Month(Integer id) {
         return   mapper.Month(id);
+    }
+
+    public void updateAiCourseOneTeacherAndChapListAndacts(String actsData, String teacherData, String chapterListData, String coursename, String source) {
+        mapper.updateAiCourseOneTeacherAndChapListAndacts(actsData,teacherData,chapterListData,coursename,source);
     }
 }

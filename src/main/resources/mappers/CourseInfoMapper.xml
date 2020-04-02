@@ -521,6 +521,15 @@
             where courseName=#{coursename}and source=#{source};
     </update>
 
+
+    <update id="updateAiCourseOneTeacherAndChapListAndacts">
+        update course_info
+        <set>
+            webVideoUrl=#{actsData},teacher=#{teacherData},chapterList=#{chapterListData}
+        </set>
+        where courseName=#{coursename}and source=#{source};
+    </update>
+
     <update id="updateAiCourse">
         update course_info
         <set>
@@ -584,7 +593,7 @@
                 and source =#{source}
             </if>
             <if test="courseName != null and courseName !=''">
-                and course_info.courseName like concat('%',#{courseName},'%')
+                and course_info.courseName like concat('%',#{courseName},'%') and course_info.cover IS NOT NULL and course_info.cover !="" and course_info.state IS NOT NULL
             </if>
             <if test='isRec == 1'>
                 and isRec = 1
@@ -628,7 +637,7 @@
         select count(*) from hot_key order by hot_key.courseKeywordsNum desc limit #{pageNum},#{pageSize}
     </select>
     <select id="getCourseType" resultType="com.vivedu.ckd.model.categoryCode">
-        select courseTypeName,courseTypeCode,courseSort,courseHot from category_code where isDel=0 limit #{pageNum},#{pageSize}
+        select * from category_code where isDel=0 limit #{pageNum},#{pageSize}
     </select>
 
     <select id="getCourseTypeNum" resultType="int" >
