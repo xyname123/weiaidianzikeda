@@ -13,4 +13,5 @@ public class TeamModel {
    private int teamId;
    private String teamName;
    private List<CourseInfo> courseList;
+   private int size;
 }

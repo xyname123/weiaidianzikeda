@@ -133,15 +133,16 @@ public class ApiController {
         log.info("进入/myCourseList");
         List<BrowseCourse> brow = courseInfoService.findtime(userid);
         for (BrowseCourse browseCourse : brow) {
-            courseInfoService.catTime(browseCourse.getCatTime(),browseCourse.getCourseid());
+            courseInfoService.catTime(browseCourse.getCatTime(), browseCourse.getCourseid());
         }
-        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid,pageNum,pageSize);
+        List<CourseInfo> courseInfo = courseInfoService.findCourseByUserIdLearn(userid, pageNum, pageSize);
         List<BrowseCourse> num = courseInfoService.findCourseByUserIdLearnNum(userid);
         return new ZanshiResponse(0, "请求成功", num.size(), courseInfo);
     }
+
     /**
      * 3/25
-     * */
+     */
     @GetMapping(path = "/markedList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "我收藏的课程")
     public ZanshiResponse ByMarked(
@@ -151,29 +152,29 @@ public class ApiController {
         pageNum = (pageNum - 1) * pageSize;
         List<MarkedCourse> MarkedCourses = markedCourseService.findMarkedCourseK(userid);
         for (MarkedCourse course : MarkedCourses) {
-            markedCourseService.catTimecourse(course.getCatTime(),course.getCourseid());
+            markedCourseService.catTimecourse(course.getCatTime(), course.getCourseid());
         }
-        List<MarkedCourse> courseInfo = markedCourseService.courseInfoByMarked(userid,pageNum,pageSize);
+        List<MarkedCourse> courseInfo = markedCourseService.courseInfoByMarked(userid, pageNum, pageSize);
         int num = markedCourseService.courseInfoByMarkedNum(userid);
         return new ZanshiResponse(0, "请求成功", num, courseInfo);
     }
 
-   /**
-    * 3/24
-    * */
+    /**
+     * 3/24
+     */
     @GetMapping(path = "/marked", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "是否收藏")
     public ZanshiResponse Marked(
-            @RequestParam(required = true,value = "userid") @ApiParam(value = "用户编号") String userid,
-            @RequestParam(required = true,value = "courseid") @ApiParam(value = "课程编号") Integer courseid,
-            @RequestParam(required = true,value = "state") @ApiParam(value = "状态") Integer state) {
+            @RequestParam(required = true, value = "userid") @ApiParam(value = "用户编号") String userid,
+            @RequestParam(required = true, value = "courseid") @ApiParam(value = "课程编号") Integer courseid,
+            @RequestParam(required = true, value = "state") @ApiParam(value = "状态") Integer state) {
         log.info("进入/marked方法");
-       MarkedCourse markedcourse = markedCourseService.findMarkedCourse(userid,state,courseid);
+        MarkedCourse markedcourse = markedCourseService.findMarkedCourse(userid, state, courseid);
         if (markedcourse != null) {
-            int marked = markedCourseService.marked(userid,state,courseid);
+            int marked = markedCourseService.marked(userid, state, courseid);
             return new ZanshiResponse(0, "请求成功", 1, null);
         } else {
-            int marked = markedCourseService.addMarked(userid,state,courseid);
+            int marked = markedCourseService.addMarked(userid, state, courseid);
             return new ZanshiResponse(0, "请求成功", 1, null);
         }
 
@@ -218,16 +219,16 @@ public class ApiController {
 
     @GetMapping(path = "/news/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "新闻信息列表）")
-    public  List<InfoInfo> newsList(
+    public List<InfoInfo> newsList(
             @RequestParam(required = false, value = "isRec") @ApiParam(value = "isRec") Integer isRec,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) {
         log.info("进入/news/list方法");
         pageNum = (pageNum - 1) * pageSize;
-        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum,pageSize,isRec);
+        List<InfoInfo> infoInfo = infoInfoService.findNewsList(pageNum, pageSize, isRec);
         int num = infoInfoService.findCount(isRec);
-        return  infoInfo;
+        return infoInfo;
     }
 
     @GetMapping(path = "/news/detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -314,20 +315,20 @@ public class ApiController {
         courseInfoService.add(id);
         //新增访问记录的查询
         //1.查询本周
-        List<CatNumber> week =courseInfoService.week(id);
+        List<CatNumber> week = courseInfoService.week(id);
 
         courseInfoPojo.setWeek(week.size());
         //2.查询本月
-        List<CatNumber> Month =courseInfoService.Month(id);
+        List<CatNumber> Month = courseInfoService.Month(id);
         courseInfoPojo.setMonth(Month.size());
         //3.查询最近三个月
-        List<CatNumber> threeMonth =courseInfoService.thridMonth(id);
+        List<CatNumber> threeMonth = courseInfoService.thridMonth(id);
         courseInfoPojo.setThreeMonth(threeMonth.size());
         //4.查询最近6个月
-        List<CatNumber> sixMonth =courseInfoService.sixMonth(id);
+        List<CatNumber> sixMonth = courseInfoService.sixMonth(id);
         courseInfoPojo.setSixMonth(sixMonth.size());
         //5.查询最近一年
-        List<CatNumber> oneyear =courseInfoService.oneYear(id);
+        List<CatNumber> oneyear = courseInfoService.oneYear(id);
         courseInfoPojo.setOneYear(oneyear.size());
 
         //中国大学慕课
@@ -340,24 +341,24 @@ public class ApiController {
         }
 
         //对userid的处理与browsecourse关联   id和courseid的关联
-        if (userid!=null) {
-            courseInfoService.insertBrowse(userid,id);
+        if (userid != null) {
+            courseInfoService.insertBrowse(userid, id);
         }
         //对收藏的管理 1为收藏
-        if (userid!=null){
-            MarkedCourse markedCourse = markedCourseService.findMarkedGm(userid,id);
-            if (markedCourse==null||markedCourse.getState()==null){
+        if (userid != null) {
+            MarkedCourse markedCourse = markedCourseService.findMarkedGm(userid, id);
+            if (markedCourse == null || markedCourse.getState() == null) {
                 courseInfoPojo.setOk(0);
 
-            }else {
+            } else {
                 courseInfoPojo.setOk(markedCourse.getState());
             }
         }
         //对视屏url的处理
         courseInfoPojo.setLocalresourceUrl("");
-        if (courseInfo.getWebVideoUrl()==null) {
+        if (courseInfo.getWebVideoUrl() == null) {
             courseInfoPojo.setResourceUrl("");
-        }else {
+        } else {
             courseInfoPojo.setResourceUrl(courseInfo.getWebVideoUrl());
         }
         if (courseInfo.getSource().equals("爱课堂")) {
@@ -727,8 +728,8 @@ public class ApiController {
         return new ZanshiResponse(0, "请求成功", num, hotkeyList);
     }
 
-/*
-    *//**
+    /*
+     *//**
      * 课程分类列表3/12     新改版(4/1新版的分类用于首页推荐的分类)
      *//*
     @GetMapping(path = "/getCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -742,6 +743,7 @@ public class ApiController {
         int num = courseInfoService.getCourseTypeNum();
         return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
     }*/
+
     /**
      * 课程分类列表3/12     新改版(4/1新版的分类用于首页推荐的分类)
      */
@@ -752,18 +754,18 @@ public class ApiController {
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize,
             @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode
     ) throws Exception {
-        List<categoryCode> code =categoryService.findAllCode();
+        List<categoryCode> code = categoryService.findAllCode();
         for (categoryCode categoryCode : code) {
 
             String codeParam = categoryCode.getCourseTypeCode();
 
             //一级分类
-            if (courseTypeCode==null) {
-                List<categoryCode> categoryName= categoryService.findOne();
+            if (courseTypeCode == null) {
+                List<categoryCode> categoryName = categoryService.findOne();
                 return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
             }
 
-            if (courseTypeCode!=null&&codeParam.length() == courseTypeCode.length() + 2) {
+            if (courseTypeCode != null && codeParam.length() == courseTypeCode.length() + 2) {
                 if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
                     List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
                     return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
@@ -780,47 +782,45 @@ public class ApiController {
     @GetMapping(path = "/updateCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程分类更新")
     public ZanshiResponse updateCourseTypeList(
-            @RequestParam(required = true, value = "type") int type,
-            @RequestParam(required = true, value = "courseTypeName") String courseTypeName,
+            @RequestParam(required = true, value = "Type") int Type,
+            @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
             @RequestParam(required = true, value = "courseTypeCode") String courseTypeCode,
             @RequestParam(required = false, value = "courseSort") String courseSort,
             @RequestParam(required = false, value = "courseHot") String courseHot
     ) throws Exception {
         //1.增加数据 2.更新数据 3.删除数据
-        if (type ==1) {
-            List<categoryCode> code =categoryService.findAllCode();
+        if (Type == 1) {
+            List<categoryCode> code = categoryService.findAllCode();
             for (categoryCode categoryCode : code) {
                 if (categoryCode.getCourseTypeName().equals(courseTypeName)) {
-                    return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(),"已存在",0,null);
+                    return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), "已存在", 0, null);
                 }
             }
-           int num= categoryService.addCategory(courseTypeName,courseTypeCode,courseSort,courseHot);
+            int num = categoryService.addCategory(courseTypeName, courseTypeCode, courseSort, courseHot);
 
-            if (num >0) {
-                return new ZanshiResponse(0,"添加成功",num,null);
-            }
-            else{
-                return new ZanshiResponse(-1,"未知错误",0,null);
+            if (num > 0) {
+                return new ZanshiResponse(0, "添加成功", num, null);
+            } else {
+                return new ZanshiResponse(-1, "未知错误", 0, null);
             }
         }
-        if (type ==2) {
+        if (Type == 2) {
 
-            int num= categoryService.upCategory(courseTypeName,courseTypeCode,courseSort,courseHot);
+            int num = categoryService.upCategory(courseTypeName, courseTypeCode, courseSort, courseHot);
 
-            if (num >0) {
-                return new ZanshiResponse(0,"添加成功",num,null);
-            }
-            else{
-                return new ZanshiResponse(-1,"未知错误",0,null);
+            if (num > 0) {
+                return new ZanshiResponse(0, "添加成功", num, null);
+            } else {
+                return new ZanshiResponse(-1, "未知错误", 0, null);
             }
 
         }
-       if (type ==3) {
+        if (Type == 3) {
             //分类是否存在下级分类，假设存在则不能删除，只有在不存在下级分类的情况下才可删除
-            List<categoryCode> code =categoryService.findAllCode();
+            List<categoryCode> code = categoryService.findAllCode();
             for (categoryCode categoryCode : code) {
 
-               String codeParam = categoryCode.getCourseTypeCode();
+                String codeParam = categoryCode.getCourseTypeCode();
 
                 if (codeParam.length() == courseTypeCode.length() + 2) {
 
@@ -836,17 +836,17 @@ public class ApiController {
 
                     }
 
-                } else {
-                    return new ZanshiResponse(10001, CodeMsg.PARARM_EXCEPTION.getMessage(), 0, null);
                 }
 
             }
 
         }
+        int row = categoryService.delCategroy(courseTypeCode);
+        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
 
-
-        return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
+
+
 
 
     /**
@@ -939,9 +939,7 @@ public class ApiController {
             //映射测试
             List<categoryThird> code =categoryService.findAllCodeThird();
             for (categoryThird categoryCode : code) {
-
                 String codeParam = categoryCode.getCourseTypeCode();
-
                 //一级分类
                 if (courseTypeCode==null) {
                     List<categoryThird> categoryName= categoryService.findOneT();

@@ -704,10 +704,12 @@
     <insert id="addGroupClass" parameterType="com.vivedu.ckd.model.GroupClass">
         insert into  group_class(
         groupName,
-        sort)
+        sort,
+        size)
         VALUES(
         #{groupName},
-        #{sort})
+        #{sort},
+        #{size})
     </insert>
 
     <delete id="deleteGroupClass" parameterType="int">
@@ -784,7 +786,8 @@
             update group_class
             <set>
                 groupName =#{item.groupName},
-                sort=#{item.sort}
+                sort=#{item.sort},
+                size=#{item.size}
             </set>
             where id = #{item.id};
         </foreach>

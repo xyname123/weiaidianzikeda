@@ -729,7 +729,7 @@ public class CourseInfoService {
                 String[] ids = sortList.split(",");
                 List<GroupClass> groupClassList = new ArrayList<>();
                 for (int i = 0; i < ids.length; i++) {
-                    GroupClass groupClass = new GroupClass(Integer.parseInt(ids[i]), "", i + 1);
+                    GroupClass groupClass = new GroupClass(Integer.parseInt(ids[i]), "", i + 1,1);
                     groupClassList.add(groupClass);
                 }
                 int rows = mapper.updateGroupClassSort(groupClassList);
@@ -869,7 +869,7 @@ public class CourseInfoService {
             List<TeamModel> teamModelList = new ArrayList<>();
             for (GroupClass groupClass : groupClassList) {
                 List<CourseInfo> courseInfoList = mapper.getCourseInfoList(groupClass.getId());
-                TeamModel teamModel = new TeamModel(groupClass.getId(), groupClass.getGroupName(), courseInfoList);
+                TeamModel teamModel = new TeamModel(groupClass.getId(), groupClass.getGroupName(), courseInfoList,groupClass.getSize());
                 teamModelList.add(teamModel);
             }
             recommendCourseData.setData(teamModelList);
@@ -902,7 +902,7 @@ public class CourseInfoService {
             List<Integer> idList = new ArrayList<>();
             for (int i = 0; i < groupSortModelList.size(); i++) {
                 idList.add(groupSortModelList.get(i).getGroupId());
-                GroupClass groupClass = new GroupClass(groupSortModelList.get(i).getGroupId(), groupSortModelList.get(i).getGroupName(), i + 1);
+                GroupClass groupClass = new GroupClass(groupSortModelList.get(i).getGroupId(), groupSortModelList.get(i).getGroupName(), i + 1,groupSortModelList.get(i).getSize());
                 groupClassList.add(groupClass);
 
             }

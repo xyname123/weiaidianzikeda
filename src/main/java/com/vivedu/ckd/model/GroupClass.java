@@ -13,4 +13,6 @@ public class GroupClass {
     private String groupName;
     //排序字段
     private int sort;
+
+    private int size;
 }

@@ -65,7 +65,7 @@ public class DockingService {
     private RestTemplate restTemplate;
 
     public static ThreadPoolExecutor cancelPool = new ThreadPoolExecutor(
-            40, 40,
+            10, 10,
             1, TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(80, false),
             new ThreadPoolExecutor.CallerRunsPolicy()
@@ -76,7 +76,7 @@ public class DockingService {
      */
     // @Scheduled(cron = "0 0/30 * * * ?")
     public void findAllCourse(Integer page, Integer size, String sort) throws InterruptedException {
-        String sign = MD5Utils.MD5Encode("page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&key=" + keyi, "utf8").toUpperCase();
+    /*    String sign = MD5Utils.MD5Encode("page=" + 1 + "&size=" + 500 + "&sort=" + "date" + "&key=" + keyi, "utf8").toUpperCase();
 
         String s = restTemplate.getForObject("http://222.197.165.58:8080/api/courselist?enc=" + sign + "&page=" + 1 + "&size=" + 500 + "&sort=" + "date", String.class);
 
@@ -135,8 +135,8 @@ public class DockingService {
                 e.printStackTrace();
             }
 
-        }
-       /* String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + 1 + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
+        }*/
+      String metel = restTemplate.getForObject("http://uestc.connect.metel.cn/api/courselist?page=" + 1 + "&size=" + 100 + "&sort=date" + "&enc=" + 123456, String.class);
         Map mapmetel = (Map) JSON.parse(metel);
         Integer datametel = (Integer) mapmetel.get("totalnum");
         int countmetel = datametel / 100 + 1;
@@ -181,8 +181,8 @@ public class DockingService {
                 }
             });
         }
-    }*/
     }
-}
+    }
+
 
 
