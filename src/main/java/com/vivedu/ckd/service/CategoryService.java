@@ -62,4 +62,16 @@ public class CategoryService {
     public List<categoryCode> findBen(String courseTypeCode) {
         return mapper.findBen(courseTypeCode);
     }
+
+    public List<categoryThird> findOneT() {
+        return mapper.findOneT();
+    }
+
+    public List<categoryThird> findMoreT(String courseTypeCode) {
+        return mapper.findMoreT(courseTypeCode);
+    }
+
+    public List<categoryThird> findBenT(String courseTypeCode) {
+        return mapper.findBenT(courseTypeCode);
+    }
 }

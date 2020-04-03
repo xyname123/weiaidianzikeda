@@ -44,4 +44,10 @@ public interface CategoryMapper {
     List<categoryCode> findMore(String courseTypeCode);
 
     List<categoryCode> findBen(String courseTypeCode);
+
+    List<categoryThird> findOneT();
+
+    List<categoryThird> findMoreT(String courseTypeCode);
+
+    List<categoryThird> findBenT(String courseTypeCode);
 }

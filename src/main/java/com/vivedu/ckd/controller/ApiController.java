@@ -767,11 +767,7 @@ public class ApiController {
                 if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
                     List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
                     return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
-                } else {
-                    List<categoryCode> categoryName = categoryService.findBen(courseTypeCode);
-                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
                 }
-
             }
         }
         return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
@@ -785,8 +781,8 @@ public class ApiController {
     @ApiOperation(value = "课程分类更新")
     public ZanshiResponse updateCourseTypeList(
             @RequestParam(required = true, value = "type") int type,
-            @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
-            @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
+            @RequestParam(required = true, value = "courseTypeName") String courseTypeName,
+            @RequestParam(required = true, value = "courseTypeCode") String courseTypeCode,
             @RequestParam(required = false, value = "courseSort") String courseSort,
             @RequestParam(required = false, value = "courseHot") String courseHot
     ) throws Exception {
@@ -941,23 +937,23 @@ public class ApiController {
         }
         if (type==4) {
             //映射测试
-            List<categoryCode> code =categoryService.findAllCode();
-            for (categoryCode categoryCode : code) {
+            List<categoryThird> code =categoryService.findAllCodeThird();
+            for (categoryThird categoryCode : code) {
 
                 String codeParam = categoryCode.getCourseTypeCode();
 
                 //一级分类
                 if (courseTypeCode==null) {
-                    List<categoryCode> categoryName= categoryService.findOne();
+                    List<categoryThird> categoryName= categoryService.findOneT();
                     return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
                 }
 
                 if (courseTypeCode!=null&&codeParam.length() == courseTypeCode.length() + 2) {
                     if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
-                        List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
+                        List<categoryThird> categoryName = categoryService.findMoreT(courseTypeCode);
                         return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
                     } else {
-                        List<categoryCode> categoryName = categoryService.findBen(courseTypeCode);
+                        List<categoryThird> categoryName = categoryService.findBenT(courseTypeCode);
                         return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
                     }
 
