@@ -3,13 +3,17 @@
 
 <mapper namespace="com.vivedu.ckd.dao.CategoryMapper">
 
-    <insert id="addCategory" parameterType="String">
+    <insert id="addCategory">
         INSERT INTO category_code(courseTypeName,courseTypeCode,courseSort,courseHot,isDel)
         VALUES
         (#{courseTypeName},#{courseTypeCode},#{courseSort},#{courseHot},0)
     </insert>
 
-    <update id="upCategory" parameterType="String">
+    <select id="queryMaxSortIdC" resultType="Integer">
+        select max(courseSort) from category_code
+    </select>
+
+    <update id="upCategory">
         update category_code
         <set>
             courseTypeName=#{courseTypeName},courseTypeCode=#{courseTypeCode},courseSort={courseSort},courseHot=#{courseHot}
@@ -18,7 +22,7 @@
     </update>
 
     <select id="findAllCode" resultType="com.vivedu.ckd.model.categoryCode">
-        select * from category_code where isDel=0
+        select * from category_code where isDel=0 ORDER BY courseSort ASC
     </select>
 
     <update id="delCategroy" parameterType="String">

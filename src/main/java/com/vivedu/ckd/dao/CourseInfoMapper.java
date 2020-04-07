@@ -243,4 +243,6 @@ public interface CourseInfoMapper {
                                                     @Param("chapterListData")String chapterListData,
                                                     @Param("coursename")String coursename,
                                                     @Param("source") String source);
+
+    int updateCourseTypeSourceList(List<categoryCode> categoryCodeList);
 }

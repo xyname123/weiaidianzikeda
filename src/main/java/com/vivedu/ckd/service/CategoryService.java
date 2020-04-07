@@ -14,7 +14,8 @@ public class CategoryService {
     private CategoryMapper mapper;
 
 
-    public int addCategory(String courseTypeName, String courseTypeCode, String courseSort, String courseHot) {
+    public int addCategory(String courseTypeName, String courseTypeCode, Integer courseSort, String courseHot) {
+
 
 
         return mapper.addCategory(courseTypeName,courseTypeCode,courseSort,courseHot);
@@ -22,7 +23,7 @@ public class CategoryService {
 
     }
 
-    public int upCategory(String courseTypeName, String courseTypeCode, String courseSort, String courseHot) {
+    public int upCategory(String courseTypeName, String courseTypeCode, Integer courseSort, String courseHot) {
         return mapper.upCategory(courseTypeName,courseTypeCode,courseSort,courseHot);
     }
 
@@ -73,5 +74,9 @@ public class CategoryService {
 
     public List<categoryThird> findBenT(String courseTypeCode) {
         return mapper.findBenT(courseTypeCode);
+    }
+
+    public Integer queryMaxSortId() {
+        return mapper.queryMaxSortIdC();
     }
 }

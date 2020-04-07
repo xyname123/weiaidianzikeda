@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.vivedu.ckd.model.*;
 import com.vivedu.ckd.dao.CourseInfoMapper;
+import com.vivedu.ckd.pojo.ZanshiResponse;
 import com.vivedu.ckd.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -1003,4 +1004,29 @@ public class CourseInfoService {
     public void updateAiCourseOneTeacherAndChapListAndacts(String actsData, String teacherData, String chapterListData, String coursename, String source) {
         mapper.updateAiCourseOneTeacherAndChapListAndacts(actsData,teacherData,chapterListData,coursename,source);
     }
+
+    public DemonstrationResponse getCourseTypeSourceList(String sortList) {
+
+        try {
+            if (StringUtils.isEmpty(sortList)) {
+                return new DemonstrationResponse(-1, "顺序id不能为空", null);
+            }
+            if (sortList.contains(",")) {
+                String[] ids = sortList.split(",");
+                List<categoryCode> categoryCodeList = new ArrayList<>();
+                for (int i = 0; i < ids.length; i++) {
+                    categoryCode categoryCode = new categoryCode(Integer.parseInt(ids[i]), "", "",i + 1,1,1);
+                    categoryCodeList.add(categoryCode);
+                }
+                int rows = mapper.updateCourseTypeSourceList(categoryCodeList);
+            }
+            return new DemonstrationResponse(0, "修改成功！", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new DemonstrationResponse(-1, "异常！", null);
+    }
+
+
+
 }

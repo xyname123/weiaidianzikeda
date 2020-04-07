@@ -657,6 +657,15 @@
             where id = #{item.id};
         </foreach>
     </update>
+    <update id="updateCourseTypeSourceList" parameterType="java.util.List">
+        <foreach collection="list" item="item">
+            update category_code
+            <set>
+                courseSort=#{item.courseSort}
+            </set>
+            where id = #{item.id};
+        </foreach>
+    </update>
 
     <select id="getGroupMemberList" resultType="com.vivedu.ckd.model.GroupMember">
         SELECT

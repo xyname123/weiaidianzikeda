@@ -785,7 +785,7 @@ public class ApiController {
             @RequestParam(required = true, value = "Type") int Type,
             @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
             @RequestParam(required = true, value = "courseTypeCode") String courseTypeCode,
-            @RequestParam(required = false, value = "courseSort") String courseSort,
+            @RequestParam(required = false, value = "courseSort")  Integer courseSort,
             @RequestParam(required = false, value = "courseHot") String courseHot
     ) throws Exception {
         //1.增加数据 2.更新数据 3.删除数据
@@ -795,6 +795,13 @@ public class ApiController {
                 if (categoryCode.getCourseTypeName().equals(courseTypeName)) {
                     return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), "已存在", 0, null);
                 }
+            }
+
+            if (code == null ||code.size()==0) {
+                courseSort = 1;
+            }else {
+                Integer max = categoryService.queryMaxSortId();
+                courseSort= max+1;
             }
             int num = categoryService.addCategory(courseTypeName, courseTypeCode, courseSort, courseHot);
 
@@ -827,27 +834,35 @@ public class ApiController {
                     if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
 
                         return new ZanshiResponse(10005, CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, "有下级分类");
-                    } else {
-                        //删除状态  0:正常  1:已删除
-                        int row = categoryService.delCategroy(courseTypeCode);
-                        if (row > 0) {
-                            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
-                        }
-
                     }
 
                 }
 
             }
+            //删除状态  0:正常  1:已删除
+            int row = categoryService.delCategroy(courseTypeCode);
+            if (row > 0) {
+                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
 
+            }
+            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
         }
-        int row = categoryService.delCategroy(courseTypeCode);
-        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
+
+        return   new ZanshiResponse(-1, CodeMsg.SERVER_EXCEPTION.getMessage(), 0, null);
 
     }
 
 
+/***  课程分类的分类排序
+ * */
+    @GetMapping(path = "/updateCourseTypeListSort", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "三方课程分类列表")
+    public DemonstrationResponse getCourseTypeSourceList(
+            @RequestParam(required = true, value = "sortList") String sortList
+    ) throws Exception {
+        return  courseInfoService.getCourseTypeSourceList(sortList);
 
+    }
 
     /**
      * 三方课程分类列表3/16
