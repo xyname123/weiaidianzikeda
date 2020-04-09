@@ -79,4 +79,31 @@ public class CategoryService {
     public Integer queryMaxSortId() {
         return mapper.queryMaxSortIdC();
     }
+
+    public List<categoryThird> findAllCodeT() {
+        return mapper.findAllCodeT();
+    }
+
+    public Integer queryMaxSortIdT() {
+        return mapper.queryMaxSortIdT();
+    }
+
+    public int addCategoryT(String courseTypeName, String courseTypeCode, Integer courseSort, String courseHot) {
+
+        return mapper.addCategoryT(courseTypeName,courseTypeCode,courseSort,courseHot);
+
+    }
+
+    public int upCategoryT(String courseTypeName, String courseTypeCode, Integer courseSort, String courseHot) {
+
+        return mapper.upCategoryT(courseTypeName,courseTypeCode,courseSort,courseHot);
+    }
+
+    public int delCategroyT(String courseTypeCode) {
+        return mapper.delCategroyT(courseTypeCode);
+    }
+
+    public void insertT(List<categoryThird> category) {
+        mapper.insertT(category);
+    }
 }

@@ -52,4 +52,16 @@ public interface CategoryMapper {
     List<categoryThird> findBenT(String courseTypeCode);
 
     Integer queryMaxSortIdC();
+
+    List<categoryThird> findAllCodeT();
+
+    Integer queryMaxSortIdT();
+
+    int addCategoryT(String courseTypeName, String courseTypeCode, Integer courseSort, String courseHot);
+
+    int upCategoryT(String courseTypeName, String courseTypeCode, Integer courseSort, String courseHot);
+
+    int delCategroyT(String courseTypeCode);
+
+    void insertT(@Param("category") List<categoryThird> category);
 }

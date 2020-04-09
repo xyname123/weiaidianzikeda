@@ -728,24 +728,8 @@ public class ApiController {
         return new ZanshiResponse(0, "请求成功", num, hotkeyList);
     }
 
-    /*
-     *//**
-     * 课程分类列表3/12     新改版(4/1新版的分类用于首页推荐的分类)
-     *//*
-    @GetMapping(path = "/getCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "课程分类")
-    public ZanshiResponse getCourseTypeList(
-            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
-            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
-    ) throws Exception {
-        pageNum = (pageNum - 1) * pageSize;
-        List<categoryCode> categoryCodeList = courseInfoService.getCourseType(pageNum, pageSize);
-        int num = courseInfoService.getCourseTypeNum();
-        return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
-    }*/
-
     /**
-     * 课程分类列表3/12     新改版(4/1新版的分类用于首页推荐的分类)
+     * 课程分类列表4/7     新改版(4/1新版的分类用于首页推荐的分类)
      */
     @GetMapping(path = "/getCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程分类")
@@ -777,7 +761,7 @@ public class ApiController {
 
 
     /**
-     * 课程分类更新3/12
+     * 课程分类更新4/7
      */
     @GetMapping(path = "/updateCourseTypeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程分类更新")
@@ -843,11 +827,8 @@ public class ApiController {
             int row = categoryService.delCategroy(courseTypeCode);
             if (row > 0) {
                 return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
-
             }
-            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
         }
-
         return   new ZanshiResponse(-1, CodeMsg.SERVER_EXCEPTION.getMessage(), 0, null);
 
     }
@@ -864,23 +845,42 @@ public class ApiController {
 
     }
 
+
+
     /**
-     * 三方课程分类列表3/16
+     * 三方课程分类列表4/9
      */
     @GetMapping(path = "/getCourseTypeSourceList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "三方课程分类列表3")
+    @ApiOperation(value = "三方课程分类列表三方")
     public ZanshiResponse getCourseTypeSourceList(
+            @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) throws Exception {
-        pageNum = (pageNum - 1) * pageSize;
-        List<categoryThird> categoryCodeList = courseInfoService.getCourseThird(pageNum, pageSize);
-        int num = courseInfoService.getCourseThirdeNum();
-        return new ZanshiResponse(0, "请求成功", num, categoryCodeList);
+        List<categoryThird> code = categoryService.findAllCodeT();
+        for (categoryThird categoryCode : code) {
+
+            String codeParam = categoryCode.getCourseTypeCode();
+
+            //一级分类
+            if (courseTypeCode == null) {
+                List<categoryThird> categoryName = categoryService.findOneT();
+                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+            }
+
+            if (courseTypeCode != null && codeParam.length() == courseTypeCode.length() + 2) {
+                if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
+                    List<categoryThird> categoryName = categoryService.findMoreT(courseTypeCode);
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                }
+            }
+        }
+        return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
+
     }
 
     /**
-     * 三方课程分类更新3/16
+     * 三方课程分类更新4/9
      */
     @GetMapping(path = "/updateCourseTypeSourceList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiOperation(value = "课程分类更新(三方)")
@@ -889,95 +889,110 @@ public class ApiController {
             @RequestParam(required = false, value = "source") String source,
             @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
             @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
-            @RequestParam(required = false, value = "courseSort") String courseSort,
+            @RequestParam(required = false, value = "courseSort") Integer courseSort,
             @RequestParam(required = false, value = "courseHot") String courseHot
     ) throws Exception {
         //1.增加数据 2.更新数据 3.删除数据
-        if (type ==1) {
-            List<categoryThird> code =categoryService.findAllCodeThird();
+        if (type == 1) {
+            List<categoryThird> code = categoryService.findAllCodeT();
             for (categoryThird categoryCode : code) {
                 if (categoryCode.getCourseTypeName().equals(courseTypeName)) {
-                    return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(),"已存在",0,null);
+                    return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), "已存在", 0, null);
                 }
             }
-            int num= categoryService.addCategoryThird(courseTypeName,courseTypeCode,courseSort,courseHot,source);
 
-            if (num >0) {
-                return new ZanshiResponse(0,"添加成功",num,null);
+            if (code == null || code.size() == 0) {
+                courseSort = 1;
+            } else {
+                Integer max = categoryService.queryMaxSortIdT();
+                courseSort = max + 1;
             }
-            else{
-                return new ZanshiResponse(-1,"未知错误",0,null);
+            int num = categoryService.addCategoryT(courseTypeName, courseTypeCode, courseSort, courseHot);
+
+            if (num > 0) {
+                return new ZanshiResponse(0, "添加成功", num, null);
+            } else {
+                return new ZanshiResponse(-1, "未知错误", 0, null);
             }
         }
-        if (type ==2) {
+        if (type == 2) {
 
-            int num= categoryService.upCategoryThird(courseTypeName,courseTypeCode,courseSort,courseHot,source);
+            int num = categoryService.upCategoryT(courseTypeName, courseTypeCode, courseSort, courseHot);
 
-            if (num >0) {
-                return new ZanshiResponse(0,"更新成功",num,null);
-            }
-            else{
-                return new ZanshiResponse(-1,"未知错误",0,null);
+            if (num > 0) {
+                return new ZanshiResponse(0, "添加成功", num, null);
+            } else {
+                return new ZanshiResponse(-1, "未知错误", 0, null);
             }
 
         }
-        if (type ==3) {
+        if (type == 3) {
             //分类是否存在下级分类，假设存在则不能删除，只有在不存在下级分类的情况下才可删除
-            List<categoryThird> code =categoryService.findAllCodeThird();
+            List<categoryThird> code = categoryService.findAllCodeT();
             for (categoryThird categoryCode : code) {
 
                 String codeParam = categoryCode.getCourseTypeCode();
 
-                if (codeParam.length()==courseTypeCode.length()+2) {
+                if (codeParam.length() == courseTypeCode.length() + 2) {
 
                     if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
 
                         return new ZanshiResponse(10005, CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, "有下级分类");
-                    } else {
-                        //删除状态  0:正常  1:已删除
-                        int row = categoryService.delCategroyThird(courseTypeCode);
-                        if (row>0) {
-                            return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
-                        }
-
                     }
 
                 }
-                else {
-                    return new ZanshiResponse(10001, CodeMsg.PARARM_EXCEPTION.getMessage(), 0, null);
-                }
 
             }
-
+            //删除状态  0:正常  1:已删除
+            int row = categoryService.delCategroyT(courseTypeCode);
+            if (row > 0) {
+                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, null);
+            }
         }
-        if (type==4) {
-            //映射测试
-            List<categoryThird> code =categoryService.findAllCodeThird();
-            for (categoryThird categoryCode : code) {
-                String codeParam = categoryCode.getCourseTypeCode();
-                //一级分类
-                if (courseTypeCode==null) {
-                    List<categoryThird> categoryName= categoryService.findOneT();
-                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
-                }
 
-                if (courseTypeCode!=null&&codeParam.length() == courseTypeCode.length() + 2) {
-                    if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
-                        List<categoryThird> categoryName = categoryService.findMoreT(courseTypeCode);
-                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
-                    } else {
-                        List<categoryThird> categoryName = categoryService.findBenT(courseTypeCode);
-                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+        if (type == 4) {
+            List<categoryCode> code = categoryService.findAllCode();
+            for (categoryCode categoryCode : code) {
+
+                String codeParam = categoryCode.getCourseTypeCode();
+
+                //一级分类
+                if (courseTypeCode == null) {
+                    List<categoryCode> category = categoryService.findOne();
+                     //yingshe
+                    ArrayList<categoryThird> objects = new ArrayList<>();
+                    for (com.vivedu.ckd.model.categoryCode cat : category) {
+                        categoryThird categorys = new categoryThird();
+                        BeanUtils.copyProperties(cat,categorys);
+                        categorys.setSource(source);
+                        objects.add(categorys);
                     }
 
+                    categoryService.insertT(objects);
+
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, category);
+                }
+
+                if (courseTypeCode != null && codeParam.length() == courseTypeCode.length() + 2) {
+                    if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
+                        List<categoryCode> category = categoryService.findMore(courseTypeCode);
+                        //yingshe
+                        ArrayList<categoryThird> objects = new ArrayList<>();
+                        for (categoryCode categoryCode1 : category) {
+                            categoryThird categorys = new categoryThird();
+                            BeanUtils.copyProperties(categoryCode1,categorys);
+                            categorys.setSource(source);
+                            objects.add(categorys);
+                        }
+                        categoryService.insertT(objects);
+                        return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, category);
+                    }
                 }
             }
-
+            return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
         }
         return new ZanshiResponse(CodeMsg.REQUEST_EXCEPTION.getCode(), CodeMsg.REQUEST_EXCEPTION.getMessage(), 0, null);
     }
-
-
 /***
  * 首页修改版
  *

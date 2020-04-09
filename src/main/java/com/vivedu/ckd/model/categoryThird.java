@@ -14,5 +14,5 @@ public class categoryThird {
     private Integer courseSort;
     private Integer isDel;
     private Integer courseHot;
-    private Integer source;
+    private String source;
 }

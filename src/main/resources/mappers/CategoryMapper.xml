@@ -9,8 +9,17 @@
         (#{courseTypeName},#{courseTypeCode},#{courseSort},#{courseHot},0)
     </insert>
 
+    <insert id="addCategoryT">
+        INSERT INTO category_third(courseTypeName,courseTypeCode,courseSort,courseHot,isDel)
+        VALUES
+        (#{courseTypeName},#{courseTypeCode},#{courseSort},#{courseHot},0)
+    </insert>
     <select id="queryMaxSortIdC" resultType="Integer">
         select max(courseSort) from category_code
+    </select>
+
+    <select id="queryMaxSortIdT" resultType="Integer">
+        select max(courseSort) from category_third
     </select>
 
     <update id="upCategory">
@@ -21,6 +30,13 @@
         where category_code.courseTypeName=#{courseTypeName};
     </update>
 
+    <update id="upCategoryT">
+        update category_third
+        <set>
+            courseTypeName=#{courseTypeName},courseTypeCode=#{courseTypeCode},courseSort={courseSort},courseHot=#{courseHot}
+        </set>
+        where category_third.courseTypeName=#{courseTypeName};
+    </update>
     <select id="findAllCode" resultType="com.vivedu.ckd.model.categoryCode">
         select * from category_code where isDel=0 ORDER BY courseSort ASC
     </select>
@@ -34,10 +50,16 @@
     </update>
 
 
+    <update id="delCategroyT" parameterType="String">
+        update category_third
+        <set>
+            isDel=1
+        </set>
+        where category_third.courseTypeCode=#{courseTypeCode};
+    </update>
 
-
-    <select id="findAllCodeThird" resultType="com.vivedu.ckd.model.categoryThird">
-        select * from category_third
+    <select id="findAllCodeT" resultType="com.vivedu.ckd.model.categoryThird">
+        select * from category_third where isDel=0 ORDER BY courseSort ASC
     </select>
 
     <insert id="addCategoryThird" parameterType="String">
@@ -63,21 +85,21 @@
     </update>
 
     <select id="findOne"  resultType="com.vivedu.ckd.model.categoryCode">
-        SELECT * FROM category_code WHERE LENGTH(category_code.courseTypeCode)=2 and isDel=0
+        SELECT * FROM category_code WHERE LENGTH(category_code.courseTypeCode)=2 and isDel=0  ORDER BY courseSort ASC
     </select>
 
     <select id="findOneT"  resultType="com.vivedu.ckd.model.categoryThird">
-        SELECT * FROM category_third WHERE LENGTH(category_third.courseTypeCode)=2 and isDel=0
+        SELECT * FROM category_third WHERE LENGTH(category_third.courseTypeCode)=2 and isDel=0  ORDER BY courseSort ASC
     </select>
 
     <select id="findMore" resultType="com.vivedu.ckd.model.categoryCode">
         SELECT * FROM category_code WHERE category_code.courseTypeCode like concat(#{courseTypeCode},'%')
-        and LENGTH(category_code.courseTypeCode)=CHAR_LENGTH(#{courseTypeCode})+2 and isDel=0
+        and LENGTH(category_code.courseTypeCode)=CHAR_LENGTH(#{courseTypeCode})+2 and isDel=0  ORDER BY courseSort ASC
     </select>
 
     <select id="findMoreT" resultType="com.vivedu.ckd.model.categoryThird">
         SELECT * FROM category_third WHERE category_third.courseTypeCode like concat(#{courseTypeCode},'%')
-        and LENGTH(category_third.courseTypeCode)=CHAR_LENGTH(#{courseTypeCode})+2 and isDel=0
+        and LENGTH(category_third.courseTypeCode)=CHAR_LENGTH(#{courseTypeCode})+2 and isDel=0  ORDER BY courseSort ASC
     </select>
 
     <select id="findBen" resultType="com.vivedu.ckd.model.categoryCode">
@@ -89,4 +111,11 @@
         SELECT * FROM category_third WHERE category_third.courseTypeCode =#{courseTypeCode}
     </select>
 
+    <insert id="insertT">
+        INSERT INTO category_third(courseTypeName,courseTypeCode,courseSort,isDel,courseHot,source)
+        VALUES
+        <foreach collection="category" item="course" separator=",">
+            (#{course.courseTypeName},#{course.courseTypeCode},#{course.courseSort},#{course.isDel},#{course.courseHot},#{course.source})
+        </foreach>
+    </insert>
 </mapper>
