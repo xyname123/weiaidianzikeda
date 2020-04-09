@@ -52,20 +52,20 @@ public class CategoryService {
         return mapper.delCategroyThird(courseTypeCode);
     }
 
-    public List<categoryCode> findOne() {
-        return mapper.findOne();
+    public List<categoryCode> findOne(Integer pageNum, Integer pageSize) {
+        return mapper.findOne(pageNum,pageSize);
     }
 
-    public List<categoryCode> findMore(String courseTypeCode) {
-        return mapper.findMore(courseTypeCode);
+    public List<categoryCode> findMore(String courseTypeCode, Integer pageNum, Integer pageSize) {
+        return mapper.findMore(courseTypeCode,pageNum,pageSize);
     }
 
     public List<categoryCode> findBen(String courseTypeCode) {
         return mapper.findBen(courseTypeCode);
     }
 
-    public List<categoryThird> findOneT() {
-        return mapper.findOneT();
+    public List<categoryThird> findOneT(Integer pageNum, Integer pageSize) {
+        return mapper.findOneT(pageNum,pageSize);
     }
 
     public List<categoryThird> findMoreT(String courseTypeCode) {
@@ -105,5 +105,21 @@ public class CategoryService {
 
     public void insertT(List<categoryThird> category) {
         mapper.insertT(category);
+    }
+
+    public int row() {
+        return mapper.row();
+    }
+
+    public int rowMore(String courseTypeCode) {
+        return mapper.rowMore(courseTypeCode);
+    }
+
+    public int rowT() {
+        return mapper.rowT();
+    }
+
+    public int rowMoreT(String courseTypeCode) {
+        return mapper.rowMoreT(courseTypeCode);
     }
 }

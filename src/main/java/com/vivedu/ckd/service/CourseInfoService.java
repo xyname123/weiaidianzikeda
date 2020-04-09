@@ -281,7 +281,6 @@ public class CourseInfoService {
             for (CourseInfoFilm courseInfoFilm : CourseInfoFilmlist) {
                 int met = courseInfoService.findFilmT(courseInfoFilm.getCourseid());
                 if (met <= 0) {
-                    //todo webVideoUrl 添加视频url
                     //courseInfoService.updateCourse(CourseInfoFilmlist);
                     courseInfoService.updateCourseFilm(courseInfoFilm);
                     //courseInfoService.InsertCourseMetel(CourseInfoMetelList);
@@ -292,7 +291,6 @@ public class CourseInfoService {
                     courseInfoService.updateAiCourseOneTeacherAndChapList(teacherData, chapterListData, courseInfoFilm.getCoursename(), courseInfoFilm.getSource());
                 } else {
                     // courseInfoService.updateFilm(CourseInfoFilmlist);
-                    //todo webVideoUrl 添加视频url
                     courseInfoService.updateFilmeOne(courseInfoFilm);
                     String[] teacher = courseInfoFilm.getTeacher();
                     String teacherData = Arrays.toString(teacher);

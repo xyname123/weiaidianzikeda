@@ -39,13 +39,13 @@ public interface CategoryMapper {
 
     int delCategroyThird(String courseTypeCode);
 
-    List<categoryCode> findOne();
+    List<categoryCode> findOne(@Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize")Integer pageSize);
 
-    List<categoryCode> findMore(String courseTypeCode);
+    List<categoryCode> findMore(@Param(value = "courseTypeCode")String courseTypeCode,@Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize")Integer pageSize);
 
     List<categoryCode> findBen(String courseTypeCode);
 
-    List<categoryThird> findOneT();
+    List<categoryThird> findOneT(@Param(value = "pageNum")Integer pageNum,@Param(value = "pageSize")Integer pageSize);
 
     List<categoryThird> findMoreT(String courseTypeCode);
 
@@ -64,4 +64,12 @@ public interface CategoryMapper {
     int delCategroyT(String courseTypeCode);
 
     void insertT(@Param("category") List<categoryThird> category);
+
+    int row();
+
+    int rowMore(String courseTypeCode);
+
+    int rowT();
+
+    int rowMoreT(String courseTypeCode);
 }

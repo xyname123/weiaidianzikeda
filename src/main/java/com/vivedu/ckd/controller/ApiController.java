@@ -1,13 +1,11 @@
 package com.vivedu.ckd.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.vivedu.ckd.dao.CategoryMapper;
 import com.vivedu.ckd.model.*;
 import com.vivedu.ckd.pojo.ZanshiResponse;
 import com.vivedu.ckd.service.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -738,6 +735,7 @@ public class ApiController {
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize,
             @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode
     ) throws Exception {
+        pageNum = (pageNum - 1) * pageSize;
         List<categoryCode> code = categoryService.findAllCode();
         for (categoryCode categoryCode : code) {
 
@@ -745,14 +743,16 @@ public class ApiController {
 
             //一级分类
             if (courseTypeCode == null) {
-                List<categoryCode> categoryName = categoryService.findOne();
-                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                List<categoryCode> categoryName = categoryService.findOne(pageNum,pageSize);
+                int row =categoryService.row();
+                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), row, categoryName);
             }
 
             if (courseTypeCode != null && codeParam.length() == courseTypeCode.length() + 2) {
                 if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
-                    List<categoryCode> categoryName = categoryService.findMore(courseTypeCode);
-                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                    List<categoryCode> categoryName = categoryService.findMore(courseTypeCode,pageNum,pageSize);
+                    int row =categoryService.rowMore(courseTypeCode);
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), row, categoryName);
                 }
             }
         }
@@ -770,7 +770,9 @@ public class ApiController {
             @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
             @RequestParam(required = true, value = "courseTypeCode") String courseTypeCode,
             @RequestParam(required = false, value = "courseSort")  Integer courseSort,
-            @RequestParam(required = false, value = "courseHot") String courseHot
+            @RequestParam(required = false, value = "courseHot") String courseHot,
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) throws Exception {
         //1.增加数据 2.更新数据 3.删除数据
         if (Type == 1) {
@@ -857,6 +859,7 @@ public class ApiController {
             @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
             @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) throws Exception {
+        pageNum = (pageNum - 1) * pageSize;
         List<categoryThird> code = categoryService.findAllCodeT();
         for (categoryThird categoryCode : code) {
 
@@ -864,14 +867,16 @@ public class ApiController {
 
             //一级分类
             if (courseTypeCode == null) {
-                List<categoryThird> categoryName = categoryService.findOneT();
-                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                List<categoryThird> categoryName = categoryService.findOneT(pageNum,pageSize);
+                int row =categoryService.rowT();
+                return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), row, categoryName);
             }
 
             if (courseTypeCode != null && codeParam.length() == courseTypeCode.length() + 2) {
                 if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
                     List<categoryThird> categoryName = categoryService.findMoreT(courseTypeCode);
-                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), 0, categoryName);
+                    int row =categoryService.rowMoreT(courseTypeCode);
+                    return new ZanshiResponse(0, CodeMsg.BIND_SUCESS.getMessage(), row, categoryName);
                 }
             }
         }
@@ -890,7 +895,9 @@ public class ApiController {
             @RequestParam(required = false, value = "courseTypeName") String courseTypeName,
             @RequestParam(required = false, value = "courseTypeCode") String courseTypeCode,
             @RequestParam(required = false, value = "courseSort") Integer courseSort,
-            @RequestParam(required = false, value = "courseHot") String courseHot
+            @RequestParam(required = false, value = "courseHot") String courseHot,
+            @RequestParam(required = false, value = "pageNum", defaultValue = "1") @ApiParam(value = "页数") Integer pageNum,
+            @RequestParam(required = false, value = "pageSize", defaultValue = "10") @ApiParam(value = "页大小") Integer pageSize
     ) throws Exception {
         //1.增加数据 2.更新数据 3.删除数据
         if (type == 1) {
@@ -958,7 +965,7 @@ public class ApiController {
 
                 //一级分类
                 if (courseTypeCode == null) {
-                    List<categoryCode> category = categoryService.findOne();
+                    List<categoryCode> category = categoryService.findOne(pageNum, pageSize);
                      //yingshe
                     ArrayList<categoryThird> objects = new ArrayList<>();
                     for (com.vivedu.ckd.model.categoryCode cat : category) {
@@ -975,7 +982,7 @@ public class ApiController {
 
                 if (courseTypeCode != null && codeParam.length() == courseTypeCode.length() + 2) {
                     if (courseTypeCode.equals(codeParam.substring(0, courseTypeCode.length()))) {
-                        List<categoryCode> category = categoryService.findMore(courseTypeCode);
+                        List<categoryCode> category = categoryService.findMore(courseTypeCode, pageNum, pageSize);
                         //yingshe
                         ArrayList<categoryThird> objects = new ArrayList<>();
                         for (categoryCode categoryCode1 : category) {

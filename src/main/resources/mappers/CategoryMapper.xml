@@ -86,14 +86,41 @@
 
     <select id="findOne"  resultType="com.vivedu.ckd.model.categoryCode">
         SELECT * FROM category_code WHERE LENGTH(category_code.courseTypeCode)=2 and isDel=0  ORDER BY courseSort ASC
+        <if test='pageNum != null '>
+            limit #{pageNum},#{pageSize}
+        </if>
+    </select>
+
+    <select id="row" resultType="java.lang.Integer">
+        SELECT count(*) FROM category_code WHERE LENGTH(category_code.courseTypeCode)=2 and isDel=0  ORDER BY courseSort ASC
     </select>
 
     <select id="findOneT"  resultType="com.vivedu.ckd.model.categoryThird">
         SELECT * FROM category_third WHERE LENGTH(category_third.courseTypeCode)=2 and isDel=0  ORDER BY courseSort ASC
+        <if test='pageNum != null '>
+            limit #{pageNum},#{pageSize}
+        </if>
+    </select>
+
+    <select id="rowT" resultType="java.lang.Integer">
+        SELECT count(*) FROM category_third WHERE LENGTH(category_third.courseTypeCode)=2 and isDel=0  ORDER BY courseSort ASC
     </select>
 
     <select id="findMore" resultType="com.vivedu.ckd.model.categoryCode">
         SELECT * FROM category_code WHERE category_code.courseTypeCode like concat(#{courseTypeCode},'%')
+        and LENGTH(category_code.courseTypeCode)=CHAR_LENGTH(#{courseTypeCode})+2 and isDel=0  ORDER BY courseSort ASC
+        <if test='pageNum != null '>
+            limit #{pageNum},#{pageSize}
+        </if>
+    </select>
+
+    <select id="rowMore" resultType="java.lang.Integer">
+        SELECT count(*) FROM category_code WHERE category_code.courseTypeCode like concat(#{courseTypeCode},'%')
+        and LENGTH(category_code.courseTypeCode)=CHAR_LENGTH(#{courseTypeCode})+2 and isDel=0  ORDER BY courseSort ASC
+    </select>
+
+    <select id="rowMoreT" resultType="java.lang.Integer">
+        SELECT count(*) FROM category_code WHERE category_code.courseTypeCode like concat(#{courseTypeCode},'%')
         and LENGTH(category_code.courseTypeCode)=CHAR_LENGTH(#{courseTypeCode})+2 and isDel=0  ORDER BY courseSort ASC
     </select>
 
